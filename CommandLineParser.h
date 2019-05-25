@@ -213,19 +213,13 @@ namespace Ambiesoft {
 
 		class UserTarget
 		{
-			bool* pBool_;
-			int* pInt_;
-			MyS_* pMys_;
+			bool* pBool_ = nullptr;
+			int* pInt_ = nullptr;
+			long long* pLL_ = nullptr;
+			MyS_* pMys_ = nullptr;
 
-			void init()
-			{
-				pBool_ = NULL;
-				pInt_ = NULL;
-				pMys_ = NULL;
-			}
 			UserTarget()
 			{
-				init();
 			}
 			
 			void setBoolTarget(bool* pb)
@@ -237,6 +231,11 @@ namespace Ambiesoft {
 			{
 				assert(pInt_ == NULL);
 				pInt_ = pi;
+			}
+			void setLongLongTarget(long long* pLL)
+			{
+				assert(pLL_ == NULL);
+				pLL_ = pLL;
 			}
 			void setMysTarget(MyS_* pM)
 			{
@@ -250,6 +249,8 @@ namespace Ambiesoft {
 					*pBool_ = true;
 				if (pInt_)
 					*pInt_ = 1;
+				if (pLL_)
+					*pLL_ = 1;
 
 			}
 			void setMys(const MyS_& mys)
@@ -271,6 +272,8 @@ namespace Ambiesoft {
 				}
 				if(pInt_)
 					*pInt_=AtoI(mys);
+				if (pLL_)
+					*pLL_ = AtoI64(mys);
 				if(pMys_)
 					*pMys_=mys;
 			}
@@ -289,20 +292,18 @@ namespace Ambiesoft {
 		MyS_ helpString_;
 		void setTarget(bool* pT)
 		{
-			//if (pTarget_ == NULL)
-			//	pTarget_ = new UserTarget();
 			userTarget_.setBoolTarget(pT);
 		}
 		void setTarget(int* pT)
 		{
-			//if (pTarget_ == NULL)
-			//	pTarget_ = new UserTarget();
 			userTarget_.setIntTarget(pT);
+		}
+		void setTarget(long long* pT)
+		{
+			userTarget_.setLongLongTarget(pT);
 		}
 		void setTarget(MyS_* pT)
 		{
-			//if(pTarget_ == NULL)
-			//	pTarget_ = new UserTarget();
 			userTarget_.setMysTarget(pT);
 		}			
 
@@ -865,6 +866,7 @@ typedef BasicOption<std::string> COptionA;
 					cIter != cli->options_.end();
 					++cIter)
 				{
+					// ensure same option does not exist
 					assert(!( it->isMatchOption(cIter->c_str(), 
 						it->case_ == CaseFlags_Insensitive || cli->case_ == CaseFlags_Insensitive)));
 				}
