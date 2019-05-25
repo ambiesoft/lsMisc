@@ -53,6 +53,9 @@ namespace AmbiesoftQt {
                        const QString& company,
                        const QString& appname)
     {
+        Q_UNUSED(bExit);
+        Q_UNUSED(company);
+        Q_UNUSED(appname);
         return QString();
     }
     QString getInifile(bool& bExit)
