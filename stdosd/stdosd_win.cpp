@@ -431,11 +431,11 @@ namespace Ambiesoft {
 
 		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size)
 		{
-			return ExpandEnvironmentStringsA(pIN, p, size);
+			return ExpandEnvironmentStringsA(pIN, p, (DWORD)size);
 		}
 		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size)
 		{
-			return ExpandEnvironmentStringsW(pIN, p, size);
+			return ExpandEnvironmentStringsW(pIN, p, (DWORD)size);
 		}
 
 		bool GetComputerNameT(char* p, size_t* pnLength)
@@ -453,6 +453,26 @@ namespace Ambiesoft {
 			return ret;
 		}
 
+		bool stdGetComputerNameImpl(char* p, size_t size, size_t& outsize)
+		{
+			if (!GetComputerNameT(p, &size))
+			{
+				if (GetLastError() != ERROR_BUFFER_OVERFLOW)
+					return false;
+			}
+			outsize = size;
+			return true;
+		}
+		bool stdGetComputerNameImpl(wchar_t* p, size_t size, size_t& outsize)
+		{
+			if (!GetComputerNameT(p, &size))
+			{
+				if (GetLastError() != ERROR_BUFFER_OVERFLOW)
+					return false;
+			}
+			outsize = size;
+			return true;
+		}
 
 	}
 }

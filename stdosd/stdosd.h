@@ -404,7 +404,7 @@ namespace Ambiesoft {
 
 		// TODO: test with Linux
 		template<typename C>
-		bool stdIsFullPath(const C* pD, bool allownetwork)
+		inline bool stdIsFullPath(const C* pD, bool allownetwork)
 		{
 			if (!pD || pD[0] == 0)
 				return false;
@@ -963,7 +963,7 @@ namespace Ambiesoft {
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
 
 		template<typename C = wchar_t>
-		std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
+		inline std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
 		{
 			C* p = nullptr;
 			size_t size = 64;
@@ -984,14 +984,14 @@ namespace Ambiesoft {
 
 		typedef void* HWINDOWHANDLE;
 		template<typename C>
-		bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
+		inline bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
 		{
 			// TODO: implement
 		}
 
 
 		template<typename C>
-		C* stdStrDup(const C* p)
+		inline C* stdStrDup(const C* p)
 		{
 			if (!p)
 				return nullptr;
@@ -1007,7 +1007,7 @@ namespace Ambiesoft {
 		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size);
 
 		template<typename C = wchar_t>
-		std::basic_string<C> stdExpandEnvironmentStrings(const C* pIN)
+		inline std::basic_string<C> stdExpandEnvironmentStrings(const C* pIN)
 		{
 			C* p = nullptr;
 			size_t size = 64;
@@ -1031,20 +1031,12 @@ namespace Ambiesoft {
 		bool GetComputerNameT(char* p, size_t* pnLength);
 		bool GetComputerNameT(wchar_t* p, size_t* pnLength);
 
-		template<class C>
-		bool stdGetComputerNameImpl(C* p, size_t size, size_t& outsize)
-		{
-			if (!GetComputerNameT(p, &size))
-			{
-				if (GetLastError() != ERROR_BUFFER_OVERFLOW)
-					return false;
-			}
-			outsize = size;
-			return true;
-		}
+		
+		bool stdGetComputerNameImpl(char* p, size_t size, size_t& outsize);
+		bool stdGetComputerNameImpl(wchar_t* p, size_t size, size_t& outsize);
 
 		template<typename C = wchar_t>
-		std::basic_string<C> stdGetComputerName()
+		inline std::basic_string<C> stdGetComputerName()
 		{
 			C* p = nullptr;
 			size_t size = 16;
