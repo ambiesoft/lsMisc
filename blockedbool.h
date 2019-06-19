@@ -19,29 +19,50 @@
 #ifndef BLOCKEDTRUE_H
 #define BLOCKEDTRUE_H
 
+#include <functional>
+
 namespace Ambiesoft {
 
-
-class BlockedBool
-{
-    volatile bool* target_;
-    bool exitValue_;
-public:
-    BlockedBool(volatile bool* target, bool initialValue, bool exitValue) :
-        target_(target),
-        exitValue_(exitValue)
-    {
-        *target_ = initialValue;
-    }
-    BlockedBool(volatile bool* target) :
-        BlockedBool(target, true, false){}
-    ~BlockedBool()
-    {
-        *target_ = exitValue_;
-    }
-};
-
-
+	template<class N>
+	class BlockedValue
+	{
+		volatile N* target_;
+		N exitValue_;
+	public:
+		BlockedValue(volatile N* target, N initialValue, N exitValue) :
+			target_(target),
+			exitValue_(exitValue)
+		{
+			*target_ = initialValue;
+		}
+		BlockedValue(volatile N* target) :
+			BlockedValue(target,
+				!N(),  // true
+				N())   // false
+		{}
+		~BlockedValue()
+		{
+			*target_ = exitValue_;
+		}
+	};
+	template<class N>
+	class RestoreValue
+	{
+		using F = std::function<void(const N&)>;
+		
+		N restore_;
+		F fRestore_;
+	public:
+		RestoreValue(const N& restore, const F& fRestore) :
+			restore_(restore),
+			fRestore_(fRestore)
+		{
+		}
+		~RestoreValue()
+		{
+			fRestore_(restore_);
+		}
+	};
 } // namespace
 
 #endif // BLOCKEDTRUE_H

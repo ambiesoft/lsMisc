@@ -38,7 +38,7 @@
 #include <string>
 using namespace std;
 
-
+#include "blockedbool.h"
 #include "I18N.h"
 
 
@@ -551,6 +551,11 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 
 LPCWSTR I18NW(LPCWSTR pIN)
 {
+	// Restore the value of GetLastError at the end of this function.
+	RestoreValue<DWORD> restoreGE(GetLastError(), [](const DWORD& le) {
+		SetLastError(le);
+		});
+
 	if(!bCinit)
 		InitCS();
 

@@ -22,11 +22,9 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
 
-#include <vector>
-
-namespace Ambiesoft{
-	HWND GetChildWindowByText(HWND hwndParent, LPCWSTR pName);
-	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName);
-	std::vector<HWND> GetChildWindows(HWND hwndParent);
+namespace Ambiesoft {
+	// https://stackoverflow.com/a/39290139
+	HWND FindTopWindowFromPID(DWORD pid);
 }

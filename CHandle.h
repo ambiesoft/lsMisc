@@ -43,6 +43,9 @@ namespace Ambiesoft {
 		operator HANDLE() const {
 			return h_;
 		}
+		HANDLE* operator &() {
+			return &h_;
+		}
 	};
 	class CHWnd
 	{
