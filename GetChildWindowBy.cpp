@@ -42,24 +42,30 @@ namespace Ambiesoft{
 			ENUM_BY_TEXT,
 			ENUM_BY_CLASSNAME,
 			ENUM_BY_ALL,
+			ENUM_BY_HASFOCUS,
 		};
 		class ContextData {
 			size_t maxcount_;
 			EnumBy enumBy_;
 			LPCWSTR pName_;
 			vector<HWND> results_;
+			bool allChildren_;
 			ContextData(){}
 		public:
 			ContextData(const size_t& maxcount,
 				EnumBy enumBy,
-				LPCWSTR pName) : 
-				maxcount_(maxcount), enumBy_(enumBy), pName_(pName){}
+				LPCWSTR pName,
+				bool allChildren = false) : 
+				maxcount_(maxcount), enumBy_(enumBy), pName_(pName), allChildren_(allChildren){}
 
 			LPCWSTR name() const {
 				return pName_;
 			}
 			EnumBy enumBy() const {
 				return enumBy_;
+			}
+			bool IsAllChildren() const {
+				return allChildren_;
 			}
 			void addResult(HWND h) {
 				results_.push_back(h);
@@ -79,6 +85,9 @@ namespace Ambiesoft{
 			vector<HWND> getResults() const {
 				return results_;
 			}
+			bool getBoolResult() const {
+				return !results_.empty();
+			}
 		};
 
 		static BOOL CALLBACK enumProc(
@@ -88,23 +97,37 @@ namespace Ambiesoft{
 		{
 			ContextData* pCxt = (ContextData*)lParam;
 			
-			if (pCxt->name())
+			if (pCxt->enumBy() == EnumBy::ENUM_BY_ALL ||
+				pCxt->enumBy() == EnumBy::ENUM_BY_TEXT ||
+				pCxt->enumBy() == EnumBy::ENUM_BY_CLASSNAME)
 			{
-				TCHAR szT[1024]; szT[0] = 0;
-				if (pCxt->enumBy() == ENUM_BY_TEXT)
-					GetWindowText(hwnd, szT, _countof(szT));
-				else if (pCxt->enumBy() == ENUM_BY_CLASSNAME)
-					GetClassName(hwnd, szT, _countof(szT));
+				if (pCxt->name())
+				{
+					TCHAR szT[1024]; szT[0] = 0;
+					if (pCxt->enumBy() == ENUM_BY_TEXT)
+						GetWindowText(hwnd, szT, _countof(szT));
+					else if (pCxt->enumBy() == ENUM_BY_CLASSNAME)
+						GetClassName(hwnd, szT, _countof(szT));
+					else
+						assert(false);
+					if (lstrcmp(szT, pCxt->name()) == 0)
+					{
+						pCxt->addResult(hwnd);
+					}
+				}
 				else
-					assert(false);
-				if (lstrcmp(szT, pCxt->name()) == 0)
 				{
 					pCxt->addResult(hwnd);
 				}
 			}
+			else if (pCxt->enumBy() == EnumBy::ENUM_BY_HASFOCUS)
+			{
+				if (GetFocus() == hwnd)
+					pCxt->addResult(hwnd);
+			}
 			else
 			{
-				pCxt->addResult(hwnd);
+				assert(FALSE);
 			}
 
 			if (pCxt->resultSize() >= pCxt->maxcount())
@@ -113,6 +136,10 @@ namespace Ambiesoft{
 				return FALSE;
 			}
 
+			if (pCxt->IsAllChildren())
+			{
+				EnumChildWindows(hwnd, enumProc, lParam);
+			}
 			// continue
 			return TRUE;
 		}
@@ -141,4 +168,13 @@ namespace Ambiesoft{
 
 		return context.getResults();
 	}
+	bool IsChildHasFocus(HWND hwndParent)
+	{
+		ContextData context(1, ENUM_BY_HASFOCUS, nullptr, true);
+
+		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
+
+		return context.getBoolResult();
+	}
+
 } // namespace
