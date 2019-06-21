@@ -21,68 +21,40 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#pragma once
-#include <Windows.h>
+#include "stdafx.h"
+
+
 
 namespace Ambiesoft {
-	class CHandle
-	{
-		HANDLE h_;
-	public:
-		CHandle(HANDLE h) :h_(h) {
 
-		}
-		~CHandle() {
-			if (h_ == nullptr || h_ == INVALID_HANDLE_VALUE)
-				return;
-			CloseHandle(h_);
-		}
-		operator bool() const {
-			return h_ != nullptr && h_ != INVALID_HANDLE_VALUE;
-		}
-		operator HANDLE() const {
-			return h_;
-		}
-		HANDLE* operator &() {
-			return &h_;
-		}
-	};
-	class CHWnd
+	// https://stackoverflow.com/a/39290139
+	HWND FindTopWindowFromPID(DWORD pid)
 	{
-		HWND h_;
-	public:
-		CHWnd(HWND h) :h_(h) {
+		std::pair<HWND, DWORD> params = { 0, pid };
 
-		}
-		~CHWnd() {
-			if (h_ == nullptr)
-				return;
-			DestroyWindow(h_);
-		}
-		operator bool() const {
-			return !!IsWindow(h_);
-		}
-		operator HWND() const {
-			return h_;
-		}
-	};
-	class CHMenu
-	{
-		HMENU h_;
-	public:
-		CHMenu(HMENU h) :h_(h) {
+		// Enumerate the windows using a lambda to process each window
+		BOOL bResult = EnumWindows([](HWND hwnd, LPARAM lParam) -> BOOL
+			{
+				auto pParams = (std::pair<HWND, DWORD>*)(lParam);
 
+				DWORD processId;
+				if (GetWindowThreadProcessId(hwnd, &processId) && processId == pParams->second)
+				{
+					// Stop enumerating
+					SetLastError(-1);
+					pParams->first = hwnd;
+					return FALSE;
+				}
+
+				// Continue enumerating
+				return TRUE;
+			}, (LPARAM)& params);
+
+		if (!bResult && GetLastError() == -1 && params.first)
+		{
+			return params.first;
 		}
-		~CHMenu() {
-			if (h_ == nullptr)
-				return;
-			DestroyMenu(h_);
-		}
-		operator bool() const {
-			return !!IsMenu(h_);
-		}
-		operator HMENU() const {
-			return h_;
-		}
-	};
+
+		return 0;
+	}
 }

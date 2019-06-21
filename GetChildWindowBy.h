@@ -20,10 +20,14 @@
 //LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
+
 #pragma once
+
+#include <vector>
 
 namespace Ambiesoft{
 	HWND GetChildWindowByText(HWND hwndParent, LPCWSTR pName);
 	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName);
 	std::vector<HWND> GetChildWindows(HWND hwndParent);
+	bool IsChildHasFocus(HWND hwndParent);
 }
