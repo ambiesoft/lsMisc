@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <ShlObj.h>
+#include <psapi.h>
 
 #include <QString>
 #include <QDir>
@@ -185,5 +186,20 @@ namespace AmbiesoftQt {
         return QDir::homePath();
     }
 
+    QSet<int> GetAllProcessIDs()
+    {
+        QSet<int> result;
+
+        DWORD pids[4096];
+        DWORD dwNeeded=0;
+        if(!EnumProcesses(pids, _countof(pids), &dwNeeded))
+            return result;
+
+        for(auto&& pid : pids)
+        {
+            result.insert((int)pid);
+        }
+        return result;
+    }
 
 }
