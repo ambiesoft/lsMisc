@@ -9,6 +9,12 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files\lsMisc">
+      <UniqueIdentifier>{2eabd87d-44c2-4eb1-b42f-e4def37cce5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\lsMisc">
+      <UniqueIdentifier>{6952a78d-3973-4c32-9e66-9a59de3b295d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -17,17 +23,17 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\RunCommandGetResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\stdosd\stdosd.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\CloseConsoleWin.h">
+      <Filter>Header Files\lsMisc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\GetLastErrorString.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\lsMisc</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\CloseConsoleWin.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\stdosd\stdosd.h">
+      <Filter>Header Files\lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\RunCommandGetResult.h">
+      <Filter>Header Files\lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -37,20 +43,20 @@
     <ClCompile Include="RunCommandGetResultCtrlCTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\RunCommandGetResult.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\stdosd\stdosd.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\stdosd\stdosd_win.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\CloseConsoleWin.cpp">
+      <Filter>Source Files\lsMisc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\GetLastErrorString.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\lsMisc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\CloseConsoleWin.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\..\RunCommandGetResult.cpp">
+      <Filter>Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stdosd\stdosd.cpp">
+      <Filter>Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\stdosd\stdosd_win.cpp">
+      <Filter>Source Files\lsMisc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -399,6 +399,12 @@
     <ClCompile Include="..\CloseConsoleWin.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\GetAppVersion.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGetAppVersion.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -766,6 +772,9 @@
     </ClInclude>
     <ClInclude Include="..\CloseConsoleWin.h">
       <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetAppVersion.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

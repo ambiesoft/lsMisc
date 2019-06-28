@@ -246,6 +246,7 @@
     <ClCompile Include="..\EnableDebugPriv.cpp" />
     <ClCompile Include="..\ExpandPath.cpp" />
     <ClCompile Include="..\FormatSizeof.cpp" />
+    <ClCompile Include="..\GetAppVersion.cpp" />
     <ClCompile Include="..\GetChildWindowBy.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -356,6 +357,7 @@
     <ClCompile Include="..\WritePrivateProfileInt.cpp" />
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
+    <ClCompile Include="gtestGetAppVersion.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
     <ClCompile Include="gtestRunCommandGetResult.cpp" />
@@ -466,6 +468,7 @@
     <ClInclude Include="..\EveryCloser.h" />
     <ClInclude Include="..\ExpandPath.h" />
     <ClInclude Include="..\FormatSizeof.h" />
+    <ClInclude Include="..\GetAppVersion.h" />
     <ClInclude Include="..\GetChildWindowBy.h" />
     <ClInclude Include="..\GetClipboardText.h" />
     <ClInclude Include="..\GetDesktopDir.h" />

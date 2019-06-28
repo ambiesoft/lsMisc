@@ -18,48 +18,48 @@ static void cback(const char* pData, void* pUD)
 }
 TEST(RunCommandGetResult, Basic)
 {
-	{
-		wstring thisexe = stdGetModuleFileName<wchar_t>();
-		DWORD lRet, dwLE;
-		string output, error;
 
-		BOOL bRet = RunCommandGetResult(
-			thisexe.c_str(),
-			L"--help",
-			&lRet,
-			&dwLE,
-			&output,
-			&error);
-		EXPECT_EQ(TRUE, bRet);
-		EXPECT_EQ(error, "");
-		EXPECT_TRUE(output.find("Google Test") != std::string::npos);
-	}
+	wstring thisexe = stdGetModuleFileName<wchar_t>();
+	DWORD lRet, dwLE;
+	string output, error;
+
+	BOOL bRet = RunCommandGetResult(
+		thisexe.c_str(),
+		L"--help",
+		&lRet,
+		&dwLE,
+		&output,
+		&error);
+	EXPECT_EQ(TRUE, bRet);
+	EXPECT_EQ(error, "");
+	EXPECT_TRUE(output.find("Google Test") != std::string::npos);
+
 }
 TEST(RunCommandGetResult, CallBack)
 {
-	{
-		wstring thisexe = stdGetModuleFileName<wchar_t>();
-		DWORD lRet;
-		DWORD dwLE = 0;
-		
-		string output;
-		BOOL bRet = RunCommandGetResultCallBack(
-			thisexe.c_str(),
-			L"--help",
-			&lRet,
-			&dwLE,
-			nullptr,
-			nullptr,
-			cback,
-			&output,
-			nullptr,
-			nullptr);
-		EXPECT_EQ(TRUE, bRet);
-		EXPECT_EQ(0, lRet);
-		EXPECT_EQ(0, dwLE);
 
-		EXPECT_TRUE(output.find("Google Test") != std::string::npos);
-	}
+	wstring thisexe = stdGetModuleFileName<wchar_t>();
+	DWORD lRet;
+	DWORD dwLE = 0;
+
+	string output;
+	BOOL bRet = RunCommandGetResultCallBack(
+		thisexe.c_str(),
+		L"--help",
+		&lRet,
+		&dwLE,
+		nullptr,
+		nullptr,
+		cback,
+		&output,
+		nullptr,
+		nullptr);
+	EXPECT_EQ(TRUE, bRet);
+	EXPECT_EQ(0, lRet);
+	EXPECT_EQ(0, dwLE);
+
+	EXPECT_TRUE(output.find("Google Test") != std::string::npos);
+
 }
 // CloseConsoleWin does not work in test environment, use RunCommandGetResultCtrlCTest
 //TEST(RunCommandGetResult, Close)
