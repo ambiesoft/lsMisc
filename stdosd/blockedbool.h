@@ -63,6 +63,8 @@ namespace Ambiesoft {
 			fRestore_(restore_);
 		}
 	};
+	
+	typedef BlockedValue<bool> BlockedBool;
 } // namespace
 
 #endif // BLOCKEDTRUE_H
