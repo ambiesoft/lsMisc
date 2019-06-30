@@ -38,7 +38,7 @@
 #include <string>
 using namespace std;
 
-#include "blockedbool.h"
+#include "stdosd/blockedbool.h"
 #include "I18N.h"
 
 
