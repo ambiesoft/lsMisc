@@ -391,9 +391,9 @@ namespace Ambiesoft {
 		bool SyntaxEqual(const CommandLineStringType& that) const {
 			return args_ == that.args_;
 		}
-		size_t getIndex(const E* p) const
+		int getIndex(const E* p) const
 		{
-			for (size_t i = 0; i < args_.size(); ++i)
+			for (int i = 0; i < (int)args_.size(); ++i)
 			{
 				if (args_[i] == p)
 					return i;
