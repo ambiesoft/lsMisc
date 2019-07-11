@@ -65,6 +65,27 @@ namespace Ambiesoft {
 	};
 	
 	typedef BlockedValue<bool> BlockedBool;
+
+
+
+	template<class FUNC = std::function<void()> >
+	class BlockedOperation
+	{
+		FUNC enter_;
+		FUNC exit_;
+	public:
+		BlockedOperation(
+			FUNC enter,
+			FUNC exit) :
+			exit_(exit) {
+			if (enter)
+				enter();
+		}
+		~BlockedOperation() {
+			if (exit_)
+				exit_();
+		}
+	};
 } // namespace
 
 #endif // BLOCKEDTRUE_H
