@@ -20,7 +20,7 @@
 //
 // Derivative, modified by Ambiesoft
 // 1, Convert MFC to C++ standard library.  
-// 2, Remove Standart Output operations.
+// 2, Remove Standard Output operations.
 // 3, Change method of file comparison.
 //
 
