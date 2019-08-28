@@ -70,7 +70,7 @@ namespace Ambiesoft {
 		return CallNextHookEx(gTripleClickHook, nCode, wParam, lParam);
 	}
 
-	void EnableTextTripleClickSelectAll(HWND hEdit)
+	void EnableTextTripleClickSelectAll(HWND hEditORCombo)
 	{
 		static DWORD gTargetThreadId = GetCurrentThreadId();
 		if (gTargetThreadId != GetCurrentThreadId())
@@ -79,6 +79,13 @@ namespace Ambiesoft {
 			assert(false);
 			return;
 		}
+		
+		HWND hEdit = hEditORCombo;
+		TCHAR szClass[512] = {};
+		GetClassName(hEditORCombo, szClass, _countof(szClass));
+		if (lstrcmp(szClass, _T("ComboBox"))==0)
+			hEdit = ::GetDlgItem(hEditORCombo, 1001);
+
 		gTargetEdits.insert(hEdit);
 		if (!gTripleClickHook)
 		{

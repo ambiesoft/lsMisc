@@ -24,5 +24,5 @@
 #pragma once
 #include <Windows.h>
 namespace Ambiesoft {
-	void EnableTextTripleClickSelectAll(HWND hEdit);
+	void EnableTextTripleClickSelectAll(HWND hEditORCombo);
 }
