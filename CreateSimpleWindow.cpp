@@ -52,7 +52,6 @@ namespace Ambiesoft {
 	{
 		hInst = hInst ? hInst : GetModuleHandle(NULL);
 		tstring className = pClassName ? pClassName : getClassName(TEXT("CreateSimpleWindowClass"));
-		WndProc = WndProc ? WndProc : DefWindowProc;
 
 		WNDCLASSEX wcex;
 		if (GetClassInfoEx(hInst, className.c_str(), &wcex))
@@ -62,7 +61,7 @@ namespace Ambiesoft {
 		wcex.cbSize = sizeof(WNDCLASSEX);
 
 		wcex.style = 0; //CS_HREDRAW | CS_VREDRAW;
-		wcex.lpfnWndProc = WndProc;
+		wcex.lpfnWndProc = WndProc ? WndProc : DefWindowProc;
 		wcex.cbClsExtra = 0;
 		wcex.cbWndExtra = 0;
 		wcex.hInstance = hInst;
@@ -76,19 +75,6 @@ namespace Ambiesoft {
 		if (!RegisterClassEx(&wcex))
 			return NULL;
 
-		//CreateWindowExW(
-		//	_In_ DWORD dwExStyle,
-		//	_In_opt_ LPCWSTR lpClassName,
-		//	_In_opt_ LPCWSTR lpWindowName,
-		//	_In_ DWORD dwStyle,
-		//	_In_ int X,
-		//	_In_ int Y,
-		//	_In_ int nWidth,
-		//	_In_ int nHeight,
-		//	_In_opt_ HWND hWndParent,
-		//	_In_opt_ HMENU hMenu,
-		//	_In_opt_ HINSTANCE hInstance,
-		//	_In_opt_ LPVOID lpParam);
 		return CreateWindowEx(
 			dwExStyles,
 			className.c_str(),
