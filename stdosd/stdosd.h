@@ -1059,6 +1059,25 @@ namespace Ambiesoft {
 		}
 
 
-		
+		template<typename S>
+		inline S stdXmlEncode(const S& s)
+		{
+			using C = typename S::value_type;
+			S result = s;
+			result = stdStringReplace(result, S(1, stdLiterals<C>::NAmpasand), stdLiterals<C>::XMLAMP());
+			result = stdStringReplace(result, S(1, stdLiterals<C>::NSingleQuote), stdLiterals<C>::XMLAPOS());
+			result = stdStringReplace(result, S(1, stdLiterals<C>::NDoubleQuote), stdLiterals<C>::XMLQUOTE());
+			result = stdStringReplace(result, S(1, stdLiterals<C>::NLess), stdLiterals<C>::XMLLESS());
+			result = stdStringReplace(result, S(1, stdLiterals<C>::NGreater), stdLiterals<C>::XMLGREATER());
+
+			return result;
+		}
+		template<typename C>
+		inline std::basic_string<C> stdXmlEncode(const C* p)
+		{
+			if (!p)
+				return std::basic_string<C>();
+			return stdXmlEncode(std::basic_string<C>(p));
+		}
 	}
 }

@@ -103,6 +103,10 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_CHAR(NColon			,':');						\
 			STDOSD_DEFINE_CHAR(NSpace			,' ');						\
 			STDOSD_DEFINE_CHAR(NDoubleQuote		,'"');						\
+			STDOSD_DEFINE_CHAR(NAmpasand		,'&');						\
+			STDOSD_DEFINE_CHAR(NSingleQuote		,'\'');						\
+			STDOSD_DEFINE_CHAR(NLess			,'<');						\
+			STDOSD_DEFINE_CHAR(NGreater			,'>');						\
 																			\
 			STDOSD_DEFINE_STRINGFUNCTION(defaultSeparator, STDOSD_DEFAULTSEPARATOR);	\
 			STDOSD_DEFINE_STRINGFUNCTION(pathSeparators, STDOSD_PATHSEPARATORS);		\
@@ -115,7 +119,12 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(LF,"\n");										\
 			STDOSD_DEFINE_STRINGFUNCTION(CRLF,"\r\n");									\
 			STDOSD_DEFINE_STRINGFUNCTION(WHITESPACE," \t\r\n");							\
-                }
+			STDOSD_DEFINE_STRINGFUNCTION(XMLAMP,"&amp;");								\
+			STDOSD_DEFINE_STRINGFUNCTION(XMLAPOS,"&apos;");								\
+			STDOSD_DEFINE_STRINGFUNCTION(XMLQUOTE,"&quot;");							\
+			STDOSD_DEFINE_STRINGFUNCTION(XMLLESS,"&lt;");								\
+			STDOSD_DEFINE_STRINGFUNCTION(XMLGREATER,"&gt;");							\
+		}
 
 #define STDOSD_DEFINE_CHAR(name, chara) static STDOSD_CONSTEXPR CHART name = LITEL(chara)
 #define STDOSD_DEFINE_STRINGFUNCTION(funcname, ret) static STDOSD_CONSTEXPR CHART* funcname() {return LITEL(ret);}

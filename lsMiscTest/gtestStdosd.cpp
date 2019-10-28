@@ -677,3 +677,16 @@ TEST(stdosd, stdGetComputerNameTest)
 
 }
 #endif // _WIN32
+
+TEST(stdosd, stdXmlEncodeTest)
+{
+	EXPECT_STREQ(stdXmlEncode("").c_str(), "");
+	EXPECT_STREQ(stdXmlEncode("abc").c_str(), "abc");
+	EXPECT_STREQ(stdXmlEncode("a&b&c").c_str(), "a&amp;b&amp;c");
+	EXPECT_STREQ(stdXmlEncode("<.*>").c_str(), "&lt;.*&gt;");
+
+	EXPECT_STREQ(stdXmlEncode(L"").c_str(), L"");
+	EXPECT_STREQ(stdXmlEncode(L"abc").c_str(), L"abc");
+	EXPECT_STREQ(stdXmlEncode(L"a&b&c").c_str(), L"a&amp;b&amp;c");
+	EXPECT_STREQ(stdXmlEncode(L"<.*>").c_str(), L"&lt;.*&gt;");
+}
