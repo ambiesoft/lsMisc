@@ -62,7 +62,5 @@ namespace Ambiesoft {
 		file_ << buf << L"\t";
 
 		file_ << s << std::endl;
-		file_.flush();
 	}
-
 }
