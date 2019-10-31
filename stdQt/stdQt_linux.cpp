@@ -6,6 +6,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QSet>
+#include <QStorageInfo>
 
 #include "stdQt.h"
 
@@ -115,5 +116,14 @@ QSet<int> GetAllProcessIDs()
     return result;
 }
 
+bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root)
+{
+    if(dir.isEmpty())
+        return false;
+    QStorageInfo si(dir);
+    bytesFree = si.bytesAvailable();
+    root = si.rootPath();
+    return bytesFree >= 0;
+}
 
 } // namespace

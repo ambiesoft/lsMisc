@@ -49,6 +49,7 @@ QString getInifile(bool& bExit);
 QString GetUserDocumentDirectory();
 QString GetSystemDefaultLang();
 QSet<int> GetAllProcessIDs();
+bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root);
 }
 
 #endif // STDQT_H
