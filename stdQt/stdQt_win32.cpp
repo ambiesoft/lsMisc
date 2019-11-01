@@ -6,7 +6,7 @@
 #include <ShlObj.h>
 #include <psapi.h>
 #include <Shlwapi.h>
-#pragma comment(lib, "Shlwapi.lib")
+
 
 #include <QString>
 #include <QDir>
@@ -209,6 +209,17 @@ QSet<int> GetAllProcessIDs()
     return result;
 }
 
+static bool myPathIsRoot(LPCWSTR pIN)
+{
+    if(!pIN || pIN[0]==0)
+        return false;
+    if(PathIsRoot(pIN))
+        return true;
+    unique_ptr<WCHAR> p(new WCHAR[wcslen(pIN) + 2]);
+    wcscpy(p.get(), pIN);
+    PathAddBackslash(p.get());
+    return PathIsRoot(p.get());
+}
 static QString getRoot(const QString& dir)
 {
     if(dir.isEmpty())
@@ -220,13 +231,14 @@ static QString getRoot(const QString& dir)
     });
     while(true)
     {
-        if(PathIsRoot(p.get()))
+        qDebug() << QString::fromStdWString(p.get()) << __PRETTY_FUNCTION__;
+        if(myPathIsRoot((p.get())))
             return QString::fromStdWString(p.get()).replace('\\','/');
 
         WCHAR* pA = wcsrchr(p.get(), L'\\');
         if(!pA)
             return QString();
-        *pA=0;
+        *(pA)=0;
     }
 }
 bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root)
