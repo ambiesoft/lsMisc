@@ -50,6 +50,9 @@ QString GetUserDocumentDirectory();
 QString GetSystemDefaultLang();
 QSet<int> GetAllProcessIDs();
 bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root);
+
+bool isLegalFilePath(QString filename, QString* pError = nullptr);
+QString GetIllegalFilenameCharacters();
 }
 
 #endif // STDQT_H
