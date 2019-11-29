@@ -231,7 +231,7 @@ static QString getRoot(const QString& dir)
     });
     while(true)
     {
-        qDebug() << QString::fromStdWString(p.get()) << __PRETTY_FUNCTION__;
+        qDebug() << QString::fromStdWString(p.get()) << __FUNCTION__;
         if(myPathIsRoot((p.get())))
             return QString::fromStdWString(p.get()).replace('\\','/');
 
