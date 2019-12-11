@@ -75,4 +75,5 @@ namespace Ambiesoft {
 			pFileOrFolder);
 	}
 
+	BOOL ReopenCommon(HWND h);
 } // namespace Ambiesoft

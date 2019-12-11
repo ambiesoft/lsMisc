@@ -42,6 +42,7 @@
 #endif
 
 
+#include "CommandLineString.h"
 #include "OpenCommon.h"
 
 
@@ -149,5 +150,12 @@ namespace Ambiesoft {
 			SW_SHOW);
 
 		return TRUE;
+	}
+
+	BOOL ReopenCommon(HWND h)
+	{
+		std::wstring exe, arg;
+		CCommandLineString::ExplodeExeAndArg(GetCommandLine(), exe, arg);
+		return OpenCommonW(h, exe.c_str(), arg.c_str());
 	}
 } // namespace ambiesoft
