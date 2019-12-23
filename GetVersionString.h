@@ -10,5 +10,5 @@ namespace Ambiesoft {
 	//		"ProductName", "ProductVersion", etc  (see MSDN for others)
 	//
 	// TCHAR *GetVersionString(TCHAR *szFileName, TCHAR *szValue, TCHAR *szBuffer, ULONG nLength);
-	std::wstring GetVersionString(LPCTSTR szFileName);
+	std::wstring GetVersionString(LPCTSTR szFileName, int keta = -1);
 }

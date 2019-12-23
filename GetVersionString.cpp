@@ -55,7 +55,7 @@ namespace Ambiesoft {
 
 
 	// https://stackoverflow.com/a/940743
-	std::wstring GetVersionString(LPCTSTR szFileName)
+	std::wstring GetVersionString(LPCTSTR szFileName, int keta)
 	{
 		DWORD  verHandle = 0;
 		UINT   size = 0;
@@ -80,13 +80,36 @@ namespace Ambiesoft {
 							// Doesn't matter if you are on 32 bit or 64 bit,
 							// DWORD is always 32 bits, so first two revision numbers
 							// come from dwFileVersionMS, last two come from dwFileVersionLS
-							wsprintf(szBuff, _T("%d.%d.%d.%d"),
-								(verInfo->dwFileVersionMS >> 16) & 0xffff,
-								(verInfo->dwFileVersionMS >> 0) & 0xffff,
-								(verInfo->dwFileVersionLS >> 16) & 0xffff,
-								(verInfo->dwFileVersionLS >> 0) & 0xffff
-								);
-							return szBuff;
+
+							switch (keta)
+							{
+							case 1:
+								wsprintf(szBuff, _T("%d"),
+									(verInfo->dwFileVersionMS >> 16) & 0xffff
+									);
+								return szBuff;
+							case 2:
+								wsprintf(szBuff, _T("%d.%d"),
+									(verInfo->dwFileVersionMS >> 16) & 0xffff,
+									(verInfo->dwFileVersionMS >> 0) & 0xffff
+									);
+								return szBuff;
+							case 3:
+								wsprintf(szBuff, _T("%d.%d.%d"),
+									(verInfo->dwFileVersionMS >> 16) & 0xffff,
+									(verInfo->dwFileVersionMS >> 0) & 0xffff,
+									(verInfo->dwFileVersionLS >> 16) & 0xffff
+									);
+								return szBuff;
+							default:
+								wsprintf(szBuff, _T("%d.%d.%d.%d"),
+									(verInfo->dwFileVersionMS >> 16) & 0xffff,
+									(verInfo->dwFileVersionMS >> 0) & 0xffff,
+									(verInfo->dwFileVersionLS >> 16) & 0xffff,
+									(verInfo->dwFileVersionLS >> 0) & 0xffff
+									);
+								return szBuff;
+							}
 						}
 					}
 				}
