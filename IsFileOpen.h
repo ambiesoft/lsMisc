@@ -22,6 +22,8 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
+
 enum ISFILEOPEN {
 	ISFILEOPEN_NO,
 	ISFILEOPEN_YES,

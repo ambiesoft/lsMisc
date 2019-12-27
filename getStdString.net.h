@@ -22,6 +22,7 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <string>
 #ifdef __cplusplus_cli
 namespace Ambiesoft {
 
