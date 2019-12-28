@@ -94,8 +94,9 @@ namespace Ambiesoft {
 
 		CHAR buff[256]; buff[0] = 0;
 		time_t now = time(NULL);
-		struct tm *pnow = localtime(&now);
-		strftime(buff, _countof(buff), "%X\t", pnow);
+		struct tm stnow;
+		localtime_s(&stnow, &now);
+		strftime(buff, _countof(buff), "%X\t", &stnow);
 
 		DWORD dwWritten = 0;
 		BOOL bFailed = false;

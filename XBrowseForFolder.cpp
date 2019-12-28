@@ -242,7 +242,7 @@ BOOL XBrowseForFolder(HWND hWnd,
 
 	if (lpszInitialFolder && lpszInitialFolder[0] != _T('\0'))
 	{
-		_tcsncpy(szInitialPath, lpszInitialFolder, 
+		_tcsncpy_s(szInitialPath, lpszInitialFolder, 
 					sizeof(szInitialPath)/sizeof(TCHAR)-2);
 	}
 	else
@@ -272,8 +272,8 @@ BOOL XBrowseForFolder(HWND hWnd,
 
 		if (SHGetPathFromIDList(pidl, szBuffer))
 		{
-			ZeroMemory(lpszBuf, dwBufSize);
-			_tcsncpy(lpszBuf, szBuffer, dwBufSize-1);
+			ZeroMemory(lpszBuf, dwBufSize*sizeof(TCHAR));
+			_tcsncpy_s(lpszBuf, dwBufSize, szBuffer, dwBufSize-1);
 			bRet = TRUE;
 		}
 		else

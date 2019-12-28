@@ -437,7 +437,7 @@ bool CSendKeys::SendKeys(LPCTSTR KeysString, bool Wait)
           return false;
 
         // Take this KeyString into local buffer
-        _tcsncpy(KeyString, pKey+1, t);
+        _tcsncpy_s(KeyString, pKey+1, t);
 
         KeyString[t-1] = _TXCHAR('\0');
         keyIdx = -1;
@@ -607,17 +607,18 @@ bool CSendKeys::AppActivate(LPCTSTR WindowTitle, LPCTSTR WindowClass)
     if (WindowClass)
       l2 = _tcslen(WindowClass);
 
-    LPTSTR titleclass = new TCHAR [l1 + l2 + 5];
+	rsize_t rsize = l1 + l2 + 5;
+    LPTSTR titleclass = new TCHAR [rsize];
 
-    memset(titleclass, '\0', l1+l2+5);
+	memset(titleclass, '\0', rsize);
 
     if (WindowTitle)
-      _tcscpy(titleclass, WindowTitle);
+      _tcscpy_s(titleclass, rsize, WindowTitle);
 
     titleclass[l1] = 0;
 
-    if (WindowClass)
-      _tcscpy(titleclass+l1+1, WindowClass);
+	if (WindowClass)
+		_tcscpy_s(titleclass + l1 + 1, rsize - (l1 + 1), WindowClass);
 
     // >>
 
