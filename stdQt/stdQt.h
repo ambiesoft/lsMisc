@@ -53,6 +53,10 @@ bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root);
 
 bool isLegalFilePath(QString filename, QString* pError = nullptr);
 QString GetIllegalFilenameCharacters();
-}
+
+QStringList SortDevice1by1(const QStringList& dirs);
+bool IsSameContents(const QStringList& dirs1, const QStringList& dirs2);
+
+} // namespace AmbiesoftQt
 
 #endif // STDQT_H
