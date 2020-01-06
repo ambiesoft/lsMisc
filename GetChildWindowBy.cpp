@@ -24,7 +24,10 @@
 // Must comment out to define NOMINMAX
 // #include "stdafx.h"
 
+#if !defined(NOMINMAX)
 #define NOMINMAX
+#endif
+
 #include <Windows.h>
 
 #include <vector>
