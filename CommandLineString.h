@@ -209,11 +209,11 @@ namespace Ambiesoft {
 	template<class E>
 	class CCommandLineStringBase
 	{
-		typedef typename CCommandLineStringBase<E> CommandLineStringType;
+                typedef CCommandLineStringBase<E> CommandLineStringType;
 		typedef std::basic_string<E> myS;
-		typedef typename std::vector<std::basic_string<E> > myVS;
-		typedef typename std::vector<std::basic_string<E> >::iterator myVSIterator;
-		typedef typename std::char_traits<E> myTr;
+                typedef std::vector<std::basic_string<E> > myVS;
+                typedef typename std::vector<std::basic_string<E> >::iterator myVSIterator;
+                typedef std::char_traits<E> myTr;
 
 		const E* p_;
 		std::vector<size_t> offsets_;

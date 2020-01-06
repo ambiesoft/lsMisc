@@ -642,8 +642,8 @@ typedef BasicOption<std::string> COptionA;
 
 
 
-		typedef typename std::vector<BasicOption<MyS_>*> POPTIONARRAY;
-		typedef typename std::vector<BasicOption<MyS_> > OPTIONARRAY;
+		typedef std::vector<BasicOption<MyS_>*> POPTIONARRAY;
+		typedef std::vector<BasicOption<MyS_> > OPTIONARRAY;
 
         typedef BasicOption<MyS_> MyO_;
 		POPTIONARRAY useroptions_;

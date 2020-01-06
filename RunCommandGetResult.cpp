@@ -26,6 +26,8 @@
 #include <cassert>
 #include <string>
 #include <codecvt>
+#include <memory>
+
 #include <process.h>
 
 #include "RunCommandGetResult.h"
