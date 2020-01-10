@@ -20,7 +20,7 @@
 #include <QMap>
 #include <QList>
 
-#include "settings.h"
+#include "inisettings.h"
 
 namespace AmbiesoftQt {
 
