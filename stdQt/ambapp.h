@@ -1,6 +1,9 @@
 #ifndef AMBAPP_H
 #define AMBAPP_H
 
+#include <memory>
+#include <utility>
+
 #include <QScopedPointer>
 #include <QTranslator>
 
@@ -24,7 +27,7 @@ public:
     {
         if(args_.singleInstance)
         {
-            guard_ = std::make_unique<RunGuard>(applicationName());
+            guard_ = std::unique_ptr<RunGuard>(new RunGuard(applicationName()));
         }
     }
 
