@@ -6,6 +6,7 @@
 
 #include <QScopedPointer>
 #include <QTranslator>
+#include <QApplication>
 
 #include "inisettings.h"
 #include "runguard.h"
@@ -13,6 +14,7 @@
 namespace AmbiesoftQt {
 class AmbApp : public QApplication
 {
+    Q_OBJECT
 public:
     class AmbAppArgs
     {
@@ -30,6 +32,7 @@ public:
             guard_ = std::unique_ptr<RunGuard>(new RunGuard(applicationName()));
         }
     }
+    virtual ~AmbApp(){}
 
     bool InitApplication(QScopedPointer<AmbiesoftQt::IniSettings>* settings);
 
