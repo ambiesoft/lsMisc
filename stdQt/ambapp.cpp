@@ -21,6 +21,19 @@ bool IsAvailableLanguage(const QString& lang)
 }
 } // namespace
 
+
+AmbApp::AmbApp(int& argc, char *argv[], const AmbAppArgs& args) :
+    QApplication(argc,argv),
+    args_(args)
+{
+    if(args_.singleInstance)
+    {
+        guard_ = std::unique_ptr<RunGuard>(new RunGuard(applicationName()));
+    }
+}
+AmbApp::~AmbApp()
+{}
+
 bool AmbApp::InitApplication(QScopedPointer<IniSettings>* settings)
 {
     bool bExit = false;

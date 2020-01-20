@@ -23,16 +23,8 @@ public:
         QString keyStyle;
         bool singleInstance;
     };
-    explicit AmbApp(int argc, char *argv[], const AmbAppArgs& args) :
-        QApplication(argc,argv),
-        args_(args)
-    {
-        if(args_.singleInstance)
-        {
-            guard_ = std::unique_ptr<RunGuard>(new RunGuard(applicationName()));
-        }
-    }
-    virtual ~AmbApp(){}
+    explicit AmbApp(int& argc, char *argv[], const AmbAppArgs& args);
+    virtual ~AmbApp();
 
     bool InitApplication(QScopedPointer<AmbiesoftQt::IniSettings>* settings);
 
