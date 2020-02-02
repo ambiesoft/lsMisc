@@ -66,5 +66,14 @@ namespace Ambiesoft {
             assert(false);
             return std::wstring();
 		}
+
+		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
+		{
+			// not implemented
+		}
+		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
+		{
+			// not implemented
+		}
 	}
 }

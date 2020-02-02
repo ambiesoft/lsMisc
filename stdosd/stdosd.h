@@ -1079,5 +1079,28 @@ namespace Ambiesoft {
 				return std::basic_string<C>();
 			return stdXmlEncode(std::basic_string<C>(p));
 		}
+
+		size_t stdGetCurrentDirectoryImpl(char* p, size_t size);
+		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size);
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdGetCurrentDirectory()
+		{
+			C* p = nullptr;
+			size_t size = 64;
+			for (;;)
+			{
+				p = (C*)realloc(p, size * sizeof(C));
+				if (stdGetCurrentDirectoryImpl(p, size) < size)
+					break;
+
+				// Make double the size of required memory
+				size *= 2;
+			}
+
+			std::basic_string<C> ret = p;
+			free((void*)p);
+			return ret;
+		}
+
 	}
 }

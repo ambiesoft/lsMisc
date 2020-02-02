@@ -474,5 +474,15 @@ namespace Ambiesoft {
 			return true;
 		}
 
+
+		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
+		{
+			return GetCurrentDirectoryA(size, p);
+		}
+		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
+		{
+			return GetCurrentDirectoryW(size, p);
+		}
+
 	}
 }

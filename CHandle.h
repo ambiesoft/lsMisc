@@ -29,6 +29,7 @@ namespace Ambiesoft {
 	{
 		HANDLE h_;
 	public:
+		CHandle() : h_(nullptr){}
 		CHandle(HANDLE h) :h_(h) {
 
 		}
