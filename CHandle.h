@@ -33,10 +33,25 @@ namespace Ambiesoft {
 		CHandle(HANDLE h) :h_(h) {
 
 		}
+		CHandle(const CHandle& that) {
+			h_ = that.h_;
+		}
+		CHandle(CHandle&& that) {
+			h_ = that.h_;
+			that.h_ = nullptr;
+		}
 		~CHandle() {
 			if (h_ == nullptr || h_ == INVALID_HANDLE_VALUE)
 				return;
 			CloseHandle(h_);
+		}
+		const CHandle& operator=(CHandle& that) {
+			this->h_ = that.h_;
+			return *this;
+		}
+		const CHandle& operator=(HANDLE h) {
+			this->h_ = h;
+			return *this;
 		}
 		operator bool() const {
 			return h_ != nullptr && h_ != INVALID_HANDLE_VALUE;
