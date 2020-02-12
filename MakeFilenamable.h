@@ -26,4 +26,4 @@
 #include <Windows.h>
 #include <tchar.h>
 #include "tstring.h"
-tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen=false);
+tstring MakeFilenamable(LPCTSTR pch, bool bToSjisZen = false, LPCTSTR pDefault = _T("newfile"));

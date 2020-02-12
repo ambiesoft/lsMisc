@@ -27,11 +27,11 @@
 #include <windows.h>
 #include <tchar.h>
 #include <string>
-
+#include <algorithm>
 
 
 #include "tstring.h"
-#include "ChangeFilenamable.h"
+#include "MakeFilenamable.h"
 
 
 
@@ -42,12 +42,14 @@ static tstring convertChar(TCHAR t1, bool bToSjisZen)
 
 }
 
-tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen)
+tstring MakeFilenamable(LPCTSTR pch, bool bToSjisZen, LPCTSTR pDefault)
 {
+	if (!pch || !pch[0])
+		return pDefault;
 	tstring ret;
-	while( *pch != '\0' )
+	while (*pch != '\0')
 	{
-		switch(*pch)
+		switch (*pch)
 		{
 		case _T('\\'):
 			ret += bToSjisZen ? _T("￥") : _T("_");
@@ -56,19 +58,19 @@ tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen)
 		case _T(':'):
 			ret += bToSjisZen ? _T("：") : _T("_");
 			break;
-			
+
 		case _T('*'):
 			ret += bToSjisZen ? _T("＊") : _T("_");
 			break;
-			
+
 		case _T('?'):
 			ret += bToSjisZen ? _T("？") : _T("_");
 			break;
-			
+
 		case _T('\"'):
 			ret += bToSjisZen ? _T("“") : _T("_");
 			break;
-			
+
 		case _T('<'):
 			ret += bToSjisZen ? _T("＜") : _T("_");
 			break;
@@ -86,43 +88,82 @@ tstring ChangeFilenamable(LPCTSTR pch, bool bToSjisZen)
 			break;
 
 		default:
-			{
+		{
 
 #ifdef UNICODE
-				TCHAR szT[2];
-				szT[0] = *pch;
-				szT[1] = 0;
-				ret += szT;
+			TCHAR szT[2];
+			szT[0] = *pch;
+			szT[1] = 0;
+			ret += szT;
 #else
-				if(IsDBCSLeadByte((BYTE)(*pch)))
+			if (IsDBCSLeadByte((BYTE)(*pch)))
+			{
+				TCHAR szT[3];
+				szT[0] = *pch;
+				szT[1] = *(pch + 1);
+				szT[2] = 0;
+				ret += szT;
+			}
+			else
+			{
+				if (0 <= *pch && *pch <= 0x1F)
 				{
-					TCHAR szT[3];
-					szT[0] = *pch;
-					szT[1] = *(pch+1);
-					szT[2] = 0;
-					ret += szT;
+					// nothing
 				}
 				else
 				{
-					if( 0 <= *pch && *pch <= 0x1F)
-					{
-						// nothing
-					}
-					else
-					{
-						TCHAR szT[2];
-						szT[0] = *pch;
-						szT[1] = 0;
-						ret += szT;
-					}
+					TCHAR szT[2];
+					szT[0] = *pch;
+					szT[1] = 0;
+					ret += szT;
 				}
-#endif
 			}
-			break;
+#endif
+		}
+		break;
 		}
 		pch = (TCHAR*)_tcsinc(pch);
 	}
-	
+
+	if (ret.empty())
+		return pDefault;
+
+	// check illegal file names
+	static const TCHAR* illegals[] = {
+		_T("CON"),_T("PRN"), _T("AUX") , _T("NUL") , _T("COM0") , _T("COM1") ,_T("COM2")
+		, _T("COM3") , _T("COM4") , _T("COM5") , _T("COM6") , _T("COM7") , _T("COM8") , _T("COM9") , _T("LPT0")
+		, _T("LPT1") , _T("LPT2") , _T("LPT3") , _T("LPT4") ,_T("LPT5") , _T("LPT6") , _T("LPT7") , _T("LPT8")
+		, _T("LPT9")
+	};
+
+	if (ret.size() <= 4)
+	{
+		tstring retupper(ret);
+		std::transform(retupper.cbegin(), retupper.cend(), retupper.begin(), towupper);
+
+		for (int i = 0; i < _countof(illegals); ++i)
+		{
+			if (retupper == illegals[i])
+				return ret + _T("_");
+		}
+	}
+
+	// check special case
+	while (!ret.empty() && (
+		ret[ret.size() - 1] == _T('.') ||
+		ret[ret.size() - 1] == _T(' ') ||
+		ret[ret.size() - 1] == _T('/')))
+	{
+		ret = MakeFilenamable(ret.substr(0, ret.size() - 1).c_str(),
+			bToSjisZen, 
+			pDefault);
+	}
+	if (ret.empty())
+		return pDefault;
+
+	if (ret.size() > MAX_PATH)
+		return pDefault;
+
 	return ret;
 }
 
@@ -144,9 +185,9 @@ replace_all(
   ) {
   std::basic_string<E,T,A> result(source);
   for ( std::string::size_type pos = 0 ;
-        std::string::npos != (pos = result.find(pattern,pos));
-        pos += placement.size() )
-    result.replace(pos, pattern.size(), placement);
+		std::string::npos != (pos = result.find(pattern,pos));
+		pos += placement.size() )
+	result.replace(pos, pattern.size(), placement);
   return result;
 }
 

@@ -3,17 +3,46 @@
 #include <string>
 #include <gtest/gtest.h>
 
-#include "../ChangeFilenamable.h"
+#include "../MakeFilenamable.h"
 
 using namespace std;
 
-TEST(ChangeFilenamable, Basic)
+TEST(MakeFilenamable, Basic)
 {
-	LPCTSTR p = _T("開発機構特別資料");
-	wstring ret = ChangeFilenamable(p);
+	LPCTSTR p;
+	wstring ret;
+
+	p = NULL;
+	ret = MakeFilenamable(p);
+	EXPECT_STREQ(L"newfile", ret.c_str());
+
+
+	p = _T("開発機構特別資料");
+	ret = MakeFilenamable(p);
 	EXPECT_STREQ(p, ret.c_str());
 
 	p = _T("aaa\\bbb");
-	ret = ChangeFilenamable(p);
+	ret = MakeFilenamable(p);
 	EXPECT_STREQ(ret.c_str(), _T("aaa_bbb"));
+
+	p = _T("aaa ");
+	ret = MakeFilenamable(p);
+	EXPECT_STREQ(ret.c_str(), _T("aaa"));
+
+	p = _T("aaa .");
+	ret = MakeFilenamable(p);
+	EXPECT_STREQ(ret.c_str(), _T("aaa"));
+
+	p = _T("CON");
+	ret = MakeFilenamable(p);
+	EXPECT_STREQ(ret.c_str(), _T("CON_"));
+
+	p = _T("CON ");
+	ret = MakeFilenamable(p);
+	EXPECT_STREQ(ret.c_str(), _T("CON_"));
+
+	p = _T("CON a");
+	ret = MakeFilenamable(p);
+	EXPECT_STREQ(ret.c_str(), _T("CON a"));
+
 }

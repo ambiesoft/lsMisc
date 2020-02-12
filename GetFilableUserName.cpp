@@ -26,7 +26,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include "GetFilableUserName.h"
-#include "ChangeFilenamable.h"
+#include "MakeFilenamable.h"
 
 tstring GetFilableUserName()
 {
@@ -35,7 +35,7 @@ tstring GetFilableUserName()
 	if ( !GetUserName(szUser, &d) )
 		return _T("unknown");
 
-	tstring ret = ChangeFilenamable(szUser);
+	tstring ret = MakeFilenamable(szUser);
 	if(ret.size()==0)
 		return _T("unknown");
 

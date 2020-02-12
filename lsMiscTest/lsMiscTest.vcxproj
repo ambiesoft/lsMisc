@@ -231,7 +231,7 @@
     <ClCompile Include="..\BrowseFolder.cpp" />
     <ClCompile Include="..\CenterWindow.cpp" />
     <ClCompile Include="..\ChangeDirPos.cpp" />
-    <ClCompile Include="..\ChangeFilenamable.cpp" />
+    <ClCompile Include="..\MakeFilenamable.cpp" />
     <ClCompile Include="..\CLogger.cpp" />
     <ClCompile Include="..\CommandLineParser.cpp" />
     <ClCompile Include="..\CommandLineUtil.cpp" />
@@ -449,7 +449,7 @@
     <ClInclude Include="..\CBool.h" />
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeDirPos.h" />
-    <ClInclude Include="..\ChangeFilenamable.h" />
+    <ClInclude Include="..\MakeFilenamable.h" />
     <ClInclude Include="..\CInt.h" />
     <ClInclude Include="..\CLogger.h" />
     <ClInclude Include="..\CommandLineParser.h" />
