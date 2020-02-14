@@ -12,6 +12,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QDebug>
+#include <QProcessEnvironment>
 
 #include "../GetLastErrorString.h"
 #include "../../profile/cpp/Profile/include/ambiesoft.profile.h"
