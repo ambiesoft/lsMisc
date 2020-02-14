@@ -32,7 +32,7 @@ Generating Code...
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 #include <winioctl.h>
-
+#include <Shlobj.h>
 
 
 #include <regex>
@@ -477,12 +477,20 @@ namespace Ambiesoft {
 
 		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
 		{
-			return GetCurrentDirectoryA(size, p);
+			return GetCurrentDirectoryA((DWORD)size, p);
 		}
 		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
 		{
-			return GetCurrentDirectoryW(size, p);
+			return GetCurrentDirectoryW((DWORD)size, p);
 		}
 
+
+		wstring StdGetDesktopDirectory()
+		{
+			WCHAR path[MAX_PATH];
+			if (SHGetFolderPathW(NULL, CSIDL_DESKTOP, NULL, 0, path))
+				return L"";
+			return path;
+		}
 	}
 }

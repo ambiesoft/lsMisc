@@ -1102,5 +1102,8 @@ namespace Ambiesoft {
 			return ret;
 		}
 
+
+		template<typename C = wchar_t>
+		std::basic_string<C> StdGetDesktopDirectory();
 	}
 }

@@ -33,11 +33,11 @@ namespace Ambiesoft {
 		using namespace std;
 
 		namespace {
-            std::wstring stdGetFullPathName(const wchar_t* pPath)
+			std::wstring stdGetFullPathName(const wchar_t* pPath)
 			{
-                // not implemented
-                assert(false);
-                return std::wstring();
+				// not implemented
+				assert(false);
+				return std::wstring();
 			}
 
 			std::vector<std::wstring> splitdir(const std::wstring& input, const std::wstring& regex) {
@@ -46,14 +46,14 @@ namespace Ambiesoft {
 				std::wsregex_token_iterator
 					first{ input.begin(), input.end(), re, -1 },
 					last;
-				return { first, last };
+				return{ first, last };
 			}
 
 			wstring resolveSingleDir(const wstring& input)
 			{
-                // not implemented
-                assert(false);
-                return std::wstring();
+				// not implemented
+				assert(false);
+				return std::wstring();
 			}
 		}
 		std::wstring stdGetFullPathName(const std::wstring& ws)
@@ -62,9 +62,9 @@ namespace Ambiesoft {
 		}
 		std::wstring resolveLink(const std::wstring& instring)
 		{
-            // not implemented
-            assert(false);
-            return std::wstring();
+			// not implemented
+			assert(false);
+			return std::wstring();
 		}
 
 		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
@@ -74,6 +74,11 @@ namespace Ambiesoft {
 		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
 		{
 			// not implemented
+		}
+
+		wstring StdGetDesktopDirectory()
+		{
+			return L"";
 		}
 	}
 }
