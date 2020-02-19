@@ -690,3 +690,29 @@ TEST(stdosd, stdXmlEncodeTest)
 	EXPECT_STREQ(stdXmlEncode(L"a&b&c").c_str(), L"a&amp;b&amp;c");
 	EXPECT_STREQ(stdXmlEncode(L"<.*>").c_str(), L"&lt;.*&gt;");
 }
+
+TEST(stdosd, stdRegexReplace)
+{
+	function<string(const smatch &)> nonefunc = [](const smatch & match) {
+		return string();
+	};
+	EXPECT_STREQ(stdRegexReplace(string(""), regex(), nonefunc).c_str(), "");
+	EXPECT_STREQ(stdRegexReplace(string("aaa"), regex(), nonefunc).c_str(), "aaa");
+	EXPECT_STREQ(stdRegexReplace(string("aaa"), regex("a"), nonefunc).c_str(), "");
+
+	function<string(const smatch &)> zfunc = [](const smatch & match) {
+		return string("z");
+	};
+	EXPECT_STREQ(stdRegexReplace(string(""), regex(), zfunc).c_str(), "");
+	EXPECT_STREQ(stdRegexReplace(string("aaa"), regex(), zfunc).c_str(), "aaa");
+	EXPECT_STREQ(stdRegexReplace(string("aaa"), regex("a"), zfunc).c_str(), "zzz");
+
+
+	wstring input = L"aaa[2]bbb[1]ccc";
+	int writeIndex = 1;
+	function<wstring(const wsmatch &)> kfunc = [&](const wsmatch & match) {
+		return wstring(L"[") + to_wstring(writeIndex++) + L"]";
+	};
+	wstring output = stdRegexReplace(input, wregex(L"\\[\\d+\\]"), kfunc);
+	EXPECT_STREQ(output.c_str(), L"aaa[1]bbb[2]ccc");
+}

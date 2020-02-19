@@ -26,6 +26,8 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <regex>
+#include <functional>
 
 #include <cstdio>
 #include <cstdarg>
@@ -1105,5 +1107,34 @@ namespace Ambiesoft {
 
 		template<typename C = wchar_t>
 		std::basic_string<C> StdGetDesktopDirectory();
+
+
+
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdRegexReplace(
+			const std::basic_string<C>& input,
+			const std::basic_regex<C>& regex,
+			// std::function<std::string(std::smatch const& match)> format)
+			// std::function< std::basic_string<C>(std::smatch const& match) > format)
+			// std::function< std::basic_string<C>(std::match_results<std::string::const_iterator> const& match) > format)
+            std::function< std::basic_string<C>(const std::match_results<typename std::basic_string<C>::const_iterator> & match) > format)
+		{
+			using S = std::basic_string<C>;
+			using OSS = std::basic_ostringstream<C, std::char_traits<C>, std::allocator<C> >;
+			using SREGEX_ITERATOR = regex_iterator<S::const_iterator>;
+
+			OSS output;
+			SREGEX_ITERATOR begin(input.begin(), input.end(), regex), end;
+			SREGEX_ITERATOR::difference_type lastPos = 0;
+
+			for (; begin != end; begin++)
+			{
+				output << begin->prefix() << format(*begin);
+				lastPos = begin->position() + begin->length();
+			}
+			output << input.substr(lastPos);
+			return output.str();
+		}
+
 	}
 }
