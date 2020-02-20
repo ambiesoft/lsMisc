@@ -1121,11 +1121,11 @@ namespace Ambiesoft {
 		{
 			using S = std::basic_string<C>;
 			using OSS = std::basic_ostringstream<C, std::char_traits<C>, std::allocator<C> >;
-			using SREGEX_ITERATOR = regex_iterator<S::const_iterator>;
+            using SREGEX_ITERATOR = std::regex_iterator<typename S::const_iterator>;
 
 			OSS output;
 			SREGEX_ITERATOR begin(input.begin(), input.end(), regex), end;
-			SREGEX_ITERATOR::difference_type lastPos = 0;
+            typename SREGEX_ITERATOR::difference_type lastPos = 0;
 
 			for (; begin != end; begin++)
 			{
