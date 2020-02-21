@@ -123,7 +123,7 @@ namespace Ambiesoft {
 	}
 
 
-	static const char* nextP(const char* p)
+	static inline const char* nextP(const char* p)
 	{
 		// not assume double null
 		if (*p == 0)
@@ -134,7 +134,7 @@ namespace Ambiesoft {
         return p+1;
 #endif
 	}
-	static const wchar_t* nextP(const wchar_t* p)
+	static inline const wchar_t* nextP(const wchar_t* p)
 	{
 		// not assume double null
 		if (*p == 0)
@@ -163,11 +163,11 @@ namespace Ambiesoft {
 	}
 
 
-    static void GetModuleFileNameT(char* p)
+	static inline void GetModuleFileNameT(char* p)
     {
         GetModuleFileNameA(NULL,p,MAX_PATH);
     }
-    static void GetModuleFileNameT(wchar_t* p)
+	static inline void GetModuleFileNameT(wchar_t* p)
 	{
 		GetModuleFileNameW(NULL,p,MAX_PATH);
 	}
