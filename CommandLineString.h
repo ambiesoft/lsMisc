@@ -528,4 +528,8 @@ namespace Ambiesoft {
 #else
 	typedef CCommandLineStringBase<char> CCommandLineString;
 #endif
+
+	typedef CCommandLineStringBase<wchar_t> CCommandLineStringW;
+	typedef CCommandLineStringBase<char> CCommandLineStringA;
+
 }
