@@ -14,9 +14,6 @@ using namespace std;
 
 static bool isSameResult(LPWSTR pCL)
 {
-	LPWSTR ppp = (LPWSTR)_tcsdup(GetCommandLine());
-	free(ppp);
-
 	int argc1 = 0;
 	LPWSTR* argv1 = NULL;
 	argv1 = CCommandLineString::getCommandLineArg(pCL,&argc1);
@@ -58,12 +55,52 @@ TEST(CommandLineString, subStringBasic)
 {
 	LPWSTR pC1;
 
-	pC1 = L"aaa.exe file1.txt \"space file.txt\"";
-	CCommandLineString cls(pC1);
-	EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe file1.txt \"space file.txt\"");
-	EXPECT_STREQ(cls.subString(1).c_str(), L"file1.txt \"space file.txt\"");
-	EXPECT_STREQ(cls.subString(2).c_str(), L"\"space file.txt\"");
+	{
+		pC1 = L"aaa.exe file1.txt \"space file.txt\"";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe file1.txt \"space file.txt\"");
+		EXPECT_STREQ(cls.subString(1).c_str(), L"file1.txt \"space file.txt\"");
+		EXPECT_STREQ(cls.subString(2).c_str(), L"\"space file.txt\"");
+	}
+	
+	{
+		pC1 = L"aaa";
+		CCommandLineString c(pC1);
+		EXPECT_EQ(c.getCount(), 1);
+		EXPECT_STREQ(c.getArg(0).c_str(), pC1);
+	}
+
+	{
+		pC1 = L"\"a a\"";
+		CCommandLineString c(pC1);
+		EXPECT_EQ(c.getCount(), 1);
+		EXPECT_STREQ(c.getArg(0).c_str(), L"a a");
+	}
+
+	{
+		pC1 = L"\"a a\" bbb";
+		CCommandLineString c(pC1);
+		EXPECT_EQ(c.getCount(), 2);
+		EXPECT_STREQ(c.getArg(0).c_str(), L"a a");
+		EXPECT_STREQ(c.getArg(1).c_str(), L"bbb");
+	}
+
+	{
+		pC1 = L"aa\"b b\"";
+		CCommandLineString c(pC1);
+		EXPECT_EQ(c.getCount(), 1);
+		EXPECT_STREQ(c.getArg(0).c_str(), pC1);
+	}
+
+	{
+		pC1 = L"aa\"b b\" ccc";
+		CCommandLineString c(pC1);
+		EXPECT_EQ(c.getCount(), 2);
+		EXPECT_STREQ(c.getArg(0).c_str(), L"aa\"b b\"");
+		EXPECT_STREQ(c.getArg(1).c_str(), L"ccc");
+	}
 }
+
 TEST(CommandLineString, subStringComplex)
 {
 	LPWSTR pC1;
@@ -107,16 +144,17 @@ TEST(CommandLineString, ArgcArgv)
 		CCommandLineString cms2(pC1);
 		EXPECT_EQ(cms1, cms2);
 	}
-	{
-		CCommandLineString cms1(pC1);
+	
+	//{
+	//	CCommandLineString cms1(pC1);
 
-		int nArg;
-		LPWSTR* pArgv = CommandLineToArgvW(pC1, &nArg);
-		CCommandLineString cms2(nArg, pArgv);
+	//	int nArg;
+	//	LPWSTR* pArgv = CommandLineToArgvW(pC1, &nArg);
+	//	CCommandLineString cms2(nArg, pArgv);
 
-		EXPECT_NE(cms1, cms2);
-		EXPECT_TRUE(cms1.SyntaxEqual(cms2));
-	}
+	//	EXPECT_NE(cms1, cms2);
+	//	EXPECT_TRUE(cms1.SyntaxEqual(cms2));
+	//}
 
 	{
 		wchar_t* argv[] = {
@@ -153,4 +191,40 @@ TEST(CommandLineString, DQinsideDQ)
 
 	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\";
 	EXPECT_TRUE(isSameResult(pC1));
+}
+
+TEST(CommandLineString, GoogleTypeCommandLineParts)
+{
+	LPWSTR pC1;
+
+	{
+		pC1 = L"\"C:\\aaa bbb\\fff.exe\" --log-file=\"C:\\aaa bbb ccc\\aaa.log\" --enable-log --some-thing=100";
+		CCommandLineString cmd(pC1);
+		EXPECT_EQ(cmd.getCount(), 4);
+		EXPECT_STREQ(cmd.toString().c_str(), pC1);
+
+		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=\"C:\\aaa bbb ccc\\aaa.log\"");
+		EXPECT_STREQ(cmd.getArg(2).c_str(), L"--enable-log");
+		EXPECT_STREQ(cmd.getArg(3).c_str(), L"--some-thing=100");
+	}
+
+	{
+		pC1 = L"\"C:\\aaa bbb\\fff.exe\" --log-file=\"C:\\aaa bbb ccc\\aaa.log\" --limit-render-process=5 --enable-log --some-thing=100";
+		CCommandLineString cmd(pC1);
+		EXPECT_EQ(cmd.getCount(), 5);
+		EXPECT_STREQ(cmd.toString().c_str(), pC1);
+
+		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=\"C:\\aaa bbb ccc\\aaa.log\"");
+		EXPECT_STREQ(cmd.getArg(2).c_str(), L"--limit-render-process=5");
+		EXPECT_STREQ(cmd.getArg(3).c_str(), L"--enable-log");
+		EXPECT_STREQ(cmd.getArg(4).c_str(), L"--some-thing=100");
+
+		cmd.remove(2);
+		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=\"C:\\aaa bbb ccc\\aaa.log\"");
+		EXPECT_STREQ(cmd.getArg(2).c_str(), L"--enable-log");
+		EXPECT_STREQ(cmd.getArg(3).c_str(), L"--some-thing=100");
+
+		EXPECT_STREQ(cmd.toString().c_str(),
+			L"\"C:\\aaa bbb\\fff.exe\" --log-file=\"C:\\aaa bbb ccc\\aaa.log\" --enable-log --some-thing=100");
+	}
 }

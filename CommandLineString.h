@@ -249,47 +249,89 @@ namespace Ambiesoft {
 			if (!*p)
 				return;
 
-			bool inDQ = false;
+			bool inOuterDQ = false;
+			bool inInnerDQ = false;
+			bool inString = false;
 
             // E c = 0;
 			const E* pStart = p;
 
 			std::basic_string<E> now;
 
+			// "aa aa" : inDQ and inString
+			// aaa"bbb" : !inDQ and inString
 			for (; *p; p=nextP(p))
 			{
-				if (!inDQ)
+				if (!inOuterDQ)
 				{
 					if (myIsSpace(*p))
 					{
-						// separator
-
-						if (!now.empty())
+						if (inInnerDQ)
 						{
-							offsets_.push_back(pStart - pCommandLine);
-							args_.push_back(now);
-						}
-						clearS(now);
-
-						pStart = p;// = skipWS(p);
-						continue;
-					}
-					else
-					{
-						// not in DQ, not WS (=normal char)
-						if (isDQ(*p))
-						{
-							// not in DQ, DQ starts
-							inDQ = true;
+							// add everything
+							now += *p;
+							if (isLead(*p))
+								now += *(p + 1);
 							continue;
 						}
 						else
 						{
-							// not in DQ, not WS, not DQ
-							now += *p;
-							if(isLead(*p))
-								now+=*(p+1);
+							// separator
+
+							if (!now.empty())
+							{
+								offsets_.push_back(pStart - pCommandLine);
+								args_.push_back(now);
+							}
+							clearS(now);
+
+							pStart = p;// = skipWS(p);
+							inString = false;
+							inInnerDQ = false;
 							continue;
+						}
+					}
+					else
+					{
+						// not in OuterDQ, not WS (=normal char)
+						if (inString)
+						{
+							if (isDQ(*p))
+							{
+								inInnerDQ = !inInnerDQ;
+							}
+							// add everything
+							now += *p;
+							if (isLead(*p))
+								now += *(p + 1);
+							continue;
+						}
+						else
+						{
+							inString = true;
+							if (isDQ(*p))
+							{
+								if (inInnerDQ)
+								{
+									inInnerDQ = false;
+									continue;
+								}
+								else
+								{
+									// not in OuterDQ, OuterDQ starts
+									inOuterDQ = true;
+									continue;
+								}
+
+							}
+							else
+							{
+								// not in DQ, not WS, not DQ
+								now += *p;
+								if (isLead(*p))
+									now += *(p + 1);
+								continue;
+							}
 						}
 					}
 				}
@@ -321,7 +363,8 @@ namespace Ambiesoft {
 								args_.push_back(now);
 							}
 							clearS(now);
-							inDQ = false;
+							inOuterDQ = false;
+							inString = false;
 							continue;
 						}
 					}
