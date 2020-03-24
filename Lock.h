@@ -69,9 +69,10 @@ namespace Ambiesoft {
 	struct CriticalSectionTrait
 	{
 		typedef CRITICAL_SECTION LockObject;
+
 		static void Initialize(LockObject& lock)
 		{
-			InitializeCriticalSection(&lock);
+			InitializeCriticalSectionAndSpinCount(&lock, 2000);
 		}
 		static void Close(LockObject& lock)
 		{

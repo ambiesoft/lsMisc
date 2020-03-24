@@ -84,7 +84,7 @@ namespace Ambiesoft {
 		if (useNew_)
 			fnInitializeSRWLock_(&lock.l);
 		else
-			InitializeCriticalSection(&lock.c);
+			InitializeCriticalSectionAndSpinCount(&lock.c, 2000);
 	}
 	void DynamicTrait::Close(LockObject& lock)
 	{
