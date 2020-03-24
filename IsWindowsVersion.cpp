@@ -28,7 +28,7 @@
 
 
 namespace Ambiesoft {
-	static bool IsWindowsXXXOrAbove(DWORD ma, DWORD mi)
+	static bool IsWindowsXXXOrAboveOrBelow(DWORD ma, DWORD mi, bool bAbove)
 	{
 		static DWORD major = (DWORD)-1;
 		static DWORD minor = (DWORD)-1;
@@ -42,29 +42,48 @@ namespace Ambiesoft {
 				minor = osvi.dwMinorVersion;
 			}
 		}
-		return major >= ma && minor >= mi;
+		return bAbove ? (major >= ma && minor >= mi) : (major <= ma && minor <= mi);
 	}
 	bool IsWindowsXPOrAbove()
 	{
-		return IsWindowsXXXOrAbove(5, 1);
+		return IsWindowsXXXOrAboveOrBelow(5, 1, true);
 	}
+	bool IsWindowsXPOrBelow()
+	{
+		return IsWindowsXXXOrAboveOrBelow(5, 1, false);
+	}
+
 	bool IsWindowsVistaOrAbove()
 	{
-		return IsWindowsXXXOrAbove(6, 0);
+		return IsWindowsXXXOrAboveOrBelow(6, 0, true);
 	}
+	bool IsWindowsVistaOrBelow()
+	{
+		return IsWindowsXXXOrAboveOrBelow(6, 0, false);
+	}
+
 	bool IsWindows7OrAbove()
 	{
-		return IsWindowsXXXOrAbove(6, 1);
+		return IsWindowsXXXOrAboveOrBelow(6, 1, true);
 	}
+	bool IsWindows7OrBelow()
+	{
+		return IsWindowsXXXOrAboveOrBelow(6, 1, false);
+	}
+
 	bool IsWindows8OrAbove()
 	{
-		return IsWindowsXXXOrAbove(6, 2);
+		return IsWindowsXXXOrAboveOrBelow(6, 2, true);
+	}
+	bool IsWindows8OrBelow()
+	{
+		return IsWindowsXXXOrAboveOrBelow(6, 2, false);
 	}
 
 #ifndef STATUS_SUCCESS
 #define STATUS_SUCCESS (0x00000000)
 #endif
-	static bool GetRealOSVersion(DWORD ma, DWORD mi)
+	static bool GetRealOSVersion(DWORD ma, DWORD mi, bool bAbove)
 	{
 		static DWORD major = (DWORD)-1;
 		static DWORD minor = (DWORD)-1;
@@ -90,13 +109,17 @@ namespace Ambiesoft {
 				}
 			}
 		}
-		return major >= ma && minor >= mi;
+		return bAbove ? (major >= ma && minor >= mi) : (major <= ma && minor <= mi);
 	}
 
 
 	bool IsWindows10OrAbove()
 	{
-		return GetRealOSVersion(10, 0);
+		return GetRealOSVersion(10, 0, true);
+	}
+	bool IsWindows10OrBelow()
+	{
+		return GetRealOSVersion(10, 0, false);
 	}
 
 }
