@@ -67,6 +67,25 @@ namespace Ambiesoft {
 		return false;
 	}
 
+	static inline bool myIsDQ(char c)
+	{
+		return c == '"';
+	}
+	static inline bool myIsDQ(wchar_t c)
+	{
+		return c == L'"';
+	}
+
+	template<class T>
+	static inline bool myContainDQ(const T& s)
+	{
+		for (size_t i = 0; i < s.size(); ++i)
+		{
+			if (myIsDQ(s[i]))
+				return true;
+		}
+		return false;
+	}
 	static inline std::string myEncloseDQ(const std::string& s)
 	{
 		return "\"" + s + "\"";
@@ -85,15 +104,11 @@ namespace Ambiesoft {
 		return s + L" ";
 	}
 
-	static inline std::string myAddDQIfNeccesary(const std::string s)
+	template<class T>
+	static inline T myAddDQIfNeccesary(const T& s)
 	{
-		if (!myContainSpace(s))
+		if (myContainDQ(s))
 			return s;
-
-		return myEncloseDQ(s);
-	}
-	static inline std::wstring myAddDQIfNeccesary(const std::wstring s)
-	{
 		if (!myContainSpace(s))
 			return s;
 
