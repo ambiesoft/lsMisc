@@ -69,7 +69,7 @@ static bool InitCS()
 {
 	if(!bCinit)
 	{
-		InitializeCriticalSection(&cs);
+		InitializeCriticalSectionAndSpinCount(&cs, 2000);
 		atexit(UninitCS);
 	}
 	return true;
