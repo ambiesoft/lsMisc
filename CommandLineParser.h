@@ -911,17 +911,27 @@ typedef BasicOption<std::string> COptionA;
 		}
 
 		// two option strings
+		//template<class TARGET>
+		//void AddOption(
+		//	MyS_ optionString1,
+		//	MyS_ optionString2,
+		//	int exactCount,
+		//	TARGET* pTarget,
+		//	ArgEncodingFlags arf = ArgEncodingFlags_Default,
+		//	const MyS_& helpstring = MyS_())
+		//{
+		//	const MyS_ ops[] = { optionString1, optionString2 };
+		//	AddOptionRange(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
+		//}
 		template<class TARGET>
 		void AddOption(
-			MyS_ optionString1,
-			MyS_ optionString2,
+			std::initializer_list<MyS_> optionStrings,
 			int exactCount,
 			TARGET* pTarget,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
-			const MyS_ ops[] = { optionString1, optionString2 };
-			AddOptionRange(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
+			AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
 		}
 
 
