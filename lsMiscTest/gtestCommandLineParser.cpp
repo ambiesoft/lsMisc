@@ -56,7 +56,7 @@ TEST(CommandLineParser, BasicWchar)
 	wstring path;
 	COption opMain(L"", ArgCount::ArgCount_Infinite);
 	CCommandLineParser clp;
-	clp.AddOption(L"-h", L"/?", 0, &isHelp);
+	clp.AddOption({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
 	clp.AddOptionRange(vs.begin(), vs.end(), 0, &isABC);
 	clp.AddOptionRange(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
 	clp.AddOption(L"-path", 1, &path);
@@ -107,7 +107,7 @@ TEST(CommandLineParser, BasicChar)
 	string path;
 	COptionA opMain("", ArgCount::ArgCount_Infinite);
 	CCommandLineParserA clp;
-	clp.AddOption("-h", "/?", 0, &isHelp);
+	clp.AddOption({ string("-h"), string("/?") }, 0, &isHelp);
 	clp.AddOptionRange(vs.begin(), vs.end(), 0, &isABC);
 	clp.AddOptionRange(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
 	clp.AddOption("-path", 1, &path);
@@ -374,4 +374,84 @@ TEST(CommandLineParser, Dicregate)
 
 	EXPECT_STREQ(UrlDecodeStd<wstring>(page.getFirstValue().c_str()).c_str(), L"http://example.com/");
 	EXPECT_STREQ(UrlDecodeStd<wstring>(url.getFirstValue().c_str()).c_str(), L"http://example.com/my file.zip");
+}
+
+TEST(CommandLineParser, SameOption)
+{
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a;
+		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_FALSE(a);
+	}
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-a",
+		L"-b",
+		L"-c",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a;
+		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	}
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-a",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a;
+		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	}
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-b",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a;
+		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	}
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-c",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a;
+		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	}
+
+
+	// wstring initializer
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-c",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a;
+		parser.AddOption({ wstring(L"-a"),wstring(L"-b"),wstring(L"-c") }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	}
 }
