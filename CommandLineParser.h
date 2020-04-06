@@ -618,7 +618,7 @@ typedef BasicOption<std::string> COptionA;
 					if (!dq && !sq)
 						break;
 				}
-				else if (*p == _T('"'))
+				else if (*p == TEXT('"'))
 				{
 					if (!sq)
 					{
@@ -626,7 +626,7 @@ typedef BasicOption<std::string> COptionA;
 						continue;
 					}
 				}
-				else if (*p == _T('\''))
+				else if (*p == TEXT('\''))
 				{
 					if (!dq)
 					{
@@ -815,7 +815,7 @@ typedef BasicOption<std::string> COptionA;
 				ret += it->getFirstOption();
 				if (it->hadValue())
 				{
-					ret += _T(" ");
+					ret += TEXT(" ");
 					ret += it->getValueStrings();
 				}
 			}
