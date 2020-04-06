@@ -27,6 +27,6 @@ namespace Ambiesoft {
 		LPCTSTR pszShortcutFile,
 		LPCTSTR pszTargetFile,
 		LPCTSTR pszCurDir,
-		LPCTSTR pszArg,
-		int iIconLocation);
+		LPCTSTR pszArg = nullptr,
+		int iIconLocation = -1);
 }
