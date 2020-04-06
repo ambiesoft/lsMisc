@@ -225,6 +225,8 @@ namespace Ambiesoft {
 			void setBoolTarget(bool* pb)
 			{
 				assert(pBool_==NULL);
+				assert(pb);
+				*pb = false;
 				pBool_=pb;
 			}
 			void setIntTarget(int* pi)
@@ -926,6 +928,16 @@ typedef BasicOption<std::string> COptionA;
 		template<class TARGET>
 		void AddOption(
 			std::initializer_list<MyS_> optionStrings,
+			int exactCount,
+			TARGET* pTarget,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
+		{
+			AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
+		}
+		template<class TARGET>
+		void AddOption(
+			std::initializer_list<const Elem*> optionStrings,
 			int exactCount,
 			TARGET* pTarget,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
