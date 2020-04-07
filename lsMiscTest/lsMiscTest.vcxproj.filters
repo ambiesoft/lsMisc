@@ -405,6 +405,12 @@
     <ClCompile Include="..\MakeFilenamable.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="gtestFindTopWindowFromPID.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FindTopWindowFromPID.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -775,6 +781,9 @@
     </ClInclude>
     <ClInclude Include="..\MakeFilenamable.h">
       <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FindTopWindowFromPID.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
