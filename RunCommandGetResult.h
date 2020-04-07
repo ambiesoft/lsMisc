@@ -29,7 +29,64 @@
 
 
 namespace Ambiesoft {
-	BOOL RunCommandGetResult(
+	class RunProcessInfo {
+		bool success_ = false;
+		HANDLE hProcess_ = nullptr;
+		DWORD pid_ = 0;
+		HANDLE hThread_ = nullptr;
+		DWORD tid_ = 0;
+		RunProcessInfo(const RunProcessInfo& that);
+	public:
+		RunProcessInfo() {
+		}
+		RunProcessInfo(RunProcessInfo&& that)
+		{
+			success_ = that.success_;
+			
+			hProcess_ = that.hProcess_;
+			that.hProcess_ = nullptr;
+			
+			pid_ = that.pid_;
+			
+			hThread_ = that.hThread_;
+			that.hThread_ = nullptr;
+
+			tid_ = that.pid_;
+		}
+		~RunProcessInfo() {
+			if (success_)
+			{
+				if(hProcess_)
+					CloseHandle(hProcess_);
+				if(hThread_)
+					CloseHandle(hThread_);
+			}
+		}
+		void set(const PROCESS_INFORMATION& pi) {
+			success_ = true;
+			hProcess_ = pi.hProcess;
+			pid_ = pi.dwProcessId;
+			hThread_ = pi.hThread;
+			tid_ = pi.dwThreadId;
+		}
+		HANDLE GetProcess() const {
+			return hProcess_;
+		}
+		DWORD GetProcessID() const {
+			return pid_;
+		}
+		HANDLE GetThread() const {
+			return hThread_;
+		}
+		DWORD GetThreadID() const {
+			return tid_;
+		}
+		operator bool() const {
+			return success_;
+		}
+	};
+
+	RunProcessInfo RunCommandGetResult(
 		LPCSTR pExe,
 		LPCSTR pArg,
 		DWORD* pIRetCommand,
@@ -37,7 +94,7 @@ namespace Ambiesoft {
 		std::string* pStrOutCommand,
 		std::string* pStrErrCommand);
 
-	BOOL RunCommandGetResult(
+	RunProcessInfo RunCommandGetResult(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,
@@ -45,7 +102,7 @@ namespace Ambiesoft {
 		std::string* pStrOutCommand,
 		std::string* pStrErrCommand);
 
-	BOOL RunCommandGetResultCallBack(
+	RunProcessInfo RunCommandGetResultCallBack(
 		LPCSTR pExe,
 		LPCSTR pArg,
 		DWORD* pIRetCommand,
@@ -56,7 +113,7 @@ namespace Ambiesoft {
 		void* pOutUserData,
 		std::function<void(const char*, void* pUserData)> fnOnErr,
 		void* pErrUserData);
-	BOOL RunCommandGetResultCallBack(
+	RunProcessInfo RunCommandGetResultCallBack(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,

@@ -36,6 +36,9 @@
 #include <algorithm>
 
 #include "UrlEncode.h"
+#include "UTF16toUTF8.h"
+#include "CommandLineString.h"
+
 #include "stdosd/stdosd_literal.h"
 
 namespace Ambiesoft {
@@ -948,13 +951,24 @@ typedef BasicOption<std::string> COptionA;
 
 
 #ifdef _WIN32
-#ifdef UNICODE
+// #ifdef UNICODE
 		void Parse()
+		{
+			Parse(GetCommandLineW());
+		}
+		void Parse(LPCSTR pCommandLine)
+		{
+			int argc;
+			LPSTR* pArg = CCommandLineStringBase<Elem>::getCommandLineArg(pCommandLine, &argc);
+			Parse(argc, pArg);
+			CCommandLineStringBase<Elem>::freeCommandLineArg(pArg);
+		}
+		void Parse(LPCWSTR pCommandLine)
 		{
 			LPWSTR *szArglist;
 			int nArgs;
 
-			szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+			szArglist = CommandLineToArgvW(pCommandLine, &nArgs);
 			if (NULL == szArglist)
 			{
 				return;
@@ -962,7 +976,7 @@ typedef BasicOption<std::string> COptionA;
 			Parse(nArgs, szArglist);
 			LocalFree(szArglist);
 		}
-#endif
+// #endif
 #endif
 
 	private:

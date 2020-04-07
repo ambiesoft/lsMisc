@@ -190,7 +190,7 @@ namespace Ambiesoft {
 		return pRet;
 	}
 
-	static BOOL RunCommandGetResultImple(
+	static RunProcessInfo RunCommandGetResultImple(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,
@@ -204,24 +204,25 @@ namespace Ambiesoft {
 		std::function<void(const char*, void* pUserData)> fnOnErr,
 		void* pErrUserData)
 	{
+		RunProcessInfo retInfo;
 		HANDLE hPipeStdInRead = NULL;
 		HANDLE hPipeStdInWrite = NULL;
 		if (!CreateHandles(hPipeStdInRead, hPipeStdInWrite, TRUE, FALSE, pdwLastError))
-			return FALSE;
+			return retInfo;
 		HandleFreer h1(&hPipeStdInRead);
 		HandleFreer h2(&hPipeStdInWrite);
 
 		HANDLE hPipeStdOutRead = nullptr;
 		HANDLE hPipeStdOutWrite = nullptr;
 		if (!CreateHandles(hPipeStdOutRead, hPipeStdOutWrite, FALSE, TRUE, pdwLastError))
-			return FALSE;
+			return retInfo;
 		HandleFreer h3(&hPipeStdOutRead);
 		HandleFreer h4(&hPipeStdOutWrite);
 
 		HANDLE hPipeStdErrRead = nullptr;
 		HANDLE hPipeStdErrWrite = nullptr;
 		if (!CreateHandles(hPipeStdErrRead, hPipeStdErrWrite, FALSE, TRUE, pdwLastError))
-			return FALSE;
+			return retInfo;
 		HandleFreer h5(&hPipeStdErrRead);
 		HandleFreer h6(&hPipeStdErrWrite);
 
@@ -255,7 +256,7 @@ namespace Ambiesoft {
 		DWORD dwCreationFlags = 0;
 		if (fnBeforeCreateProcess)
 			if (!fnBeforeCreateProcess(&siStartInfo, &sa, &dwCreationFlags))
-				return FALSE;
+				return retInfo;
 		if(!CreateProcessW(
 			NULL,
 			pCmd.get(),
@@ -270,16 +271,19 @@ namespace Ambiesoft {
 		{
 			if (pdwLastError)
 				*pdwLastError = GetLastError();
-			return FALSE;
+			return retInfo;
 		}
 		if (pdwLastError)
 			*pdwLastError = GetLastError();
+		
+		retInfo.set(pi);
 
 		if (fnAfterCreateProcess)
 			fnAfterCreateProcess(&pi);
 
-		HandleFreer h7(&pi.hProcess);
-		HandleFreer h8(&pi.hThread);
+		// ~RunProcessInfo() will close these
+		//HandleFreer h7(&pi.hProcess);
+		//HandleFreer h8(&pi.hThread);
 
 		ClearHandle(hPipeStdInRead);
 		ClearHandle(hPipeStdOutWrite);
@@ -317,7 +321,7 @@ namespace Ambiesoft {
 		if (pIRetCommand)
 			GetExitCodeProcess(pi.hProcess, pIRetCommand);
 
-		return TRUE;
+		return retInfo;
 	}
 
 	static wstring toWstring(const char* pIN)
@@ -329,7 +333,7 @@ namespace Ambiesoft {
 		return converter.from_bytes(pIN);
 	}
 
-	BOOL RunCommandGetResultCallBack(
+	RunProcessInfo RunCommandGetResultCallBack(
 		LPCSTR pExe,
 		LPCSTR pArg,
 		DWORD* pIRetCommand,
@@ -353,7 +357,7 @@ namespace Ambiesoft {
 			fnOnErr,
 			pErrUserData);
 	}
-	BOOL RunCommandGetResultCallBack(
+	RunProcessInfo RunCommandGetResultCallBack(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,
@@ -379,7 +383,7 @@ namespace Ambiesoft {
 			fnOnErr,
 			pErrUserData);
 	}
-	BOOL RunCommandGetResult(
+	RunProcessInfo RunCommandGetResult(
 		LPCWSTR pExe,
 		LPCWSTR pArg,
 		DWORD* pIRetCommand,
@@ -401,7 +405,7 @@ namespace Ambiesoft {
 			nullptr,
 			nullptr);
 	}
-	BOOL RunCommandGetResult(
+	RunProcessInfo RunCommandGetResult(
 		LPCSTR pExe,
 		LPCSTR pArg,
 		DWORD* pIRetCommand,
