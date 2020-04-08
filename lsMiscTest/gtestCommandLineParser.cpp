@@ -141,24 +141,25 @@ TEST(CommandLineParser, BasicChar)
 
 TEST(CommandLineParser, OptionConstructorAll)
 {
+	const wchar_t* const argv[] = {
+		L"exe.exe",
+		L"-h",
+		L"-b",
+		L"-path",
+		ACTULAPATHW,  // Main arg starts here
+		L"file1.txt",
+		L"file2.txt",
+		L"file3.txt",
+		L"space file.txt",
+		NULL
+	};
+
+
 	// Default Ctor for Main arg and inifinite
 	{
 		CCommandLineParser parser;
 		COption op1;
 		parser.AddOption(&op1);
-
-		wchar_t* argv[] = {
-			L"exe.exe",
-			L"-h",
-			L"-b",
-			L"-path",
-			ACTULAPATHW,  // Main arg starts here
-			L"file1.txt",
-			L"file2.txt",
-			L"file3.txt",
-			L"space file.txt",
-			NULL
-		};
 
 		size_t argc = _countof(argv) - 1;
 		parser.Parse(argc, argv);
@@ -167,6 +168,25 @@ TEST(CommandLineParser, OptionConstructorAll)
 		{
 			EXPECT_STREQ(argv[iArg], op1.getValue(i).c_str());
 		}
+	}
+
+	{
+		CCommandLineParser parser;
+		COption op1({ L"-h", L"-b" }, 0);
+		parser.AddOption(&op1);
+
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+		EXPECT_TRUE(op1.hadOption());
+	}
+	{
+		CCommandLineParser parser;
+		COption op1({ L"-xxx", L"-yyy" }, 0);
+		parser.AddOption(&op1);
+
+		size_t argc = _countof(argv) - 1;
+		parser.Parse(argc, argv);
+		EXPECT_FALSE(op1.hadOption());
 	}
 }
 
