@@ -452,30 +452,39 @@ namespace Ambiesoft {
 			setArgFlag(exactcount);
 		}
 		
-		BasicOption(MyS_ option1, MyS_ option2, ArgCount acf)
-		{
-			init();
-			options_.push_back(option1);
-			options_.push_back(option2);
-			argcountflag_ = acf;
-		}
-                // template<> isthis ok?
-		BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
-		{
-			init();
-			options_.push_back(option1);
-			options_.push_back(option2);
+		//BasicOption(MyS_ option1, MyS_ option2, ArgCount acf)
+		//{
+		//	init();
+		//	options_.push_back(option1);
+		//	options_.push_back(option2);
+		//	argcountflag_ = acf;
+		//}
+                
+		// template<> isthis ok?
+		//BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
+		//{
+		//	init();
+		//	options_.push_back(option1);
+		//	options_.push_back(option2);
 
-			setArgFlag(exactcount);
-		}
-		BasicOption(const Elem* p1, const Elem* p2, const int exactcount)
-		{
-			init();
-			options_.push_back(p1);
-			options_.push_back(p2);
+		//	setArgFlag(exactcount);
+		//}
+		BasicOption(std::initializer_list<MyS_> optionStrings, const int exactcount) :
+			BasicOption(optionStrings.begin(), optionStrings.end(),
+				exactcount) {}
+		
 
-			setArgFlag(exactcount);
-		}
+		//BasicOption(const Elem* p1, const Elem* p2, const int exactcount)
+		//{
+		//	init();
+		//	options_.push_back(p1);
+		//	options_.push_back(p2);
+
+		//	setArgFlag(exactcount);
+		//}
+		BasicOption(std::initializer_list<const Elem*> optionStrings, const int exactcount) :
+			BasicOption(optionStrings.begin(), optionStrings.end(),
+				exactcount) {}
 
 		BasicOption(MyS_ option)
 		{
