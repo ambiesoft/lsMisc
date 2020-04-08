@@ -27,16 +27,16 @@
     <ClInclude Include="ReturnMainWndHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\CommandLineParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UTF16toUTF8.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\UrlEncode.h">
+    <ClInclude Include="..\..\CommandLineParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UrlEncode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UTF16toUTF8.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -44,13 +44,13 @@
     <ClCompile Include="ReturnMainWndHandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\CommandLineParser.cpp">
+    <ClCompile Include="..\..\CommandLineParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\UTF16toUTF8.cpp">
+    <ClCompile Include="..\..\UrlEncode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\UrlEncode.cpp">
+    <ClCompile Include="..\..\UTF16toUTF8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
