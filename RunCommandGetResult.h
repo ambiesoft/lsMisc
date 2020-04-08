@@ -35,7 +35,8 @@ namespace Ambiesoft {
 		DWORD pid_ = 0;
 		HANDLE hThread_ = nullptr;
 		DWORD tid_ = 0;
-		RunProcessInfo(const RunProcessInfo& that);
+		RunProcessInfo(const RunProcessInfo& that) = delete;
+		RunProcessInfo& operator=(const RunProcessInfo&) = delete;
 	public:
 		RunProcessInfo() {
 		}
