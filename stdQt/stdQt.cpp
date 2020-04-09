@@ -186,4 +186,27 @@ bool IsSameContents(const QStringList& dirs1, const QStringList& dirs2)
     t2.sort();
     return t1 == t2;
 }
+QString RemoveExtensionFromPath(const QString& path)
+{
+    QFileInfo fi(path);
+    QString ret = fi.fileName();
+
+    do {
+        int dotIndex = ret.lastIndexOf('.');
+        if(dotIndex < 0)
+            break;
+
+        ret = ret.left(dotIndex);
+
+        while(!ret.isEmpty() && ( ret.endsWith(" ") || ret.endsWith(".")))
+        {
+            ret.chop(1);
+        }
+    } while(false);
+
+    if(!isLegalFilePath(ret))
+        return QString();
+
+    return ret;
+}
 } // namespace AmbiesoftQt

@@ -263,6 +263,15 @@ bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root)
 // https://stackoverflow.com/a/45282192
 bool isLegalFilePath(QString filename, QString* pError)
 {
+    if(filename.isEmpty())
+    {
+        if(pError)
+        {
+            *pError = QObject::tr("Filename could not be empty.");
+        }
+        return false;
+    }
+
     // Windows filenames are not case sensitive.
     filename = filename.toUpper();
 
