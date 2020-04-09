@@ -186,10 +186,11 @@ bool IsSameContents(const QStringList& dirs1, const QStringList& dirs2)
     t2.sort();
     return t1 == t2;
 }
-QString RemoveExtensionFromPath(const QString& path)
+QString RemoveExtensionFromPath(QString path)
 {
+    path = QDir::toNativeSeparators(path);
     QFileInfo fi(path);
-    QString ret = fi.fileName();
+    QString ret = fi. fileName();
 
     do {
         int dotIndex = ret.lastIndexOf('.');

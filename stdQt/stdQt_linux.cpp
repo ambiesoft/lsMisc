@@ -7,6 +7,8 @@
 #include <QStandardPaths>
 #include <QSet>
 #include <QStorageInfo>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "stdQt.h"
 
@@ -128,6 +130,15 @@ bool GetFreeStorage(const QString dir, qint64& bytesFree, QString& root)
 
 bool isLegalFilePath(QString filename, QString* pError)
 {
+    if(filename.isEmpty())
+    {
+        if(pError)
+        {
+            *pError = QObject::tr("Filename could not be empty.");
+        }
+        return false;
+    }
+
     for( QChar& c : filename)
     {
         if(c=='/')

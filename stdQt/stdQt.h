@@ -57,7 +57,7 @@ QString GetIllegalFilenameCharacters();
 QStringList SortDevice1by1(const QStringList& dirs);
 bool IsSameContents(const QStringList& dirs1, const QStringList& dirs2);
 bool showInGraphicalShell(QWidget *parent, const QString &pathIn);
-QString RemoveExtensionFromPath(const QString& path);
+QString RemoveExtensionFromPath(QString path);
 } // namespace AmbiesoftQt
 
 #endif // STDQT_H
