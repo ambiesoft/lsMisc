@@ -23,21 +23,20 @@
 
 #include "stdafx.h"
 
-#include <Windows.h>
+#include <windows.h>
 
 #ifndef _INC_SHELLAPI
-#pragma message("including shllapi")
 #include <Shellapi.h>
 #endif
 
 #ifndef _INC_SHLWAPI
-#pragma message("including shlwlapi")
-#include <Shlwapi.h>
+#include <shlwapi.h>
+#ifdef _MSC_VER
 #pragma comment(lib,"shlwapi.lib")
+#endif
 #endif
 
 #ifndef _STRING_
-#pragma message("including string")
 #include <string>
 #endif
 
