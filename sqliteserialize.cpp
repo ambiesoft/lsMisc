@@ -30,26 +30,192 @@
 #include "sqlite3.h"
 #include "IsFileExists.h"
 #include "UTF16toUTF8.h"
+
+#include "stdosd/stdosd.h"
+
 #include "sqliteserialize.h"
 
 #include "DebugNew.h"
 
+#if (_MSC_VER <= 1400)
+typedef WCHAR* RPC_WSTR;
+#endif
+#pragma comment(lib,"Rpcrt4.lib")
+
 using namespace std;
+using namespace Ambiesoft::stdosd;
+
 // #define IFDISABLED_RETURN do { if(smDisabled_){ return; } } while(false)
 #define SAFE_SQLERROR_FREE(s) do { if(s){sqlite3_free(s);     (s)=NULL;} }while(false)
 #define SAFE_SQLFINALIZE(s)   do { if(s){sqlite3_finalize(s); (s)=NULL;} }while(false)
 
+#define SQLVERIFY(s) do { if(s != SQLITE_OK) { assert(false);}} while(false);
 
 namespace Ambiesoft {
 
 	using std::wstring;
 	using std::vector;
 
+	int infinite_sqlite3_prepare16_v2(
+		sqlite3* db,              /* Database handle. */
+		LPCWSTR zSql,         /* UTF-16 encoded SQL statement. */
+		int nBytes,               /* Length of zSql in bytes. */
+		sqlite3_stmt** ppStmt,    /* OUT: A pointer to the prepared statement */
+		const void** pzTail       /* OUT: End of parsed string */
+	)
+	{
+		int ret;
+		for (;;)
+		{
+			ret = sqlite3_prepare16_v2(
+				db,
+				zSql,
+				nBytes,
+				ppStmt,
+				pzTail
+			);
+			if (ret != SQLITE_BUSY)
+				break;
+
+			Sleep(100);
+		}
+		return ret;
+	}
+	int inifinite_sqlite3_step(sqlite3_stmt* pStmt) {
+		int ret;
+		for (;;) {
+			ret = sqlite3_step(pStmt);
+			if (ret != SQLITE_BUSY)
+				break;
+
+			Sleep(100);
+		}
+		return ret;
+	}
 
 
+	class CSqlFile
+	{
+		sqlite3* pFile_ = nullptr;
+		std::map<LPCWSTR, sqlite3_stmt*> stmtInserts_;
+		std::map<LPCWSTR, sqlite3_stmt*> stmtSelectors_;
+		std::map<LPCWSTR, sqlite3_stmt*> stmtDeleters_;
 
-	// static sqlite3* db_;
+		CSqlFile(const CSqlFile&) = delete;
+		CSqlFile(CSqlFile&&) = delete;
+	public:
+		CSqlFile(LPCWSTR pFileName) {
+			sqlite3_open16(pFileName, &pFile_);
+		}
+		~CSqlFile() {
+			for (auto&& stmt : stmtInserts_)
+				sqlite3_finalize(stmt.second);
+			for (auto&& stmt : stmtSelectors_)
+				sqlite3_finalize(stmt.second);
+			for (auto&& stmt : stmtDeleters_)
+				sqlite3_finalize(stmt.second);
 
+			if (pFile_)
+			{
+				SQLVERIFY(sqlite3_close(pFile_));
+			}
+		}
+		bool ok() const {
+			return pFile_ != nullptr;
+		}
+		sqlite3* get() {
+			return pFile_;
+		}
+		sqlite3_stmt* selector(LPCWSTR pAppName) {
+			if (stmtSelectors_.find(pAppName) != stmtSelectors_.end())
+				return stmtSelectors_[pAppName];
+
+			sqlite3_stmt* pStmtSelect = nullptr;
+
+			//LPCWSTR pKata = L"SELECT c2 FROM [%s] WHERE c1 = ?;";
+			//LPWSTR p = (LPWSTR)malloc(wcslen(pKata) * 2 + wcslen(lpAppName) * 2 + 2);
+			//stlsoft::scoped_handle<void*> mahh((void*)p, free);
+			//wsprintf(p, pKata, lpAppName);
+			std::wstring sql = stdFormat(
+				L"SELECT c2 FROM [%s] WHERE c1 = ?;",
+				pAppName);
+			
+			int ret = infinite_sqlite3_prepare16_v2(get(),
+				sql.c_str(),
+				-1,
+				&pStmtSelect,
+				0);
+
+			if (ret != SQLITE_OK || !pStmtSelect)
+			{
+				assert(false);
+				return nullptr;
+			}
+
+			stmtSelectors_[pAppName] = pStmtSelect;
+			return pStmtSelect;
+		}
+
+		sqlite3_stmt* inserter(LPCWSTR pAppName) {
+			if (stmtInserts_.find(pAppName) != stmtInserts_.end())
+				return stmtInserts_[pAppName];
+
+			sqlite3_stmt* stmt = nullptr;
+			std::wstring sql = stdFormat(
+				L"INSERT INTO [%s] VALUES (?, ?, 0);",
+				pAppName);
+			int ret = infinite_sqlite3_prepare16_v2(get(),
+				sql.c_str(),
+				-1,
+				&stmt,
+				0);
+			if (SQLITE_OK != ret || !stmt) {
+				assert(false);
+				return false;
+			}
+
+			stmtInserts_[pAppName] = stmt;
+			return stmt;
+		}
+		sqlite3_stmt* deleter(LPCWSTR pAppName) {
+			if (stmtDeleters_.find(pAppName) != stmtDeleters_.end())
+				return stmtDeleters_[pAppName];
+
+			sqlite3_stmt* stmt = nullptr;
+			std::wstring sql = stdFormat(
+				L"DELETE FROM [%s] WHERE c1 = ?;",
+				pAppName);
+			int ret = infinite_sqlite3_prepare16_v2(get(),
+				sql.c_str(),
+				-1,
+				&stmt,
+				0);
+			if (SQLITE_OK != ret || !stmt) {
+				assert(false);
+				return false;
+			}
+
+			stmtDeleters_[pAppName] = stmt;
+			return stmt;
+		}
+	};
+
+	class CSqlError
+	{
+		char* pError_ = nullptr;
+	public:
+		CSqlError() {}
+		~CSqlError() {
+			if (pError_)
+				sqlite3_free(pError_);
+		}
+		char** address() {
+			return &pError_;
+		}
+		bool isError() {
+			return pError_ != nullptr;
+		}
+	};
 	static void cfree(char*p)
 	{
 		free((void*)p);
@@ -70,285 +236,211 @@ namespace Ambiesoft {
 		return 0;
 	}
 
+	
 	static BOOL createDB(LPCWSTR pDBPath, LPCWSTR pTableNameW)
 	{
-		//	if(!InitSqliteLibrary())
-		//		return FALSE;
-
-		unique_ptr<char> pTableNamePtr(UTF16toUTF8_new(pTableNameW));
-		const char* pTableName = pTableNamePtr.get();
-		// stlsoft::scoped_handle<char*> tab(pTableName);// , cfree);
-
-		char* pErr = NULL;
-		sqlite3* pDB = NULL;
+		const std::string tableName = toStdUtf8String(pTableNameW);
 		std::string strResult;
-		BOOL ret = FALSE;
+		CSqlFile db(pDBPath);
+		
+		if (!db.ok())
+			return FALSE;
 
-		do
+		std::string sql = stdFormat(
+			"CREATE TABLE [%s] ( "
+			"[c1] TEXT, "
+			"[c2] TEXT "
+			");",
+			// "PRIMARY KEY([c1]));",
+			tableName.c_str());
+		CSqlError error;
+		if (SQLITE_OK != sqlite3_exec(db.get(),
+			sql.c_str(),
+			callbackt,
+			&strResult,
+			error.address()) || error.isError())
 		{
-			LPCSTR p;
-
-			if (SQLITE_OK != sqlite3_open16(pDBPath, &pDB))
-			{
-				break;
-			}
-
-
-			p =
-				"CREATE TABLE [%s] ( "
-				"[c1] TEXT, "
-				"[c2] TEXT,"
-				"PRIMARY KEY([c1]));";
-
-			size_t malsize = strlen(p) + strlen(pTableName) + sizeof(char);
-			char* pT = (char*)malloc(malsize);
-			stlsoft::scoped_handle<char*> ma(pT, cfree);
-
-#if _MSC_VER < 1500
-			sprintf(pT, p, pTableName);
-#else
-			sprintf_s(pT, malsize, p, pTableName);
-#endif
-
-			if (SQLITE_OK != sqlite3_exec(pDB,
-				pT,
-				callbackt,
-				&strResult,
-				&pErr) || pErr)
-			{
-				break;
-			}
-			SAFE_SQLERROR_FREE(pErr);
-
-
-
-
-
-
-
-
-			/**
-					if ( SQLITE_OK != fn_sqlite3_exec(pDB,
-					"insert into [group] values('aaa','bbb')",
-					callbackt,
-					&strResult,
-					&pErr) || pErr)
-					{
-					break;
-					}
-					**/
-
-
-
-
-
-
-
-
-
-			ret = TRUE;
-		} while (0);
-
-		SAFE_SQLERROR_FREE(pErr);
-
-		if (pDB)
-		{
-			sqlite3_close(pDB);
-			pDB = NULL;
+			return FALSE;
 		}
 
-		return ret;
+		sql = stdFormat(
+			"ALTER TABLE [%s] ADD COLUMN dorder INT;",
+			tableName.c_str());
+		if (SQLITE_OK != sqlite3_exec(db.get(),
+			sql.c_str(),
+			callbackt,
+			&strResult,
+			error.address()) || error.isError())
+		{
+			return FALSE;
+		}
+
+		return TRUE;
 	}
 
 
-	int infinite_sqlite3_prepare16_v2(
-		sqlite3 *db,              /* Database handle. */
-		LPCWSTR zSql,         /* UTF-16 encoded SQL statement. */
-		int nBytes,               /* Length of zSql in bytes. */
-		sqlite3_stmt **ppStmt,    /* OUT: A pointer to the prepared statement */
-		const void **pzTail       /* OUT: End of parsed string */
-		)
-	{
-		int ret;
-		for (;;)
-		{
-			ret = sqlite3_prepare16_v2(
-				db,
-				zSql,
-				nBytes,
-				ppStmt,
-				pzTail
-				);
-			if (ret != SQLITE_BUSY)
-				break;
-
-			Sleep(100);
-		}
-		return ret;
-	}
-	int inifinite_sqlite3_step(sqlite3_stmt *pStmt) {
-		int ret;
-		for (;;) {
-			ret = sqlite3_step(pStmt);
-			if (ret != SQLITE_BUSY)
-				break;
-
-			Sleep(100);
-		}
-		return ret;
-	}
-
-
+	
 	struct stTransactionScope
 	{
-
-		static int cc_;
-
 	private:
-		static sqlite3_stmt* stmtBegin_;
-		static sqlite3_stmt* stmtCommit_;
-		sqlite3* pDB_;
+		struct CstmtData
+		{
+			sqlite3_stmt* stmtBegin_ = nullptr;
+			sqlite3_stmt* stmtCommit_ = nullptr;
+			int cc_;
+			CstmtData(sqlite3_stmt* stmtBegin, sqlite3_stmt* stmtCommit):
+				stmtBegin_(stmtBegin),
+				stmtCommit_(stmtCommit),
+				cc_(0){}
+			CstmtData(const CstmtData& that) {
+				stmtBegin_ = that.stmtBegin_;
+				stmtCommit_ = that.stmtCommit_;
+				cc_ = that.cc_;
+			}
+			~CstmtData() {
+
+			}
+			void Increment() {
+				++cc_;
+			}
+			void Decrement() {
+				--cc_;
+			}
+			bool IsFirst() const {
+				assert(cc_ >= 0);
+				return cc_ == 1;
+			}
+			bool IsComplete() const {
+				assert(cc_ >= 0);
+				return cc_ <= 0;
+			}
+			void Finalize()
+			{
+				if (SQLITE_DONE != inifinite_sqlite3_step(stmtCommit_))
+				{
+					assert(false);
+				}
+
+				SAFE_SQLFINALIZE(stmtBegin_);
+				SAFE_SQLFINALIZE(stmtCommit_);
+			}
+		};
+		static std::map<sqlite3*, std::shared_ptr<CstmtData>> dbs_;
+		sqlite3* pDB_ = nullptr;
 	public:
 		stTransactionScope(sqlite3* pDB) : pDB_(pDB)
 		{
-
-			++cc_;
-			assert(cc_==1);
-
 			assert(pDB);
-
-			// DVERIFY_IS(fn_sqlite3_exec(db_, "BEGIN TRANSACTION", NULL, NULL, NULL), SQLITE_OK);
-			if (!stmtBegin_)
+			if (dbs_.find(pDB) == dbs_.end())
 			{
-				if (SQLITE_OK != sqlite3_prepare16_v2(pDB,
-					L"BEGIN TRANSACTION",
-					-1,
-					&stmtBegin_,
-					0) || !stmtBegin_)
+				sqlite3_stmt* stmtBegin = nullptr;
 				{
-					// ReportSQLError(__FILE__,__LINE__);
-					return;
+					if (SQLITE_OK != sqlite3_prepare16_v2(pDB,
+						L"BEGIN TRANSACTION",
+						-1,
+						&stmtBegin,
+						0) || !stmtBegin)
+					{
+						assert(false);
+						return;
+					}
+				}
+				sqlite3_stmt* stmtCommit = nullptr;
+				{
+					if (!stmtCommit)
+					{
+						if (SQLITE_OK != sqlite3_prepare16_v2(pDB,
+							L"COMMIT;",
+							-1,
+							&stmtCommit,
+							0) || !stmtCommit)
+						{
+							assert(false);
+							return;
+						}
+					}
+				}
+				dbs_[pDB] = make_shared<CstmtData>(stmtBegin, stmtCommit);
+				assert(dbs_.find(pDB) != dbs_.end());
+			}
+
+			dbs_[pDB].get()->Increment();
+			if (dbs_[pDB].get()->IsFirst())
+			{
+				if (SQLITE_DONE != inifinite_sqlite3_step(dbs_[pDB].get()->stmtBegin_))
+				{
+					assert(false);
 				}
 			}
-			if (!stmtCommit_)
-			{
-				if (SQLITE_OK != sqlite3_prepare16_v2(pDB,
-					L"COMMIT;",
-					-1,
-					&stmtCommit_,
-					0) || !stmtCommit_)
-				{
-					// ReportSQLError(__FILE__,__LINE__);
-					return;
-				}
-			}
-
-
-			if (SQLITE_DONE != inifinite_sqlite3_step(stmtBegin_))
-			{
-				// ReportSQLError(__FILE__,__LINE__);
-			}
-
 		}
 		~stTransactionScope()
 		{
+			if (dbs_.find(pDB_) == dbs_.end())
+				return;
 
-			--cc_;
-			assert(pDB_);
-			// DVERIFY_IS(fn_sqlite3_exec(db_, "COMMIT;", NULL, NULL, NULL), SQLITE_OK);
-
-
-			if (SQLITE_DONE != inifinite_sqlite3_step(stmtCommit_))
+			dbs_[pDB_].get()->Decrement();
+			
+			if (dbs_[pDB_].get()->IsComplete())
 			{
-				//ReportSQLError(__FILE__,__LINE__);
-			}
-
-			if (cc_ == 0)
-			{
-				Finalize();
+				dbs_[pDB_].get()->Finalize();
+				dbs_.erase(pDB_);
 			}
 		}
 
-		static void Finalize()
-		{
-			SAFE_SQLFINALIZE(stmtBegin_);
-			SAFE_SQLFINALIZE(stmtCommit_);
-		}
 	};
+	std::map<sqlite3*, std::shared_ptr<stTransactionScope::CstmtData>> stTransactionScope::dbs_;
 
-	int stTransactionScope::cc_;
 
-	sqlite3_stmt* stTransactionScope::stmtBegin_;
-	sqlite3_stmt* stTransactionScope::stmtCommit_;
-
-	//struct stTransactionScopeFinalizer
-	//{
-	//	~stTransactionScopeFinalizer()
-	//	{
-	//		stTransactionScope::Finalize();
-	//	}
-	//};
-	//static stTransactionScopeFinalizer gsTransactionScopeFinalizer;
-
-	/*
-	static sqlite3_stmt* getInsertStatement(sqlite3* pDB,LPCWSTR pApp)
+	BOOL sqlWritePrivateProfileStringInternal(
+		LPCWSTR lpAppName,
+		LPCWSTR lpKeyName,
+		LPCWSTR lpString,
+		CSqlFile& db)
 	{
-	static std::map<std::wstring, sqlite3_stmt*> theInsertMap;
-	sqlite3_stmt* pRet = theInsertMap[pApp];
-	if(!pRet)
-	{
-	LPCWSTR pKata = L"INSERT OR REPLACE INTO [%s] VALUES (?, ?);";
-	LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(pApp)*2 + 2);
-	stlsoft::scoped_handle<void*> mahh( (void*)p, free);
-	wsprintf(p, pKata, pApp);
-	int ret = sqlite3_prepare16_v2(pDB,
-	p,
-	-1,
-	&pRet,
-	0);
+		if (!db.ok())
+			return FALSE;
 
-	if(ret != SQLITE_OK)
-	{
-	return NULL;
-	}
-	theInsertMap[pApp]=pRet;
-	}
-	return pRet;
-	}
+		stTransactionScope stts(db.get());
 
-	static sqlite3_stmt* getUpdateStatement(sqlite3* pDB,LPCWSTR pApp)
-	{
-	static std::map<std::wstring, sqlite3_stmt*> theUpdateMap;
-	sqlite3_stmt* pRet = theUpdateMap[pApp];
-	if(!pRet)
-	{
-	LPCWSTR pKata = L"UPDATE [%s] SET c2=? WHERE c1=?;";
-	LPWSTR p = (LPWSTR)malloc(wcslen(pKata)*2 + wcslen(pApp)*2 + 2);
-	stlsoft::scoped_handle<void*> mahh( (void*)p, free);
-	wsprintf(p, pKata, pApp);
-	int ret = sqlite3_prepare16_v2(pDB,
-	p,
-	-1,
-	&pRet,
-	0);
+		int sqRet = 0;
+		if (SQLITE_OK != sqlite3_reset(db.inserter(lpAppName)))
+			return FALSE;
 
-	if(ret != SQLITE_OK)
-	{
-	return NULL;
-	}
-	theUpdateMap[pApp]=pRet;
-	}
-	return pRet;
-	}
-	*/
+		int index = 0;
+		if (SQLITE_OK != sqlite3_bind_text16(db.inserter(lpAppName), ++index, lpKeyName, -1, SQLITE_STATIC))
+			return FALSE;
+		if (SQLITE_OK != sqlite3_bind_text16(db.inserter(lpAppName), ++index, lpString, -1, SQLITE_STATIC))
+			return FALSE;
 
+		sqRet = inifinite_sqlite3_step(db.inserter(lpAppName));
+
+		bool bRet = (sqRet == SQLITE_DONE || sqRet == SQLITE_ROW);
+		assert(bRet);
+		return bRet;
+	}
+	BOOL sqlWriteDeleteProfileStringInternal(
+		LPCWSTR lpAppName,
+		LPCWSTR lpKeyName,
+		CSqlFile& db)
+	{
+		stTransactionScope stts(db.get());
+
+		if (SQLITE_OK != sqlite3_reset(db.deleter(lpAppName)))
+			return FALSE;
+
+		int index = 0;
+		if (SQLITE_OK != sqlite3_bind_text16(db.deleter(lpAppName), ++index, lpKeyName, -1, SQLITE_STATIC))
+			return FALSE;
+
+		return SQLITE_DONE == inifinite_sqlite3_step(db.deleter(lpAppName));
+	}
+	
 	BOOL sqlWritePrivateProfileString(
 		LPCWSTR lpAppName,
 		LPCWSTR lpKeyName,
 		LPCWSTR lpString,
 		LPCWSTR lpFileName)
 	{
-
 		if (!IsFileExistsW(lpFileName))
 		{
 			if (!createDB(lpFileName, lpAppName))
@@ -357,77 +449,63 @@ namespace Ambiesoft {
 			}
 		}
 
-		sqlite3* pDB = NULL;
-
-		if (SQLITE_OK != sqlite3_open16(lpFileName, &pDB))
+		CSqlFile db(lpFileName);
+		if (!db.ok())
 			return FALSE;
-		stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
 
-		// sqlite3_busy_timeout(pDB, 3000);
+		stTransactionScope stts(db.get());
 
-		int sqRet = 0;
+		if (!sqlWriteDeleteProfileStringInternal(
+			lpAppName,
+			lpKeyName,
+			db))
 		{
-			stTransactionScope stts(pDB);
-
-			sqlite3_stmt* pStmtInsert = NULL;
-			if (pStmtInsert == NULL)
-			{
-				LPCWSTR pKata = L"INSERT OR REPLACE INTO [%s] VALUES (?, ?);";
-				LPWSTR p = (LPWSTR)malloc(wcslen(pKata) * 2 + wcslen(lpAppName) * 2 + 2);
-				stlsoft::scoped_handle<void*> mahh((void*)p, free);
-				wsprintf(p, pKata, lpAppName);
-				int ret = infinite_sqlite3_prepare16_v2(pDB,
-					p,
-					-1,
-					&pStmtInsert,
-					0);
-				if (SQLITE_OK != ret)
-					return FALSE;
-
-				if (!pStmtInsert)
-					return FALSE;
-			}
-			stlsoft::scoped_handle<sqlite3_stmt*> mastml(pStmtInsert, sqlite3_finalize);
-
-
-			if (SQLITE_OK != sqlite3_reset(pStmtInsert))
-				return FALSE;
-
-			int index = 0;
-			if (SQLITE_OK != sqlite3_bind_text16(pStmtInsert, ++index, lpKeyName, -1, SQLITE_STATIC))
-				return FALSE;
-			if (SQLITE_OK != sqlite3_bind_text16(pStmtInsert, ++index, lpString, -1, SQLITE_STATIC))
-				return FALSE;
-
-			sqRet = inifinite_sqlite3_step(pStmtInsert);
-
-			assert(sqRet == SQLITE_DONE);
+			return FALSE;
 		}
-
-		/*
-			if(SQLITE_DONE != sqRet)
-			{
-			stTransactionScope stts(pDB);
-
-			sqlite3_stmt* pStmtUpdate = getUpdateStatement(pDB,lpAppName);
-
-			if(SQLITE_OK != sqlite3_reset(pStmtUpdate))
-			return FALSE;
-
-			int index=0;
-			if(SQLITE_OK != sqlite3_bind_text16(pStmtUpdate, ++index, lpString, -1, SQLITE_STATIC))
-			return FALSE;
-
-			if(SQLITE_OK != sqlite3_bind_text16(pStmtUpdate, ++index, lpKeyName, -1, SQLITE_STATIC))
-			return FALSE;
-
-			if(SQLITE_DONE != sqlite3_step(pStmtUpdate))
-			return FALSE;
-			}
-			*/
-		return SQLITE_DONE == sqRet;
+		return sqlWritePrivateProfileStringInternal(
+			lpAppName,
+			lpKeyName,
+			lpString,
+			db);
 	}
 
+
+
+	BOOL sqlGetPrivateProfileStringInternal(
+		LPCWSTR lpAppName,
+		LPCWSTR lpKeyName,
+		LPCWSTR lpDefault,
+		LPWSTR lpReturnedString,
+		DWORD nSize,
+		CSqlFile& db)
+	{
+
+		if (!db.ok())
+			return FALSE;
+
+		stTransactionScope stts(db.get());
+
+		if (SQLITE_OK != sqlite3_reset(db.selector(lpAppName)))
+			return FALSE;
+
+		int index = 0;
+		if (SQLITE_OK != sqlite3_bind_text16(db.selector(lpAppName), ++index, lpKeyName, -1, SQLITE_STATIC))
+			return FALSE;
+
+		int sqRet = inifinite_sqlite3_step(db.selector(lpAppName));
+		if (sqRet != SQLITE_ROW && sqRet != SQLITE_DONE)
+		{
+			return FALSE;
+		}
+
+		LPWSTR pRet = (LPWSTR)sqlite3_column_text16(db.selector(lpAppName), 0);
+		if (!pRet)
+			return FALSE;
+
+		lstrcpyn(lpReturnedString, pRet, nSize);
+
+		return TRUE;
+	}
 	BOOL sqlGetPrivateProfileString(
 		LPCWSTR lpAppName,
 		LPCWSTR lpKeyName,
@@ -436,63 +514,29 @@ namespace Ambiesoft {
 		DWORD nSize,
 		LPCWSTR lpFileName)
 	{
-		lstrcpyn(lpReturnedString, lpDefault, nSize);
+		if (!lpReturnedString)
+			return FALSE;
+		if (lpDefault)
+			lstrcpyn(lpReturnedString, lpDefault, nSize);
+		else
+			lpReturnedString[0] = 0;
 
 		if (!IsFileExistsW(lpFileName))
 		{
 			return FALSE;
 		}
 
-		sqlite3* pDB = NULL;
+		CSqlFile db(lpFileName);
 
-		if (SQLITE_OK != sqlite3_open16(lpFileName, &pDB))
-			return FALSE;
-		stlsoft::scoped_handle<sqlite3*> ma(pDB, sqlite3_close);
-
-		stTransactionScope stts(pDB);
-
-		sqlite3_stmt* pStmtSelect = NULL;
-		if (!pStmtSelect)
-		{
-			LPCWSTR pKata = L"SELECT c2 FROM [%s] WHERE c1 = ?;";
-			LPWSTR p = (LPWSTR)malloc(wcslen(pKata) * 2 + wcslen(lpAppName) * 2 + 2);
-			stlsoft::scoped_handle<void*> mahh((void*)p, free);
-			wsprintf(p, pKata, lpAppName);
-			int ret = infinite_sqlite3_prepare16_v2(pDB,
-				p,
-				-1,
-				&pStmtSelect,
-				0);
-
-			if (ret != SQLITE_OK)
-				return FALSE;
-
-			if (!pStmtSelect)
-				return FALSE;
-		}
-		stlsoft::scoped_handle<sqlite3_stmt*> mastml(pStmtSelect, sqlite3_finalize);
-
-		if (SQLITE_OK != sqlite3_reset(pStmtSelect))
-			return FALSE;
-
-		int index = 0;
-		if (SQLITE_OK != sqlite3_bind_text16(pStmtSelect, ++index, lpKeyName, -1, SQLITE_STATIC))
-			return FALSE;
-
-		int sqRet = inifinite_sqlite3_step(pStmtSelect);
-		if (sqRet != SQLITE_ROW && sqRet != SQLITE_DONE)
-		{
-			return FALSE;
-		}
-
-		LPWSTR pRet = (LPWSTR)sqlite3_column_text16(pStmtSelect, 0);
-		if (!pRet)
-			return FALSE;
-
-		lstrcpyn(lpReturnedString, pRet, nSize);
-
-		return TRUE;
+		return  sqlGetPrivateProfileStringInternal(
+			lpAppName,
+			lpKeyName,
+			lpDefault,
+			lpReturnedString,
+			nSize,
+			db);
 	}
+
 
 	BOOL sqlWritePrivateProfileInt(
 		LPCWSTR lpAppName,
@@ -542,18 +586,9 @@ namespace Ambiesoft {
 
 
 
-	static wstring tostring(size_t i)
-	{
-		WCHAR szT[8];
-		wsprintf(szT, L"%d", i);
-		return szT;
-	}
 
-#if (_MSC_VER <= 1400)
-	typedef WCHAR* RPC_WSTR;
-#endif
 
-	static wstring getuuidstring()
+	static wstring GetUuidString()
 	{
 		UUID uuid;
 		UuidCreate(&uuid);
@@ -563,9 +598,13 @@ namespace Ambiesoft {
 		RpcStringFreeW((RPC_WSTR*)&pS);
 		return ret;
 	}
-#pragma comment(lib,"Rpcrt4.lib")
 
-	BOOL sqlGetPrivateProfileStringArray(LPCWSTR pApp, LPCWSTR pKey, vector<wstring>& ss, LPCWSTR pIni)
+
+	BOOL sqlGetPrivateProfileStringArray(
+		LPCWSTR pApp,
+		LPCWSTR pKey, 
+		vector<wstring>& ss, 
+		LPCWSTR pIni)
 	{
 		if (pApp == NULL || pApp[0] == 0)
 			return FALSE;
@@ -573,44 +612,71 @@ namespace Ambiesoft {
 		if (pKey == NULL || pKey[0] == 0)
 			return FALSE;
 
-		const int buffcharsize = 4096;
-		TCHAR* pBuff = (TCHAR*)malloc(buffcharsize * sizeof(TCHAR));
-		for (size_t i = 0;; ++i)
+		CSqlFile db(pIni);
+		if (!db.ok())
+			return FALSE;
+
+
+		stTransactionScope stts(db.get());
+
+		if (SQLITE_OK != sqlite3_reset(db.selector(pApp)))
+			return FALSE;
+
+		int index = 0;
+		if (SQLITE_OK != sqlite3_bind_text16(db.selector(pApp), ++index, pKey, -1, SQLITE_STATIC))
+			return FALSE;
+
+		do
 		{
-			wstring key(pKey);
-			if (i != 0)
-				key += tostring(i);
+			int sqRet = inifinite_sqlite3_step(db.selector(pApp));
 
-			wstring us = getuuidstring();
-			DWORD ret = sqlGetPrivateProfileString(
-				pApp,
-				key.c_str(),
-				us.c_str(),
-				pBuff,
-				buffcharsize,
-				pIni);
-
-			if (us == pBuff)
+			if (sqRet == SQLITE_ROW)
+			{
+				LPWSTR pRet = (LPWSTR)sqlite3_column_text16(db.selector(pApp), 0);
+				if (!pRet)
+					ss.push_back(wstring());
+				else
+					ss.push_back(pRet);
+			}
+			else if (sqRet == SQLITE_DONE)
+			{
 				break;
-
-			ss.push_back(pBuff);
-		}
-		free(pBuff);
+			}
+			else {
+				return FALSE;
+			}
+		} while (true);
 		return TRUE;
 	}
-	BOOL sqlWritePrivateProfileStringArray(LPCWSTR pApp, LPCWSTR pKey, vector<wstring>& ss, LPCWSTR pIni)
+	BOOL sqlWritePrivateProfileStringArray(
+		LPCWSTR pApp,
+		LPCWSTR pKey, 
+		vector<wstring>& ss,
+		LPCWSTR pIni)
 	{
+		CSqlFile db(pIni);
+		if (!db.ok())
+			return FALSE;
+
+		stTransactionScope stts(db.get());
+
+		if (!sqlWriteDeleteProfileStringInternal(
+			pApp,
+			pKey,
+			db))
+		{
+			return FALSE;
+		}
+
 		BOOL bFailed = FALSE;
 		const size_t count = ss.size();
 		for (size_t i = 0; i < count; ++i)
 		{
-			wstring key(pKey);
-			if (i != 0)
-			{
-				key += tostring(i);
-			}
-
-			bFailed |= !sqlWritePrivateProfileString(pApp, key.c_str(), ss[i].c_str(), pIni);
+			bFailed |= !sqlWritePrivateProfileStringInternal(
+				pApp,
+				pKey,
+				ss[i].c_str(),
+				db);
 		}
 		return !bFailed;
 	}

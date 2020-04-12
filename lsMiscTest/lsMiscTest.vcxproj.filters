@@ -411,6 +411,9 @@
     <ClCompile Include="..\FindTopWindowFromPID.cpp">
       <Filter>lsMisc</Filter>
     </ClCompile>
+    <ClCompile Include="gtestISqlPrivateProfile.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">

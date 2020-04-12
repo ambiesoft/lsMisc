@@ -366,6 +366,7 @@
     <ClCompile Include="gtestFindTopWindowFromPID.cpp" />
     <ClCompile Include="gtestGetAppVersion.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />
+    <ClCompile Include="gtestISqlPrivateProfile.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
     <ClCompile Include="gtestRunCommandGetResult.cpp" />
     <ClCompile Include="gtestStdosd_literal.cpp">
