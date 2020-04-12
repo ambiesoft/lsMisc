@@ -56,6 +56,21 @@ namespace Ambiesoft {
 	using std::wstring;
 	using std::vector;
 
+	static int callbackt(void *pString, int argc, char **argv, char **azColName)
+	{
+		std::string* pResult = (std::string*)pString;
+		for (int i = 0; i < argc; i++)
+		{
+			std::string strt;
+			strt = argv[i] ? argv[i] : "NULL";
+			(*pResult) += strt;
+			if ((i + 1) < argc)
+				(*pResult) += "\t";
+		}
+		(*pResult) += "\r\n";
+		return 0;
+	}
+
 	int infinite_sqlite3_prepare16_v2(
 		sqlite3* db,              /* Database handle. */
 		LPCWSTR zSql,         /* UTF-16 encoded SQL statement. */
@@ -93,6 +108,23 @@ namespace Ambiesoft {
 		return ret;
 	}
 
+	class CSqlError
+	{
+		char* pError_ = nullptr;
+	public:
+		CSqlError() {}
+		~CSqlError() {
+			if (pError_)
+				sqlite3_free(pError_);
+		}
+		char** address() {
+			return &pError_;
+		}
+		bool isError() {
+			return pError_ != nullptr;
+		}
+	};
+
 
 	class CSqlFile
 	{
@@ -104,8 +136,52 @@ namespace Ambiesoft {
 		CSqlFile(const CSqlFile&) = delete;
 		CSqlFile(CSqlFile&&) = delete;
 	public:
-		CSqlFile(LPCWSTR pFileName) {
-			sqlite3_open16(pFileName, &pFile_);
+		CSqlFile(LPCWSTR pFileName, LPCWSTR pTableNameW, bool bCreate) {
+			const std::string tableName = toStdUtf8String(pTableNameW);
+			if (!IsFileExistsW(pFileName))
+			{
+				if (!bCreate)
+					return;
+
+				if (SQLITE_OK != sqlite3_open16(pFileName, &pFile_))
+					return;
+				
+				std::string sql = stdFormat(
+					"CREATE TABLE [%s] ( "
+					"[c1] TEXT, "
+					"[c2] TEXT "
+					");",
+					// "PRIMARY KEY([c1]));",
+					tableName.c_str());
+				CSqlError error;
+				std::string dummy;
+				if (SQLITE_OK != sqlite3_exec(get(),
+					sql.c_str(),
+					callbackt,
+					&dummy,
+					error.address()) || error.isError())
+				{
+					assert(false);
+				}
+			}
+
+			if (!pFile_)
+				if (SQLITE_OK != sqlite3_open16(pFileName, &pFile_))
+					return;
+			
+			CSqlError error;
+			std::string sql = stdFormat(
+				"ALTER TABLE [%s] ADD COLUMN dorder INT;",
+				tableName.c_str());
+
+			std::string dummy;
+			sqlite3_exec(get(),
+				sql.c_str(),
+				callbackt,
+				&dummy,
+				error.address());
+			
+			// TODO check table
 		}
 		~CSqlFile() {
 			for (auto&& stmt : stmtInserts_)
@@ -200,83 +276,40 @@ namespace Ambiesoft {
 		}
 	};
 
-	class CSqlError
-	{
-		char* pError_ = nullptr;
-	public:
-		CSqlError() {}
-		~CSqlError() {
-			if (pError_)
-				sqlite3_free(pError_);
-		}
-		char** address() {
-			return &pError_;
-		}
-		bool isError() {
-			return pError_ != nullptr;
-		}
-	};
 	static void cfree(char*p)
 	{
 		free((void*)p);
 	}
 
-	static int callbackt(void *pString, int argc, char **argv, char **azColName)
-	{
-		std::string* pResult = (std::string*)pString;
-		for (int i = 0; i < argc; i++)
-		{
-			std::string strt;
-			strt = argv[i] ? argv[i] : "NULL";
-			(*pResult) += strt;
-			if ((i + 1) < argc)
-				(*pResult) += "\t";
-		}
-		(*pResult) += "\r\n";
-		return 0;
-	}
 
 	
-	static BOOL createDB(LPCWSTR pDBPath, LPCWSTR pTableNameW)
-	{
-		const std::string tableName = toStdUtf8String(pTableNameW);
-		std::string strResult;
-		CSqlFile db(pDBPath);
-		
-		if (!db.ok())
-			return FALSE;
+	//static BOOL createDB(LPCWSTR pDBPath, LPCWSTR pTableNameW)
+	//{
+	//	const std::string tableName = toStdUtf8String(pTableNameW);
+	//	std::string strResult;
+	//	CSqlFile db(pDBPath, pTableNameW);
+	//	
+	//	if (!db.ok())
+	//		return FALSE;
 
-		std::string sql = stdFormat(
-			"CREATE TABLE [%s] ( "
-			"[c1] TEXT, "
-			"[c2] TEXT "
-			");",
-			// "PRIMARY KEY([c1]));",
-			tableName.c_str());
-		CSqlError error;
-		if (SQLITE_OK != sqlite3_exec(db.get(),
-			sql.c_str(),
-			callbackt,
-			&strResult,
-			error.address()) || error.isError())
-		{
-			return FALSE;
-		}
-
-		sql = stdFormat(
-			"ALTER TABLE [%s] ADD COLUMN dorder INT;",
-			tableName.c_str());
-		if (SQLITE_OK != sqlite3_exec(db.get(),
-			sql.c_str(),
-			callbackt,
-			&strResult,
-			error.address()) || error.isError())
-		{
-			return FALSE;
-		}
-
-		return TRUE;
-	}
+	//	std::string sql = stdFormat(
+	//		"CREATE TABLE [%s] ( "
+	//		"[c1] TEXT, "
+	//		"[c2] TEXT "
+	//		");",
+	//		// "PRIMARY KEY([c1]));",
+	//		tableName.c_str());
+	//	CSqlError error;
+	//	if (SQLITE_OK != sqlite3_exec(db.get(),
+	//		sql.c_str(),
+	//		callbackt,
+	//		&strResult,
+	//		error.address()) || error.isError())
+	//	{
+	//		return FALSE;
+	//	}
+	//	return TRUE;
+	//}
 
 
 	
@@ -441,15 +474,15 @@ namespace Ambiesoft {
 		LPCWSTR lpString,
 		LPCWSTR lpFileName)
 	{
-		if (!IsFileExistsW(lpFileName))
-		{
-			if (!createDB(lpFileName, lpAppName))
-			{
-				return FALSE;
-			}
-		}
+		//if (!IsFileExistsW(lpFileName))
+		//{
+		//	if (!createDB(lpFileName, lpAppName))
+		//	{
+		//		return FALSE;
+		//	}
+		//}
 
-		CSqlFile db(lpFileName);
+		CSqlFile db(lpFileName,lpAppName,true);
 		if (!db.ok())
 			return FALSE;
 
@@ -526,7 +559,7 @@ namespace Ambiesoft {
 			return FALSE;
 		}
 
-		CSqlFile db(lpFileName);
+		CSqlFile db(lpFileName,lpAppName,false);
 
 		return  sqlGetPrivateProfileStringInternal(
 			lpAppName,
@@ -612,7 +645,7 @@ namespace Ambiesoft {
 		if (pKey == NULL || pKey[0] == 0)
 			return FALSE;
 
-		CSqlFile db(pIni);
+		CSqlFile db(pIni,pApp,false);
 		if (!db.ok())
 			return FALSE;
 
@@ -654,7 +687,7 @@ namespace Ambiesoft {
 		vector<wstring>& ss,
 		LPCWSTR pIni)
 	{
-		CSqlFile db(pIni);
+		CSqlFile db(pIni,pApp,true);
 		if (!db.ok())
 			return FALSE;
 
