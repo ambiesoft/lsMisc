@@ -4,15 +4,13 @@
 
 #include <string>
 
-#include "../sqlite3.h"
-
 #include "gtest/gtest.h"
 
-
+#include "../sqlite3.h"
 #include "../sqliteserialize.h"
-using namespace Ambiesoft;
-
 #include "../stdosd/stdosd.h"
+
+using namespace Ambiesoft;
 using namespace Ambiesoft::stdosd;
 using namespace std;
 
@@ -74,11 +72,10 @@ static void CreateWCFindTestDB(bool bAddData = false)
 
 	EXPECT_EQ(SQLITE_OK, sqlite3_close(pDB));
 }
-static void testString(LPCWSTR pString)
+static void testString(LPCWSTR pApp, LPCWSTR pString)
 {
 	wstring iniFile = GetIniFile();
 
-	LPCWSTR pApp = L"MyApp";
 	LPCWSTR pKey = L"MyKey";
 
 	EXPECT_TRUE(!!sqlWritePrivateProfileString(pApp, pKey, pString, iniFile.c_str()));
@@ -114,15 +111,14 @@ TEST(SqlPrivateProfile, BasicString)
 	};
 	for (auto&& pString : ppStrings)
 	{
-		testString(pString);
+		testString(L"vvv", pString);
 	}
 }
 
-static void testInt(const int idata)
+static void testInt(LPCWSTR pApp, const int idata)
 {
 	wstring iniFile = GetIniFile();
 
-	LPCWSTR pApp = L"MyApp";
 	LPCWSTR pKey = L"MyKey";
 	EXPECT_TRUE(!!sqlWritePrivateProfileInt(pApp, pKey, idata, iniFile.c_str()));
 
@@ -132,16 +128,20 @@ static void testInt(const int idata)
 }
 TEST(SqlPrivateProfile, BasicInt)
 {
-	int idatas[] = {
-		-1,-2,0,1000,-123555,
+	std::map<std::wstring, int> idatas = {
+		{L"Rwei",-1},
+		{L"Jack",-2},
+		{L"Jfwef",0},
+		{L"wefwek",1000},
+		{L"verk",-34542},
+		{L"3434k",-2},
 	};
-	for (int i : idatas)
-		testInt(i);
+	for (auto&& a : idatas)
+		testInt(a.first.c_str(), a.second);
 }
 
-void testArray(vector<wstring> ss)
+void testArray(LPCWSTR pApp, vector<wstring> ss)
 {
-	LPCWSTR pApp = L"MyApp";
 	LPCWSTR pKey = L"MyKey";
 	
 	EXPECT_TRUE(!!sqlWritePrivateProfileStringArray(pApp, pKey, ss, GetIniFile().c_str()));
@@ -153,18 +153,38 @@ void testArray(vector<wstring> ss)
 
 TEST(SqlPrivateProfile, BasicStringArray)
 {
-	testArray({});
-	testArray({ L"" });
-	testArray({ L"",L"" });
-	testArray({ L"aaa",L"bbb" });
-	testArray({ L"aaa",L"bbb",L"cc c  ccc",L"deeee",L"fafeojfewoj",L"",L"vvv" });
+	map<wstring, vector<wstring>> datas = {
+		{
+			L"zzzz",
+			{},
+		},
+		{
+			L"fwefwef",
+			{ L"" },
+		},
+		{
+			L"vadrewrw",
+			{ L"",L"" },
+		},
+		{
+			L"vvadf",
+			{ L"aaa",L"bbb" },
+		},
+		{
+			L"zzzwefeez",
+			{ L"aaa",L"bbb",L"cc c  ccc",L"deeee",L"fafeojfewoj",L"",L"vvv" },
+		},
+	};
+
+	for (auto&& a : datas)
+		testArray(a.first.c_str(), a.second);
 }
 
 TEST(SqlPrivateProfile, SameKey)
 {
-	testArray({ L"aaa",L"bbb" });
-	testString(L"nnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
-	testArray({ L"aaa",L"vvvv",L"jfffffwejfowejfowjfj" });
+	testArray(L"samekey", { L"aaa",L"bbb" });
+	testString(L"samekey", L"nnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
+	testArray(L"samekey", { L"aaa",L"vvvv",L"jfffffwejfowejfowjfj" });
 }
 
 TEST(SqlPrivateProfile, WCFindVer1Empty)
@@ -216,4 +236,60 @@ TEST(SqlPrivateProfile, WCFindVer1WithData)
 			GetTestIniFile().c_str());
 		EXPECT_STREQ(L"222", buff);
 	}
+}
+
+
+TEST(SqlPrivateProfile, LongString)
+{
+	//CreateWCFindTestDB(true);
+
+
+	//char buff[3];
+	//stdGetRandomString(buff, 3);
+	wchar_t buffw[1024];
+	stdGetRandomString(buffw, _countof(buffw));
+	
+	EXPECT_TRUE(!!sqlWritePrivateProfileString(L"Option", L"random", buffw,
+		GetTestIniFile().c_str()));
+	wchar_t buffw2[1024];
+	EXPECT_TRUE(!!sqlGetPrivateProfileString(L"Option", L"random", L"", 
+		buffw2, _countof(buffw2),
+		GetTestIniFile().c_str()));
+	EXPECT_EQ(wcslen(buffw), 1023);
+	EXPECT_STREQ(buffw, buffw2);
+}
+
+
+TEST(SqlPrivateProfile, LongStringArray)
+{
+	vector<wstring> vIn;
+	vIn.reserve(10000);
+	for (int i = 0; i < 10000; ++i)
+	{
+		vIn.push_back(to_wstring(i));
+	}
+	EXPECT_TRUE(!!sqlWritePrivateProfileStringArray(
+		L"Option",
+		L"longstringarray",
+		vIn,
+		GetTestIniFile().c_str()));
+	vector<wstring> vOut;
+	EXPECT_TRUE(!!sqlGetPrivateProfileStringArray(
+		L"Option",
+		L"longstringarray",
+		vOut,
+		GetTestIniFile().c_str()));
+	EXPECT_EQ(vIn, vOut);
+}
+TEST(SqlPrivateProfile, StrangeString)
+{
+	static const wchar_t p[] = { 1,2,3,0 };
+	EXPECT_TRUE(!!sqlWritePrivateProfileString(L"Option", L"random", p,
+		GetTestIniFile().c_str()));
+	wchar_t buffw2[1024];
+	EXPECT_TRUE(!!sqlGetPrivateProfileString(L"Option", L"random", L"",
+		buffw2, _countof(buffw2),
+		GetTestIniFile().c_str()));
+	EXPECT_STREQ(buffw2, p);
+
 }

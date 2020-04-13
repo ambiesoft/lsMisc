@@ -147,29 +147,19 @@ namespace Ambiesoft {
 				if (SQLITE_OK != sqlite3_open16(pFileName, &pFile_))
 					return;
 
-				std::string sql = stdFormat(
-					"CREATE TABLE [%s] ( "
-					"[c1] TEXT, "
-					"[c2] TEXT "
-					");",
-					// "PRIMARY KEY([c1]));",
-					tableName.c_str());
-				CSqlError error;
-				std::string dummy;
-				if (SQLITE_OK != sqlite3_exec(get(),
-					sql.c_str(),
-					callbackt,
-					&dummy,
-					error.address()) || error.isError())
-				{
-					assert(false);
-				}
+				if (!CreateTable(tableName.c_str()))
+					return;
 			}
 
 			if (!pFile_)
 				if (SQLITE_OK != sqlite3_open16(pFileName, &pFile_))
 					return;
 
+			std::string sql;
+			// check table exists
+			if (!CreateTable(tableName.c_str()))
+				return;
+				
 			if (!RemovePK(tableName.c_str()))
 			{
 				Close();
@@ -177,7 +167,7 @@ namespace Ambiesoft {
 			}
 
 			CSqlError error;
-			std::string sql = stdFormat(
+			sql = stdFormat(
 				"ALTER TABLE [%s] ADD COLUMN dorder INT;",
 				tableName.c_str());
 
@@ -215,6 +205,42 @@ namespace Ambiesoft {
 				pRet,
 				error.address());
 		}
+		bool CreateTable(LPCSTR pTableName) {
+			std::string sql = stdFormat(
+				"CREATE TABLE IF NOT EXISTS [%s] ( "
+				"[c1] TEXT, "
+				"[c2] TEXT "
+				");",
+				// "PRIMARY KEY([c1]));",
+				pTableName);
+			CSqlError error;
+			std::string dummy;
+			if (SQLITE_OK != sqlite3_exec(get(),
+				sql.c_str(),
+				callbackt,
+				&dummy,
+				error.address()) || error.isError())
+			{
+				return false;
+			}
+			return true;
+		}
+		//bool CheckTableExists(LPCSTR pTableName) {
+		//	std::string ret;
+		//	if (!Query(stdFormat(
+		//		"SELECT name FROM sqlite_master WHERE type='table' AND name='{%s}';",
+		//		pTableName).c_str(),
+		//		&ret)) {
+		//		return false;
+		//	}
+		//	if (!ret.empty() && ret[0] == 1)
+		//		return true;
+		//	
+		//	if (!CreateTable(pTableName))
+		//		return false;
+
+		//	return true;
+		//}
 		bool RemovePK(LPCSTR pTableName) {
 			std::string ret;
 			if (!Query("SELECT "

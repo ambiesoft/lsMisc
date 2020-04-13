@@ -1136,5 +1136,94 @@ namespace Ambiesoft {
 			return output.str();
 		}
 
+
+		template<class T>
+		void stdGetRandomString(T* s, const size_t len) {
+			static const T alphanum[] = {
+				stdLiterals<T>::N0,
+				stdLiterals<T>::N1,
+				stdLiterals<T>::N2,
+				stdLiterals<T>::N3,
+				stdLiterals<T>::N4,
+				stdLiterals<T>::N5,
+				stdLiterals<T>::N6,
+				stdLiterals<T>::N7,
+				stdLiterals<T>::N8,
+				stdLiterals<T>::N9,
+				stdLiterals<T>::NA,
+				stdLiterals<T>::NB,
+				stdLiterals<T>::NC,
+				stdLiterals<T>::ND,
+				stdLiterals<T>::NE,
+				stdLiterals<T>::NF,
+				stdLiterals<T>::NG,
+				stdLiterals<T>::NH,
+				stdLiterals<T>::NI,
+				stdLiterals<T>::NJ,
+				stdLiterals<T>::NK,
+				stdLiterals<T>::NL,
+				stdLiterals<T>::NM,
+				stdLiterals<T>::NN,
+				stdLiterals<T>::NO,
+				stdLiterals<T>::NP,
+				stdLiterals<T>::NQ,
+				stdLiterals<T>::NR,
+				stdLiterals<T>::NS,
+				stdLiterals<T>::NT,
+				stdLiterals<T>::NU,
+				stdLiterals<T>::NV,
+				stdLiterals<T>::NW,
+				stdLiterals<T>::NX,
+				stdLiterals<T>::NY,
+				stdLiterals<T>::NZ,
+				stdLiterals<T>::Na,
+				stdLiterals<T>::Nb,
+				stdLiterals<T>::Nc,
+				stdLiterals<T>::Nd,
+				stdLiterals<T>::Ne,
+				stdLiterals<T>::Nf,
+				stdLiterals<T>::Ng,
+				stdLiterals<T>::Nh,
+				stdLiterals<T>::Ni,
+				stdLiterals<T>::Nj,
+				stdLiterals<T>::Nk,
+				stdLiterals<T>::Nl,
+				stdLiterals<T>::Nm,
+				stdLiterals<T>::Nn,
+				stdLiterals<T>::No,
+				stdLiterals<T>::Np,
+				stdLiterals<T>::Nq,
+				stdLiterals<T>::Nr,
+				stdLiterals<T>::Ns,
+				stdLiterals<T>::Nt,
+				stdLiterals<T>::Nu,
+				stdLiterals<T>::Nv,
+				stdLiterals<T>::Nw,
+				stdLiterals<T>::Nx,
+				stdLiterals<T>::Ny,
+				stdLiterals<T>::Nz,
+			};
+
+			// for debug
+			//const char p[] = "0123456789"
+			//	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+			//	"abcdefghijklmnopqrstuvwxyz";
+			//for (size_t i = 0; i < (sizeof(p) - 1); ++i) {
+			//	assert(alphanum[i] == p[i]);
+			//}
+
+			if (len == 0)
+				return;
+			static bool initSeed = []() {
+				std::srand((unsigned)std::time(nullptr));
+				return true;
+			}();
+			size_t lenMinusOne = len - 1;
+			for (size_t i = 0; i < lenMinusOne; ++i) {
+				s[i] = alphanum[std::rand() % (_countof(alphanum))];
+			}
+			s[lenMinusOne] = 0;
+		}
+
 	}
 }

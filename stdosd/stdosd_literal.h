@@ -93,9 +93,57 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_CHAR(N8,'8');										\
 			STDOSD_DEFINE_CHAR(N9,'9');										\
 																			\
-			STDOSD_DEFINE_CHAR(Nz,'z');										\
 			STDOSD_DEFINE_CHAR(Na,'a');										\
+			STDOSD_DEFINE_CHAR(Nb,'b');										\
+			STDOSD_DEFINE_CHAR(Nc,'c');										\
+			STDOSD_DEFINE_CHAR(Nd,'d');										\
+			STDOSD_DEFINE_CHAR(Ne,'e');										\
+			STDOSD_DEFINE_CHAR(Nf,'f');										\
+			STDOSD_DEFINE_CHAR(Ng,'g');										\
+			STDOSD_DEFINE_CHAR(Nh,'h');										\
+			STDOSD_DEFINE_CHAR(Ni,'i');										\
+			STDOSD_DEFINE_CHAR(Nj,'j');										\
+			STDOSD_DEFINE_CHAR(Nk,'k');										\
+			STDOSD_DEFINE_CHAR(Nl,'l');										\
+			STDOSD_DEFINE_CHAR(Nm,'m');										\
+			STDOSD_DEFINE_CHAR(Nn,'n');										\
+			STDOSD_DEFINE_CHAR(No,'o');										\
+			STDOSD_DEFINE_CHAR(Np,'p');										\
+			STDOSD_DEFINE_CHAR(Nq,'q');										\
+			STDOSD_DEFINE_CHAR(Nr,'r');										\
+			STDOSD_DEFINE_CHAR(Ns,'s');										\
+			STDOSD_DEFINE_CHAR(Nt,'t');										\
+			STDOSD_DEFINE_CHAR(Nu,'u');										\
+			STDOSD_DEFINE_CHAR(Nv,'v');										\
+			STDOSD_DEFINE_CHAR(Nw,'w');										\
+			STDOSD_DEFINE_CHAR(Nx,'x');										\
+			STDOSD_DEFINE_CHAR(Ny,'y');										\
+			STDOSD_DEFINE_CHAR(Nz,'z');										\
 			STDOSD_DEFINE_CHAR(NA,'A');										\
+			STDOSD_DEFINE_CHAR(NB,'B');										\
+			STDOSD_DEFINE_CHAR(NC,'C');										\
+			STDOSD_DEFINE_CHAR(ND,'D');										\
+			STDOSD_DEFINE_CHAR(NE,'E');										\
+			STDOSD_DEFINE_CHAR(NF,'F');										\
+			STDOSD_DEFINE_CHAR(NG,'G');										\
+			STDOSD_DEFINE_CHAR(NH,'H');										\
+			STDOSD_DEFINE_CHAR(NI,'I');										\
+			STDOSD_DEFINE_CHAR(NJ,'J');										\
+			STDOSD_DEFINE_CHAR(NK,'K');										\
+			STDOSD_DEFINE_CHAR(NL,'L');										\
+			STDOSD_DEFINE_CHAR(NM,'M');										\
+			STDOSD_DEFINE_CHAR(NN,'N');										\
+			STDOSD_DEFINE_CHAR(NO,'O');										\
+			STDOSD_DEFINE_CHAR(NP,'P');										\
+			STDOSD_DEFINE_CHAR(NQ,'Q');										\
+			STDOSD_DEFINE_CHAR(NR,'R');										\
+			STDOSD_DEFINE_CHAR(NS,'S');										\
+			STDOSD_DEFINE_CHAR(NT,'T');										\
+			STDOSD_DEFINE_CHAR(NU,'U');										\
+			STDOSD_DEFINE_CHAR(NV,'V');										\
+			STDOSD_DEFINE_CHAR(NW,'W');										\
+			STDOSD_DEFINE_CHAR(NX,'X');										\
+			STDOSD_DEFINE_CHAR(NY,'Y');										\
 			STDOSD_DEFINE_CHAR(NZ,'Z');										\
 																			\
 			STDOSD_DEFINE_CHAR(NSlash			,'/');						\
