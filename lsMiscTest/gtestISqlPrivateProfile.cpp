@@ -4,6 +4,8 @@
 
 #include <string>
 
+#include "../sqlite3.h"
+
 #include "gtest/gtest.h"
 
 
@@ -19,7 +21,59 @@ static wstring GetIniFile()
 	return stdCombinePath(stdGetParentDirectory(stdGetModuleFileName<wchar_t>()),
 		stdGetFileNameWitoutExtension(stdGetModuleFileName<wchar_t>()) + L".sqlite");
 }
+static wstring GetTestIniFile()
+{
+	return stdCombinePath(stdGetParentDirectory(stdGetModuleFileName<wchar_t>()),
+		L"lsMiscTest.sqlite");
+}
 
+static int sqlcallback(void* pString, int argc, char** argv, char** azColName)
+{
+	std::string* pResult = (std::string*)pString;
+	for (int i = 0; i < argc; i++)
+	{
+		std::string strt;
+		strt = argv[i] ? argv[i] : "NULL";
+		(*pResult) += strt;
+		if ((i + 1) < argc)
+			(*pResult) += "\t";
+	}
+	(*pResult) += "\r\n";
+	return 0;
+}
+static void CreateWCFindTestDB(bool bAddData = false)
+{
+	DeleteFile(GetTestIniFile().c_str());
+	EXPECT_FALSE(PathFileExists(GetTestIniFile().c_str()));
+
+	sqlite3* pDB = nullptr;
+	EXPECT_EQ(SQLITE_OK, sqlite3_open16(GetTestIniFile().c_str(), &pDB));
+	EXPECT_TRUE(!!pDB);
+
+	string s;
+	char* p = nullptr;
+	string sql = "CREATE TABLE [Option] ( [c1] TEXT, [c2] TEXT,PRIMARY KEY([c1]))";
+	EXPECT_EQ(SQLITE_OK, sqlite3_exec(pDB,
+		sql.c_str(),
+		sqlcallback,
+		&s,
+		&p));
+
+	if (bAddData) {
+		EXPECT_EQ(SQLITE_OK, sqlite3_exec(pDB,
+			"INSERT INTO Option (c1,c2) VALUES('aaa', '111');",
+			sqlcallback,
+			&s,
+			&p));
+		EXPECT_EQ(SQLITE_OK, sqlite3_exec(pDB,
+			"INSERT INTO Option (c1,c2) VALUES(\"bbb\", \"222\");",
+			sqlcallback,
+			&s,
+			&p));
+	}
+
+	EXPECT_EQ(SQLITE_OK, sqlite3_close(pDB));
+}
 static void testString(LPCWSTR pString)
 {
 	wstring iniFile = GetIniFile();
@@ -111,4 +165,55 @@ TEST(SqlPrivateProfile, SameKey)
 	testArray({ L"aaa",L"bbb" });
 	testString(L"nnnnnnnnnnnnnnn nnnnnnnnnnnnnnnnnnnnnnnnnnnnnn");
 	testArray({ L"aaa",L"vvvv",L"jfffffwejfowejfowjfj" });
+}
+
+TEST(SqlPrivateProfile, WCFindVer1Empty)
+{
+	{
+		CreateWCFindTestDB();
+
+		wchar_t buff[256];
+		sqlGetPrivateProfileString(
+			L"Option",
+			L"KEY",
+			L"",
+			buff,
+			_countof(buff),
+			GetTestIniFile().c_str());
+		EXPECT_STREQ(L"", buff);
+	}
+	{
+		CreateWCFindTestDB();
+
+		wchar_t buff[256];
+		EXPECT_TRUE(!!sqlWritePrivateProfileString(
+			L"Option",
+			L"KEY",
+			L"abc",
+			GetTestIniFile().c_str()));
+		EXPECT_TRUE(!!sqlGetPrivateProfileString(
+			L"Option",
+			L"KEY",
+			L"",
+			buff,
+			_countof(buff),
+			GetTestIniFile().c_str()));
+		EXPECT_STREQ(L"abc", buff);
+	}
+}
+TEST(SqlPrivateProfile, WCFindVer1WithData)
+{
+	{
+		CreateWCFindTestDB(true);
+
+		wchar_t buff[256];
+		sqlGetPrivateProfileString(
+			L"Option",
+			L"bbb",
+			L"",
+			buff,
+			_countof(buff),
+			GetTestIniFile().c_str());
+		EXPECT_STREQ(L"222", buff);
+	}
 }
