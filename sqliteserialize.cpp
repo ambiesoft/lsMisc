@@ -145,7 +145,7 @@ namespace Ambiesoft {
 
 				if (SQLITE_OK != sqlite3_open16(pFileName, &pFile_))
 					return;
-				
+
 				std::string sql = stdFormat(
 					"CREATE TABLE [%s] ( "
 					"[c1] TEXT, "
@@ -168,7 +168,13 @@ namespace Ambiesoft {
 			if (!pFile_)
 				if (SQLITE_OK != sqlite3_open16(pFileName, &pFile_))
 					return;
-			
+
+			if (!RemovePK(tableName.c_str()))
+			{
+				Close();
+				return;
+			}
+
 			CSqlError error;
 			std::string sql = stdFormat(
 				"ALTER TABLE [%s] ADD COLUMN dorder INT;",
@@ -180,10 +186,10 @@ namespace Ambiesoft {
 				callbackt,
 				&dummy,
 				error.address());
-			
+
 			// TODO check table
 		}
-		~CSqlFile() {
+		void Close() {
 			for (auto&& stmt : stmtInserts_)
 				sqlite3_finalize(stmt.second);
 			for (auto&& stmt : stmtSelectors_)
@@ -195,6 +201,66 @@ namespace Ambiesoft {
 			{
 				SQLVERIFY(sqlite3_close(pFile_));
 			}
+			pFile_ = nullptr;
+		}
+		~CSqlFile() {
+			Close();
+		}
+		bool Query(LPCSTR pSQL, std::string* pRet) {
+			CSqlError error;
+			return SQLITE_OK == sqlite3_exec(get(),
+				pSQL,
+				callbackt,
+				pRet,
+				error.address());
+		}
+		bool RemovePK(LPCSTR pTableName) {
+			std::string ret;
+			if (!Query("SELECT "
+				"count(*) != 0 "
+				"FROM "
+				"sqlite_master AS m "
+				"JOIN "
+				"pragma_table_info(m.name) AS p "
+				"Where "
+				"p.pk = 1", &ret)) {
+				return false;
+			}
+			if (ret.empty())
+				return false;
+			if (ret[0] == '0')
+				return true;
+			if (ret[0] != '1')
+				return false;
+
+			// create newtable with data
+			string newtable = stdFormat("%s_new_%s", pTableName, "Fw34fVa3jfu89756etkzBdjfZErj32534kofasfj32ojf32g43sa73");
+			if (!Query(stdFormat("create table %s as select * from %s;",
+				newtable.c_str(), pTableName).c_str(),
+				&ret)) {
+				return false;
+			}
+
+			//// copy data to newtable
+			//string sql = stdFormat(
+			//	"INSERT INTO %s SELECT * FROM %s; ",
+			//	newtable.c_str(),pTableName);
+			//if (!Query(sql.c_str(), &ret))
+			//	return false;
+
+			// drop oldtable
+			if (!Query(stdFormat("drop table %s;", pTableName).c_str(),
+				&ret)) {
+				return false;
+			}
+
+			// rename newtable
+			if (!Query(stdFormat("ALTER TABLE `%s` RENAME TO `%s`",
+				newtable.c_str(), pTableName).c_str(), &ret)) {
+				return false;
+			}
+
+			return true;
 		}
 		bool ok() const {
 			return pFile_ != nullptr;
