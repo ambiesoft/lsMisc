@@ -26,11 +26,12 @@
 #include <cassert>
 #include <string>
 #include <memory>
-#include <stlsoft/smartptr/scoped_handle.hpp>
+#include <map>
+
+
 #include "sqlite3.h"
 #include "IsFileExists.h"
 #include "UTF16toUTF8.h"
-
 #include "stdosd/stdosd.h"
 
 #include "sqliteserialize.h"
@@ -644,6 +645,9 @@ namespace Ambiesoft {
 
 		if (pKey == NULL || pKey[0] == 0)
 			return FALSE;
+
+		if (!IsFileExists(pIni))
+			return TRUE;
 
 		CSqlFile db(pIni,pApp,false);
 		if (!db.ok())
