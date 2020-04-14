@@ -210,4 +210,35 @@ QString RemoveExtensionFromPath(QString path)
 
     return ret;
 }
+
+bool GetExeVersionCommon(const QString& exe, QString& errString, QString& outString)
+{
+    QProcess process;
+    process.setProgram(exe);
+    process.setArguments( QStringList() <<
+                          "-version"
+                          );
+
+    process.start(QProcess::ReadOnly);
+    if(!process.waitForStarted(-1))
+    {
+        errString = process.errorString();
+        return false;
+    }
+    if(!process.waitForFinished(-1))
+    {
+        errString = process.errorString();
+        return false;
+    }
+
+    if(0 != process.exitCode())
+    {
+        errString = process.errorString();
+        return false;
+    }
+
+    outString = process.readAllStandardOutput().data();
+    return true;
+}
+
 } // namespace AmbiesoftQt
