@@ -2,6 +2,7 @@
 #include <QString>
 #include <QDir>
 #include <QMessageBox>
+#include <QProcess>
 #include <QTextCodec>
 #include <QStorageInfo>
 
