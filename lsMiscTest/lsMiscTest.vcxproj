@@ -363,6 +363,7 @@
     <ClCompile Include="..\WritePrivateProfileInt.cpp" />
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
+    <ClCompile Include="gtestCHandle.cpp" />
     <ClCompile Include="gtestFindTopWindowFromPID.cpp" />
     <ClCompile Include="gtestGetAppVersion.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />

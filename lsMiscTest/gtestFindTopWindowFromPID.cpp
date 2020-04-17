@@ -29,7 +29,7 @@ TEST(FindTopWindowFromPID, Basic)
 	//DWORD retCommand, dwLE;
 	//string output, error;
 	//bool bReleaseMutexCalled = false;
-	HWND hWndFound = nullptr;
+	
 	string exe = stdCombinePath(stdGetParentDirectory(stdGetModuleFileName<char>()),
 		"ReturnMainWndHandle.exe");
 	EXPECT_TRUE(!!PathFileExistsA(exe.c_str()));
@@ -55,12 +55,13 @@ TEST(FindTopWindowFromPID, Basic)
 	//	nullptr, nullptr);
 	//EXPECT_EQ(dwLE, NO_ERROR);
 	WaitForInputIdle(process, INFINITE);
-	hWndFound = FindTopWindowFromPID(GetProcessId(process));
+	set<HWND> topHwnds = FindTopWindowFromPID(GetProcessId(process));
 	ReleaseMutex(hCloseMutex);
 	CloseHandle(process);
 	EXPECT_TRUE(!!b);
 
 	HWND hSgSet;
 	sgReturnHWD.get(hSgSet);
-	EXPECT_EQ(hWndFound, hSgSet);
+	// EXPECT_EQ(topHwnds.size(), 1);
+	EXPECT_TRUE(topHwnds.find(hSgSet) != topHwnds.end());
 }

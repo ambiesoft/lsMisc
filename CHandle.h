@@ -101,4 +101,65 @@ namespace Ambiesoft {
 			return h_;
 		}
 	};
+
+	class CHModule
+	{
+		HMODULE h_ = nullptr;
+		bool autoclose_ = false;
+		void Close() {
+			if (h_) {
+				FreeLibrary(h_);
+				h_ = nullptr;
+			}
+		}
+	public:
+		CHModule(HMODULE h, bool autoclose = true) :
+			h_(h),
+			autoclose_(autoclose) {};
+		~CHModule() {
+			if(autoclose_)
+				Close();
+		}
+		operator bool() const {
+			return !!h_;
+		}
+		operator HMODULE() const {
+			return h_;
+		}
+	};
+
+	template<class FUNC>
+	class CGetProcAddress
+	{
+		HMODULE h_ = nullptr;
+		FUNC func_ = nullptr;
+	public:
+		CGetProcAddress(){}
+		CGetProcAddress(const CGetProcAddress&) = delete;
+		CGetProcAddress(CGetProcAddress&& that) {
+			h_ = that.h_;
+			that.h_ = nullptr;
+			func_ = that.func_;
+			that.func_ = nullptr;
+		}
+		CGetProcAddress & operator=(const CGetProcAddress&) = delete;
+
+		CGetProcAddress(LPCWSTR pLibrary, LPCSTR pFunc) {
+			h_ = LoadLibrary(pLibrary);
+			if (!h_)
+				return;
+			func_ = (FUNC)GetProcAddress(h_, pFunc);
+		}
+		~CGetProcAddress() {
+			if (h_)
+				FreeLibrary(h_);
+		}
+		FUNC GetProc() const {
+			return func_;
+		}
+		operator bool() const {
+			return !!func_;
+		}
+
+	};
 }
