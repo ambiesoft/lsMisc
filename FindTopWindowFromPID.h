@@ -1,8 +1,8 @@
 
 #pragma once
 #include <Windows.h>
-
+#include <set>
 namespace Ambiesoft {
 	// https://stackoverflow.com/a/39290139
-	HWND FindTopWindowFromPID(DWORD pid);
+	std::set<HWND> FindTopWindowFromPID(DWORD pid);
 }
