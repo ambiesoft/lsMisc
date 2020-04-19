@@ -417,6 +417,9 @@
     <ClCompile Include="gtestCHandle.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="gtestSessionGlobalMemory.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">

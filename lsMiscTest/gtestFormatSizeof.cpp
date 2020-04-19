@@ -1,9 +1,13 @@
-#define NOMINMAX
+
 #include "stdafx.h"
 #include <string>
 #include <limits>
 #include <gtest/gtest.h>
 #include "../FormatSizeof.h"
+
+#ifndef NOMINMAX
+#error NOMINMAX must be defined.
+#endif
 
 #include "debug.h"
 

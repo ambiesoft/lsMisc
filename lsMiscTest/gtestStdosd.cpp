@@ -6,6 +6,9 @@
 #include <Windows.h>
 #endif
 
+#include <inttypes.h>
+#include <limits>
+
 #include "gtest/gtest.h"
 
 #include "../stdosd/stdosd.h"
@@ -232,6 +235,18 @@ TEST(stdosd, FormatW)
     EXPECT_STREQ(s.c_str(), L"---100---");
 }
 
+TEST(stdosd, int64)
+{
+	{
+		wstring s = stdFormat(L"%" PRId64, 0LL);
+		EXPECT_STREQ(s.c_str(), L"0");
+	}
+	{
+		wstring s = stdFormat(L"%" PRId64, numeric_limits<INT64>::max());
+		INT64 u = std::numeric_limits<INT64>::max();
+		EXPECT_STREQ(s.c_str(), to_wstring(u).c_str());
+	}
+}
 TEST(stdosd, hasEndingTest)
 {
 	EXPECT_FALSE(hasEnding((char*)nullptr, (char*)nullptr));

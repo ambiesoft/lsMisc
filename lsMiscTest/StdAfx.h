@@ -1,4 +1,4 @@
-#define NOMINMAX
+
 
 //#if _MSC_VER <= 1800
 //// Basically gtest leaks, so turn it off
@@ -24,6 +24,10 @@
 #define realloc(p,s) _realloc_dbg(p, s, _NORMAL_BLOCK, __FILE__, __LINE__)
 #define free(p)  _free_dbg(p, _NORMAL_BLOCK)
 #define new ::new(_NORMAL_BLOCK, __FILE__, __LINE__)
+#endif
+
+#ifndef NOMINMAX
+#error NOMINMAX must be defined.
 #endif
 
 #include <Windows.h>

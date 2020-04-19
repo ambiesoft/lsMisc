@@ -262,9 +262,10 @@ TEST(SqlPrivateProfile, LongString)
 
 TEST(SqlPrivateProfile, LongStringArray)
 {
+	const int kSize = 1000;
 	vector<wstring> vIn;
-	vIn.reserve(10000);
-	for (int i = 0; i < 10000; ++i)
+	vIn.reserve(kSize);
+	for (int i = 0; i < kSize; ++i)
 	{
 		vIn.push_back(to_wstring(i));
 	}
