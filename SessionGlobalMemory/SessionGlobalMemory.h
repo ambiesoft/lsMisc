@@ -64,7 +64,7 @@ namespace Ambiesoft {
 			initialized_ = 0;
 #endif
 			init(pName);
-			set(T());
+			ensure();
 		}
 		CSessionGlobalMemory(LPCSTR pName, const T& t)
 		{
