@@ -18,39 +18,39 @@
     <ClCompile Include="SetSessionGlobalMemory.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\UrlEncode.cpp">
+    <ClCompile Include="..\..\CommandLineParser.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\UTF16toUTF8.cpp">
+    <ClCompile Include="..\..\stdosd\stdosd.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\CommandLineParser.cpp">
+    <ClCompile Include="..\..\stdosd\stdosd_win.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\stdosd\stdosd.cpp">
+    <ClCompile Include="..\..\UrlEncode.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\stdosd\stdosd_win.cpp">
+    <ClCompile Include="..\..\UTF16toUTF8.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\UrlEncode.h">
-      <Filter>1 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\UTF16toUTF8.h">
-      <Filter>1 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\SessionGlobalMemory\SessionGlobalMemory.h">
-      <Filter>1 Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CommandLineParser.h">
-      <Filter>1 Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>1 Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\stdosd\stdosd.h">
+    <ClInclude Include="..\..\CommandLineParser.h">
+      <Filter>1 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\SessionGlobalMemory\SessionGlobalMemory.h">
+      <Filter>1 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\stdosd\stdosd.h">
+      <Filter>1 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UrlEncode.h">
+      <Filter>1 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\UTF16toUTF8.h">
       <Filter>1 Header Files</Filter>
     </ClInclude>
   </ItemGroup>

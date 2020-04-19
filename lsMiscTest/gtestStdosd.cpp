@@ -238,13 +238,13 @@ TEST(stdosd, FormatW)
 TEST(stdosd, int64)
 {
 	{
-		wstring s = stdFormat(L"%" PRId64, 0LL);
-		EXPECT_STREQ(s.c_str(), L"0");
+		string s = stdFormat("%" PRId64, 0LL);
+		EXPECT_STREQ(s.c_str(), "0");
 	}
 	{
-		wstring s = stdFormat(L"%" PRId64, numeric_limits<INT64>::max());
+		string s = stdFormat("%" PRId64, numeric_limits<INT64>::max());
 		INT64 u = std::numeric_limits<INT64>::max();
-		EXPECT_STREQ(s.c_str(), to_wstring(u).c_str());
+		EXPECT_STREQ(s.c_str(), to_string(u).c_str());
 	}
 }
 TEST(stdosd, hasEndingTest)
