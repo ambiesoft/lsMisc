@@ -29,6 +29,7 @@
 //OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
 
 #include <cassert>
 #include <string>
@@ -59,14 +60,14 @@ namespace Ambiesoft {
 #endif
 
 	public:
-		explicit CSessionGlobalMemory(LPCSTR pName) {
+		explicit CSessionGlobalMemory(const char* pName) {
 #ifdef _DEBUG
 			initialized_ = 0;
 #endif
 			init(pName);
 			ensure();
 		}
-		CSessionGlobalMemory(LPCSTR pName, const T& t)
+		CSessionGlobalMemory(const char* pName, const T& t)
 		{
 #ifdef _DEBUG
 			initialized_ = 0;
@@ -162,7 +163,7 @@ namespace Ambiesoft {
 		}
 	protected:
 
-		void init(LPCSTR pName) {
+		void init(const char* pName) {
 #ifdef _DEBUG
 			assert(initialized_ == 0);
 			initialized_ = 1;
@@ -172,8 +173,9 @@ namespace Ambiesoft {
 			m_ = NULL;
 
 			size_t32 len = lstrlenA(pName);
-			m_pName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof(char));
+			m_pName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_FileMap") - 1 + sizeof(char));
 			lstrcpyA(m_pName, pName);
+			lstrcpyA(m_pName, "_FileMap");
 
 			m_pMutexName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_Mutex") - 1 + sizeof(char));
 			lstrcpyA(m_pMutexName, pName);
@@ -295,7 +297,7 @@ namespace Ambiesoft {
 	{
 		typedef typename CSessionGlobalMemory<T> Parent;
 	public:
-		explicit CSessionGlobalMemoryNTS(LPCSTR pName) : CSessionGlobalMemory<T>(pName) {
+		explicit CSessionGlobalMemoryNTS(const char* pName) : CSessionGlobalMemory<T>(pName) {
 
 		}
 		T* operator &() {
@@ -311,12 +313,12 @@ namespace Ambiesoft {
 		size_t32 size_;
 	public:
 		// creator
-		explicit CDynamicSessionGlobalMemory(LPCSTR pName, size_t32 size) : CSessionGlobalMemory<size_t32>(pName) {
+		explicit CDynamicSessionGlobalMemory(const char* pName, size_t32 size) : CSessionGlobalMemory<size_t32>(pName) {
 			size_ = size;
 		}
 
 		// user
-		explicit CDynamicSessionGlobalMemory(LPCSTR pName) : CSessionGlobalMemory<size_t32>(pName) {
+		explicit CDynamicSessionGlobalMemory(const char* pName) : CSessionGlobalMemory<size_t32>(pName) {
 			size_ = -1;
 		}
 
