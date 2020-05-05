@@ -175,7 +175,7 @@ namespace Ambiesoft {
 			size_t32 len = lstrlenA(pName);
 			m_pName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_FileMap") - 1 + sizeof(char));
 			lstrcpyA(m_pName, pName);
-			lstrcpyA(m_pName, "_FileMap");
+			lstrcatA(m_pName, "_FileMap");
 
 			m_pMutexName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_Mutex") - 1 + sizeof(char));
 			lstrcpyA(m_pMutexName, pName);
