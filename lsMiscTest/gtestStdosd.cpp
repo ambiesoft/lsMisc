@@ -4,7 +4,9 @@
 
 
 #if defined(_WIN32)
-#define NOMINMAX
+#ifndef NOMINMAX
+	#define NOMINMAX
+#endif
 #include <Windows.h>
 #endif
 

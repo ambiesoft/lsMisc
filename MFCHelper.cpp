@@ -21,7 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
+// #include "stdafx.h"
 #include <afx.h>
 #include <intshcut.h> 
 #include <atlconv.h>

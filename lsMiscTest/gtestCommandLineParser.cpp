@@ -1,4 +1,5 @@
 #include "stdafx.h"
+//#include <afx.h>
 #include <tchar.h>
 #include <iostream>
 #include <sstream>
@@ -344,13 +345,14 @@ TEST(CommandLineParser, Dicregate)
 
 	if (!page.hadOption() || !page.hadValue())
 	{
-		AfxMessageBox(L"No page");
-		return ;
+		// MyMessageBox(L"No page");
+		EXPECT_TRUE(false);
 	}
 
 	if (!url.hadOption() || !url.hadValue())
 	{
-		AfxMessageBox(L"No URL");
+		// AfxMessageBox(L"No URL");
+		EXPECT_TRUE(false);
 		return ;
 	}
 
@@ -362,24 +364,28 @@ TEST(CommandLineParser, Dicregate)
 
 	if (!hosthwnd.hadOption() || !hosthwnd.hadValue())
 	{
-		AfxMessageBox(L"No host");
+		// AfxMessageBox(L"No host");
+		EXPECT_TRUE(false);
 		return ;
 	}
 	if (!hostpid.hadOption() || !hostpid.hadValue())
 	{
-		AfxMessageBox(L"No host");
+		// AfxMessageBox(L"No host");
+		EXPECT_TRUE(false);
 		return ;
 	}
 
 	if (!did.hadOption() || !did.hadValue())
 	{
-		AfxMessageBox(L"No did");
+		// AfxMessageBox(L"No did");
+		EXPECT_TRUE(false);
 		return ;
 	}
 
 	if (!size.hadOption() || !size.hadValue())
 	{
-		AfxMessageBox(L"No size");
+		// AfxMessageBox(L"No size");
+		EXPECT_TRUE(false);
 		return ;
 	}
 
