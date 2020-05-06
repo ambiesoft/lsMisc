@@ -38,9 +38,7 @@ QString pathCombine(const QString& path1, const QString& path2, const QString& p
 
 QString normalizeDir(const QString& dir)
 {
-    if (!dir.endsWith('/'))
-        return dir + '/';
-    return rstrip(dir, '/') + '/';
+    return QDir(dir).absolutePath() + '/';
 }
 
 QString doublequoteIfNecessary(const QString& s)

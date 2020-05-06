@@ -2,7 +2,9 @@
 // because Qt project can not include MFC
 // #include "stdafx.h"
 
+
 #if defined(_WIN32)
+#define NOMINMAX
 #include <Windows.h>
 #endif
 

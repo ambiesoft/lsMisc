@@ -10,7 +10,7 @@
 
 
 
-#include <afxwin.h>
+// #include <afxwin.h>
 
 // In lsMisc directory, run the following command
 // git submodule init
