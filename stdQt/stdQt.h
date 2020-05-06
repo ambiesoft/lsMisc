@@ -40,6 +40,9 @@ void Alert(QWidget* parent, QString message);
 bool YesNo(QWidget* parent,
            QString message,
            QMessageBox::Icon = QMessageBox::Question);
+int YesNoCancel(QWidget* parent,
+           QString message,
+           QMessageBox::Icon = QMessageBox::Question);
 bool HasModalWindow();
 QTextCodec* GetUtf8Codec();
 QString getInifile(bool& bExit,

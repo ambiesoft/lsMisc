@@ -111,6 +111,21 @@ bool YesNo(QWidget* parent,
     msgBox.setIcon(icon);
     return msgBox.exec() == QMessageBox::Yes;
 }
+int YesNoCancel(QWidget* parent,
+           QString message,
+           QMessageBox::Icon icon)
+{
+    QMessageBox msgBox(parent && parent->isVisible() ? parent:nullptr);
+
+    msgBox.setWindowTitle(qAppName());
+    msgBox.setText(message);
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.addButton(QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::No);
+    msgBox.setIcon(icon);
+    return msgBox.exec();
+}
 
 bool HasModalWindow()
 {
