@@ -419,5 +419,8 @@ bool showInGraphicalShell(QWidget *parent, const QString &pathIn)
 
     return true;
 }
-
+QString MakeUniquablePath(const QString& path)
+{
+    return ToAsciiLower(QFileInfo(path).absoluteFilePath());
+}
 }

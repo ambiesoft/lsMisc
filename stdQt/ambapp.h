@@ -21,13 +21,12 @@ public:
     public:
         QString keyLanguage;
         QString keyStyle;
-        bool singleInstance;
     };
     explicit AmbApp(int& argc, char *argv[], const AmbAppArgs& args);
     virtual ~AmbApp();
 
     bool InitApplication(QScopedPointer<AmbiesoftQt::IniSettings>* settings);
-
+    bool InitAndCheckDuplicateInstance(const QString& duptoken);
 protected:
     const AmbAppArgs args_;
     QTranslator qtTranslator_;

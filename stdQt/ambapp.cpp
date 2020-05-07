@@ -26,10 +26,6 @@ AmbApp::AmbApp(int& argc, char *argv[], const AmbAppArgs& args) :
     QApplication(argc,argv),
     args_(args)
 {
-    if(args_.singleInstance)
-    {
-        guard_ = std::unique_ptr<RunGuard>(new RunGuard(applicationName()));
-    }
 }
 AmbApp::~AmbApp()
 {}
@@ -133,15 +129,6 @@ bool AmbApp::InitApplication(QScopedPointer<IniSettings>* settings)
         } while(false);
     }
 
-    if(args_.singleInstance)
-    {
-        Q_ASSERT(guard_);
-        if (!guard_->tryToRun())
-        {
-            Info(nullptr, QObject::tr("Another instance is already running."));
-            return false;
-        }
-    }
     qDebug () << "CurrentStyle: " << QApplication::style()->objectName() << __FUNCTION__;
 
     // style:  "windows", "windowsvista", "fusion", or "macintosh".
@@ -154,6 +141,16 @@ bool AmbApp::InitApplication(QScopedPointer<IniSettings>* settings)
         }
     }
     return true;
+}
+
+bool AmbApp::InitAndCheckDuplicateInstance(const QString &duptoken)
+{
+    Q_ASSERT(!duptoken.isEmpty());
+    Q_ASSERT(!guard_);
+    Q_ASSERT(!applicationName().isEmpty());
+    guard_ = std::unique_ptr<RunGuard>(new RunGuard(applicationName() + duptoken));
+    Q_ASSERT(guard_);
+    return guard_->tryToRun();
 }
 
 } // namespace AmbiesoftQt

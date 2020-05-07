@@ -171,5 +171,9 @@ bool showInGraphicalShell(QWidget *parent, const QString &pathIn)
     Q_UNUSED(parent);
     return QDesktopServices::openUrl(QUrl::fromLocalFile(QFileInfo(pathIn).absolutePath()));
 }
+QString MakeUniquablePath(const QString& path)
+{
+    return QFileInfo(path).absoluteFilePath();
+}
 
 } // namespace

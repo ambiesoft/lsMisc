@@ -254,5 +254,16 @@ bool GetExeVersionCommon(const QString& exe, QString& errString, QString& outStr
     outString = process.readAllStandardOutput().data();
     return true;
 }
+QString ToAsciiLower(const QString& s)
+{
+    std::wstring w = s.toStdWString();
+
+    transform(
+      w.begin(), w.end(),
+      w.begin(),
+      towlower);
+
+    return QString::fromStdWString(w);
+}
 
 } // namespace AmbiesoftQt
