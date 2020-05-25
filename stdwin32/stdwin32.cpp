@@ -801,23 +801,6 @@ namespace Ambiesoft {
 
 
 
-		std::wstring stdGetFirstLine(const std::wstring& str)
-		{
-			size_t rpos = str.find(L"\r");
-			size_t nlpos = str.find(L"\n");
-
-			if (rpos == std::wstring::npos)
-			{
-				if (nlpos == std::wstring::npos)
-				{
-					return str;
-				}
-				return str.substr(0, nlpos);
-			}
-
-			// rpos found
-			return str.substr(0, rpos);
-		}
 
 		static bool isLongpath(const std::wstring& ws)
 		{

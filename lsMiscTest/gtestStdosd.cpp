@@ -735,3 +735,25 @@ TEST(stdosd, stdRegexReplace)
 	wstring output = stdRegexReplace(input, wregex(L"\\[\\d+\\]"), kfunc);
 	EXPECT_STREQ(output.c_str(), L"aaa[1]bbb[2]ccc");
 }
+
+TEST(stdosd, stdRemoveFirstLine)
+{
+	EXPECT_STREQ(stdRemoveFirstLine(string("")).c_str(), "");
+	EXPECT_STREQ(stdRemoveFirstLine(string("a")).c_str(), "");
+	EXPECT_STREQ(stdRemoveFirstLine(string("a\nb")).c_str(), "b");
+	EXPECT_STREQ(stdRemoveFirstLine(string("a\rb\nc")).c_str(), "b\nc");
+}
+
+TEST(stdosd, stdGetFirstLine)
+{
+	EXPECT_STREQ(stdGetFirstLine(string("")).c_str(), "");
+	EXPECT_STREQ(stdGetFirstLine(string("a")).c_str(), "a");
+	EXPECT_STREQ(stdGetFirstLine(string("abc")).c_str(), "abc");
+	EXPECT_STREQ(stdGetFirstLine(string("abc\nxyz")).c_str(), "abc");
+	EXPECT_STREQ(stdGetFirstLine(string("abc\r\nxyz")).c_str(), "abc");
+	EXPECT_STREQ(stdGetFirstLine(string("\nabc\r\nxyz")).c_str(), "");
+
+	EXPECT_STREQ(stdGetFirstLine(string("\nabc\r\nxyz"), true).c_str(), "abc");
+	EXPECT_STREQ(stdGetFirstLine(string("\r    \nabc\r\nxyz"), true).c_str(), "abc");
+	EXPECT_STREQ(stdGetFirstLine(string("\r  \t  \nabc\r\nxyz"), true).c_str(), "abc");
+}

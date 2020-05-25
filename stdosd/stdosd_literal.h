@@ -156,6 +156,9 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_CHAR(NLess			,'<');						\
 			STDOSD_DEFINE_CHAR(NGreater			,'>');						\
 																			\
+			STDOSD_DEFINE_CHAR(NCarriageReturn	,'\r');						\
+			STDOSD_DEFINE_CHAR(NNewLine			,'\n');						\
+																			\
 			STDOSD_DEFINE_STRINGFUNCTION(defaultSeparator, STDOSD_DEFAULTSEPARATOR);	\
 			STDOSD_DEFINE_STRINGFUNCTION(pathSeparators, STDOSD_PATHSEPARATORS);		\
 			STDOSD_DEFINE_STRINGFUNCTION(nulString, "");								\

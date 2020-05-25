@@ -1225,5 +1225,50 @@ namespace Ambiesoft {
 			s[lenMinusOne] = 0;
 		}
 
+
+		
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdRemoveFirstLine(const std::basic_string<C>& str)
+		{
+			size_t rpos = str.find(stdLiterals<C>::NCarriageReturn);
+			size_t nlpos = str.find(stdLiterals<C>::NNewLine);
+
+			if (rpos == std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
+				return std::basic_string<C>();
+			if (rpos == std::basic_string<C>::npos && nlpos != std::basic_string<C>::npos)
+				return str.substr(nlpos+1);
+			if (rpos != std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
+				return str.substr(rpos+1);
+			return str.substr(std::min(rpos, nlpos)+1);
+		}
+
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdGetFirstLine(const std::basic_string<C>& str, const bool skipEmptyLine = false)
+		{
+			if (skipEmptyLine)
+			{
+				std::basic_string<C> t = str;
+				do
+				{
+					std::basic_string<C> t2 = stdGetFirstLine(t, false);
+					if (!stdTrim(t2).empty())
+						return t2;
+					t = stdRemoveFirstLine(t);
+				} while (!t.empty());
+				
+				return t;
+			}
+
+			size_t rpos = str.find(stdLiterals<C>::NCarriageReturn);
+			size_t nlpos = str.find(stdLiterals<C>::NNewLine);
+
+			if (rpos == std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
+				return str;
+			if (rpos == std::basic_string<C>::npos && nlpos != std::basic_string<C>::npos)
+				return str.substr(0, nlpos);
+			if (rpos != std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
+				return str.substr(0, rpos);
+			return str.substr(0, std::min(rpos, nlpos));
+		}
 	}
 }

@@ -28,7 +28,14 @@ Generating Code...
 */
 // #include "stdafx.h"
 
+#if defined(_WIN32)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
 #include <Windows.h>
+#endif
+
+
 #include <Shlwapi.h>
 #pragma comment(lib, "Shlwapi.lib")
 #include <winioctl.h>
