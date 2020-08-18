@@ -40,8 +40,8 @@
 
 #include <vector>
 #include <string>
-
-#include <stlsoft/smartptr/scoped_handle.hpp>
+#include <memory>
+// #include <stlsoft/smartptr/scoped_handle.hpp>
 
 #include "GetLastErrorString.h"
 #include "SHMoveFile.h"
@@ -224,17 +224,19 @@ namespace Ambiesoft {
 				return FALSE;
 		}
 
-		LPTSTR pFrom = CreateDNString(lpFileFrom, pnRet);
-		stlsoft::scoped_handle<void*> ha(pFrom, myFree);
+		//LPTSTR pFrom = CreateDNString(lpFileFrom, pnRet);
+		std::unique_ptr<TCHAR, std::function<void(void*)>> from(CreateDNString(lpFileFrom, pnRet), myFree);
+		// stlsoft::scoped_handle<void*> ha(pFrom, myFree);
 
-		LPTSTR pTo = NULL;
+		// LPTSTR pTo = NULL;
+		std::unique_ptr<TCHAR, std::function<void(void*)>> to(nullptr, myFree);
 		if (cm != CopyORMove_Delete)
 		{
-			pTo = CreateDNString(lpFileTo, pnRet);
+			to.reset(CreateDNString(lpFileTo, pnRet));
 		}
-		stlsoft::scoped_handle<void*> hi(pTo, myFree);
+		// stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
-		return SHCopyOrMoveFileImpl(hWnd, cm, false, pTo, pFrom, fopFlags, pnRet);
+		return SHCopyOrMoveFileImpl(hWnd, cm, false, to.get(), from.get(), fopFlags, pnRet);
 	}
 	int SHMoveFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags)
 	{
@@ -279,17 +281,19 @@ namespace Ambiesoft {
 		FILEOP_FLAGS fopFlags,
 		int* pnRet)
 	{
-		LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
-		stlsoft::scoped_handle<void*> ha(pFroms, myFree);
+		std::unique_ptr<TCHAR, std::function<void(void*)>> from(CreateDNString(sourcefiles, pnRet), myFree);
+		// LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
+		// stlsoft::scoped_handle<void*> ha(pFroms, myFree);
 
-		LPTSTR pTo = NULL;
+		// LPTSTR pTo = NULL;
+		std::unique_ptr<TCHAR, std::function<void(void*)>> to(nullptr, myFree);
 		if (cm != CopyORMove_Delete)
 		{
-			pTo = CreateDNString(lpFileTo, pnRet);
+			to.reset(CreateDNString(lpFileTo, pnRet));
 		}
-		stlsoft::scoped_handle<void*> hi(pTo, myFree);
+		// stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
-		return SHCopyOrMoveFileImpl(hWnd, cm, false, pTo, pFroms, fopFlags, pnRet);
+		return SHCopyOrMoveFileImpl(hWnd, cm, false, to.get(), from.get(), fopFlags, pnRet);
 	}
 	int SHMoveFile(
 		HWND hWnd,
@@ -352,13 +356,15 @@ namespace Ambiesoft {
 		FILEOP_FLAGS fopFlags,
 		int* pnRet)
 	{
-		LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
-		stlsoft::scoped_handle<void*> ha(pFroms, myFree);
+		// LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
+		std::unique_ptr<TCHAR, std::function<void(void*)>> from(CreateDNString(sourcefiles, pnRet), myFree);
+		// stlsoft::scoped_handle<void*> ha(pFroms, myFree);
 
-		LPTSTR pTos = CreateDNString(destfiles, pnRet);
-		stlsoft::scoped_handle<void*> hi(pTos, myFree);
+		// LPTSTR pTos = CreateDNString(destfiles, pnRet);
+		std::unique_ptr<TCHAR, std::function<void(void*)>> to(CreateDNString(destfiles, pnRet), myFree);
+		//stlsoft::scoped_handle<void*> hi(pTos, myFree);
 		
-		return SHCopyOrMoveFileImpl(hWnd, cm, true, pTos, pFroms, fopFlags, pnRet);
+		return SHCopyOrMoveFileImpl(hWnd, cm, true, to.get(), from.get(), fopFlags, pnRet);
 	}
 
 

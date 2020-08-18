@@ -39,7 +39,7 @@
 #include <assert.h>
 #include <string>
 
-#include "stlScopedClear.h"
+// #include "stlScopedClear.h"
 #include "RevealFolder.h"
 // #include "GetOpenFile.h"
 
@@ -118,6 +118,16 @@ namespace Ambiesoft
 		return pIDL;
 	}
 
+	struct CItemIdList {
+		LPITEMIDLIST pIIDL_ = nullptr;
+		CItemIdList(LPITEMIDLIST piidl) : pIIDL_(piidl) {}
+		~CItemIdList() {
+			CoTaskMemFree(pIIDL_);
+		}
+		LPITEMIDLIST get() const {
+			return pIIDL_;
+		}
+	};
 	bool RevealFolder(LPCWSTR pFolder)
 	{
 		IShellFolderPtr pSF;
@@ -125,12 +135,11 @@ namespace Ambiesoft
 		if (!pSF)
 			return false;
 
-		LPITEMIDLIST pIIL = GetItemIDList(pSF, pFolder);
-		if (!pIIL)
+		CItemIdList iidl = GetItemIDList(pSF, pFolder);
+		if (!iidl.get())
 			return false;
-		STLSOFT_SCOPEDFREE(pIIL, LPVOID, CoTaskMemFree);
 
-		if (!PolulateDirectory(pSF, pIIL))
+		if (!PolulateDirectory(pSF, iidl.get()))
 			return false;
 
 		return true;

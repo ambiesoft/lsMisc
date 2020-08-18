@@ -15,7 +15,8 @@
 #include <vector>
 
 #include "OpenedFiles.h"
-#include "stlScopedClear.h"
+// #include "stlScopedClear.h"
+#include "CHandle.h"
 #include "SystemInfo.h"
 
 #include "DebugNew.h"
@@ -906,22 +907,21 @@ void WhoUsesFile(LPCTSTR lpFileName, BOOL bFullPathCheck, vector<OPENEDFILEINFO>
 }
 bool EnableDebugPriv(void)
 {
-	HANDLE hToken;
+	Ambiesoft::CHandle token;
 	LUID sedebugnameValue;
 	TOKEN_PRIVILEGES tkp;
 
 	// enable the SeDebugPrivilege
 	if (!OpenProcessToken(GetCurrentProcess(),
-		TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &hToken))
+		TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
 	{
 		// _tprintf(_T("OpenProcessToken() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
 		return false;
 	}
-	STLSOFT_SCOPEDFREE_HANDLE(hToken);
+
 	if (!LookupPrivilegeValue(NULL, SE_DEBUG_NAME, &sedebugnameValue))
 	{
 		// _tprintf(_T("LookupPrivilegeValue() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
-		CloseHandle(hToken);
 		return false;
 	}
 
@@ -929,7 +929,7 @@ bool EnableDebugPriv(void)
 	tkp.Privileges[0].Luid = sedebugnameValue;
 	tkp.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
 
-	if (!AdjustTokenPrivileges(hToken, FALSE, &tkp, sizeof tkp, NULL, NULL))
+	if (!AdjustTokenPrivileges(token, FALSE, &tkp, sizeof tkp, NULL, NULL))
 	{
 		// _tprintf(_T("AdjustTokenPrivileges() failed, Error = %d SeDebugPrivilege is not available.\n"), GetLastError());
 		return false;

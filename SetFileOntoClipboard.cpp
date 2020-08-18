@@ -26,7 +26,7 @@
 #include <Windows.h>
 #include <ShlObj.h>
 
-#include "stlScopedClear.h"
+// #include "stlScopedClear.h"
 
 #include "SetFileOntoClipboard.h"
 
@@ -38,7 +38,11 @@ namespace Ambiesoft {
 
 		if (!OpenClipboard(NULL))
 			return FALSE;
-		STLSOFT_SCOPEDFREE_CLIPBOARD;
+		struct CBCloser {
+			~CBCloser() {
+				CloseClipboard();
+			}
+		} cbcloser;
 
 		if (!EmptyClipboard())
 			return FALSE;

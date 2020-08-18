@@ -3,7 +3,7 @@
 #include <string.h>
 #include <string>
 #include <cassert>
-#include <stlsoft/smartptr/scoped_handle.hpp>
+// #include <stlsoft/smartptr/scoped_handle.hpp>
 
 #include "gtest/gtest.h"
 
