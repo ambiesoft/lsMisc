@@ -156,7 +156,7 @@ QStringList SortDevice1by1(const QStringList& dirs)
     QList<QStringList> eachDeviceDirs;
     for(auto&& key : mapDeviceToDirs.keys())
     {
-        eachDeviceDirs.append(mapDeviceToDirs.values(key));
+        eachDeviceDirs.append(mapDeviceToDirs.value(key));
     }
 
     QStringList dirsResult;
