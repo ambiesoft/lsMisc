@@ -21,7 +21,7 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "StdAfx.h"
+#include "stdafx.h"
 
 #include <Windows.h>
 #include <winternl.h>
@@ -107,10 +107,10 @@ namespace Ambiesoft {
 						hDLL_ = LoadLibrary(L"ntdll.dll");
 						if (hDLL_)
 						{
-							fnNtQueryInformationProcess = (FNNtQueryInformationProcess)GetProcAddress(
+                            fnNtQueryInformationProcess = (FNNtQueryInformationProcess)(void*)GetProcAddress(
 								hDLL_,
-								"NtQueryInformationProcess");
-							fnNtSetInformationProcess = (FNNtSetInformationProcess)GetProcAddress(
+                                "NtQueryInformationProcess");
+                            fnNtSetInformationProcess = (FNNtSetInformationProcess)(void*)GetProcAddress(
 								hDLL_,
 								"NtSetInformationProcess");
 						}
