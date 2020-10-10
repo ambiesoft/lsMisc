@@ -23,7 +23,7 @@
 #include "stdafx.h"
 
 #ifdef _DEBUG
-#include "../../GetLastErrorString.h"
+#include "GetLastErrorString.h"
 
 using namespace std;
 
