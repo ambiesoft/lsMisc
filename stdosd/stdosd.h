@@ -888,7 +888,8 @@ namespace Ambiesoft {
 		template<typename C>
 		inline std::basic_string<C> stdTrimStart(
 			const std::basic_string<C>& str,
-			const C* whitespace = stdLiterals<C>::WHITESPACE())
+			const C* whitespace = stdLiterals<C>::WHITESPACE(),
+			size_t* pRemovedCount = nullptr)
 		{
             using ST = std::basic_string<C>;
 
@@ -899,14 +900,18 @@ namespace Ambiesoft {
 			if (strBegin == ST::npos)
 				return ST(); // no content
 
+			if (pRemovedCount)
+				*pRemovedCount = strBegin;
+				
 			return str.substr(strBegin);
 		}
 		template<typename C>
 		inline std::basic_string<C> stdTrimStart(
 			const std::basic_string<C>& str,
-			const std::basic_string<C>& whitespace)
+			const std::basic_string<C>& whitespace,
+			size_t* pRemovedCount = nullptr)
 		{
-			return stdTrimStart(str, whitespace.c_str());
+			return stdTrimStart(str, whitespace.c_str(), pRemovedCount);
 		}
 
 		template<typename C>
@@ -1269,6 +1274,21 @@ namespace Ambiesoft {
 			if (rpos != std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
 				return str.substr(0, rpos);
 			return str.substr(0, std::min(rpos, nlpos));
+		}
+
+
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdFillWithZero(const std::basic_string<C>& str, size_t nDigits)
+		{
+			if (str.size() >= nDigits)
+				return str;
+
+			std::basic_string<C> ret(str);
+			while (ret.size() < nDigits)
+			{
+				ret = stdLiterals<C>::N0 + ret;
+			}
+			return ret;
 		}
 	}
 }
