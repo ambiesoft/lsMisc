@@ -888,8 +888,7 @@ namespace Ambiesoft {
 		template<typename C>
 		inline std::basic_string<C> stdTrimStart(
 			const std::basic_string<C>& str,
-			const C* whitespace = stdLiterals<C>::WHITESPACE(),
-			size_t* pRemovedCount = nullptr)
+			const C* whitespace = stdLiterals<C>::WHITESPACE())
 		{
             using ST = std::basic_string<C>;
 
@@ -900,18 +899,14 @@ namespace Ambiesoft {
 			if (strBegin == ST::npos)
 				return ST(); // no content
 
-			if (pRemovedCount)
-				*pRemovedCount = strBegin;
-				
 			return str.substr(strBegin);
 		}
 		template<typename C>
 		inline std::basic_string<C> stdTrimStart(
 			const std::basic_string<C>& str,
-			const std::basic_string<C>& whitespace,
-			size_t* pRemovedCount = nullptr)
+			const std::basic_string<C>& whitespace)
 		{
-			return stdTrimStart(str, whitespace.c_str(), pRemovedCount);
+			return stdTrimStart(str, whitespace.c_str());
 		}
 
 		template<typename C>
@@ -925,6 +920,7 @@ namespace Ambiesoft {
 				return str;
 
 			const typename ST::size_type strEnd = str.find_last_not_of(whitespace);
+			
 			return str.substr(0, strEnd + 1);
 		}
 		template<typename C>

@@ -614,6 +614,19 @@ TEST(stdosd, stdTrimStartTest)
 	EXPECT_STREQ("bbbaaa", stdTrimStart(string("aaabbbaaa"), "a").c_str());
 	EXPECT_STREQ("xxxabc", stdTrimStart(string("abcxxxabc"), "abc").c_str());
 
+	//// count
+	//size_t count;
+	//stdTrimStart(string("aaa"), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 0);
+
+	//stdTrimStart(string(" aaa"), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 1);
+
+	//stdTrimStart(string(" aaa "), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 1);
+
+	//stdTrimStart(string("\t \t\naaa "), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 4);
 }
 TEST(stdosd, stdTrimEndTest)
 {
@@ -629,6 +642,22 @@ TEST(stdosd, stdTrimEndTest)
 
 	EXPECT_STREQ("aaabbb", stdTrimEnd(string("aaabbbaaa"), "a").c_str());
 	EXPECT_STREQ("abcxxx", stdTrimEnd(string("abcxxxabc"), "abc").c_str());
+
+	//// count
+	//size_t count;
+	//stdTrimEnd(string("aaa"), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 0);
+
+	//stdTrimEnd(string("aaa "), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 1);
+	//stdTrimEnd(string(" aaa "), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 1);
+	//
+	//stdTrimEnd(string(" aaa \t\t\n"), stdLiterals<char>::WHITESPACE(), &count);
+	//EXPECT_EQ(count, 4);
+	//
+	//stdTrimEnd(string("aaa"), "a", &count);
+	//EXPECT_EQ(count, 3);
 }
 
 TEST(stdosd, stdTrimTest)
