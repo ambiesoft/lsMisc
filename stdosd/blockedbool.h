@@ -1,5 +1,3 @@
-//SceneExplorer
-//Exploring video files by viewer thumbnails
 //
 //Copyright (C) 2018  Ambiesoft
 //
