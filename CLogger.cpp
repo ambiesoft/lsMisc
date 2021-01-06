@@ -27,6 +27,7 @@
 #include <time.h>
 #include "stdwin32/stdwin32.h"
 #include "stdosd/stdosd.h"
+#include "../lsMisc/UTF16toUTF8.h"
 
 #include "tstring.h"
 
@@ -61,7 +62,7 @@ namespace Ambiesoft {
 
 		m_hLog = CreateFile(file.c_str(),
 			FILE_APPEND_DATA,
-			FILE_SHARE_READ, // share
+			FILE_SHARE_READ | FILE_SHARE_WRITE, // share
 			NULL, // sec
 			OPEN_ALWAYS,
 			FILE_ATTRIBUTE_NORMAL,
@@ -125,9 +126,15 @@ namespace Ambiesoft {
 				NULL);
 		}
 
+		if (!bFailed)
+			FlushFileBuffers(m_hLog);
+
 		return (!bFailed);
 	}
 
-
+	bool CLogger::Out(const wstring& wstr)
+	{
+		return Out(toStdUtf8String(wstr).c_str());
+	}
 
 }

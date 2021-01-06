@@ -23,6 +23,8 @@
 
 #pragma once
 
+#define CLOGGEROUT(S) do { if(CLogger::IsReady()) { CLogger::Out(S); } } while(false)
+
 namespace Ambiesoft {
 
 
@@ -39,6 +41,10 @@ public:
 	}
 	static bool Out(LPCSTR p1);
 	static bool Out(LPCSTR p1, DWORD d1);
+	static bool Out(const std::string& str) {
+		return Out(str.c_str());
+	}
+	static bool Out(const std::wstring& wstr);
 };
 
 
