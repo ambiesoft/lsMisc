@@ -39,6 +39,7 @@ public:
 	static bool IsReady() {
 		return m_hLog != NULL;
 	}
+	static bool Close();
 	static bool Out(LPCSTR p1);
 	static bool Out(LPCSTR p1, DWORD d1);
 	static bool Out(const std::string& str) {

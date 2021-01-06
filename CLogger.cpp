@@ -49,13 +49,18 @@ namespace Ambiesoft {
 
 	CLogger::~CLogger()
 	{
+		Close();
+	}
+	bool CLogger::Close()
+	{
+		bool ret = true;
 		if (m_hLog)
 		{
-			CloseHandle(m_hLog);
+			ret = !!CloseHandle(m_hLog);
 			m_hLog = NULL;
 		}
+		return ret;
 	}
-
 	bool CLogger::Prepare()
 	{
 		tstring file = stdGetFileName(stdGetModuleFileName<TCHAR>()) + _T(".log");
