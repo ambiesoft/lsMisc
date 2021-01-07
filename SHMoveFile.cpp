@@ -42,6 +42,7 @@
 #include <string>
 #include <memory>
 // #include <stlsoft/smartptr/scoped_handle.hpp>
+#include <functional>
 
 #include "GetLastErrorString.h"
 #include "SHMoveFile.h"
