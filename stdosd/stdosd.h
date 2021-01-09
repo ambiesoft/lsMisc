@@ -64,6 +64,9 @@ namespace Ambiesoft {
     #define CHAR16T_AVAILABLE
     #endif
 
+	#ifndef NOMINMAX
+	#error NOMINMAX must be defined
+	#endif
 #endif // _WIN32 __GNUC__
 
 
