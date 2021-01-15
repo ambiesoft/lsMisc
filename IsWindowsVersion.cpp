@@ -36,7 +36,10 @@ namespace Ambiesoft {
 		{
 			OSVERSIONINFOA osvi = { 0 };
 			osvi.dwOSVersionInfoSize = sizeof(osvi);
+#pragma warning(push)
+#pragma warning(disable: 4996)
 			if (GetVersionExA(&osvi))
+#pragma warning(pop)
 			{
 				major = osvi.dwMajorVersion;
 				minor = osvi.dwMinorVersion;
