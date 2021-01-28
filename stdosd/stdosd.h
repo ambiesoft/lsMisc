@@ -1109,8 +1109,16 @@ namespace Ambiesoft {
 		}
 
 
+		bool stdGetDesktopDirectoryImpl(std::wstring* p);
+		bool stdGetDesktopDirectoryImpl(std::string* p);
 		template<typename C = wchar_t>
-		std::basic_string<C> StdGetDesktopDirectory();
+		inline std::basic_string<C> stdGetDesktopDirectory()
+		{
+			std::basic_string<C> path;
+			if (!stdGetDesktopDirectoryImpl(&path))
+				return L"";
+			return path;
+		}
 
 
 

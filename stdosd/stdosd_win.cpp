@@ -492,12 +492,21 @@ namespace Ambiesoft {
 		}
 
 
-		wstring StdGetDesktopDirectory()
+		bool stdGetDesktopDirectoryImpl(wstring* path)
 		{
-			WCHAR path[MAX_PATH];
-			if (SHGetFolderPathW(NULL, CSIDL_DESKTOP, NULL, 0, path))
-				return L"";
-			return path;
+			wchar_t t[MAX_PATH];
+			if(FAILED(SHGetFolderPathW(NULL, CSIDL_DESKTOP, NULL, 0, t)))
+				return false;
+			*path = t;
+			return true;
+		}
+		bool stdGetDesktopDirectoryImpl(string* path)
+		{
+			char t[MAX_PATH];
+			if (FAILED(SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, t)))
+				return false;
+			*path = t;
+			return true;
 		}
 	}
 }
