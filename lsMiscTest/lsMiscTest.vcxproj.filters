@@ -420,6 +420,12 @@
     <ClCompile Include="gtestSessionGlobalMemory.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\TrayIcon.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestTrayIcon.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -794,6 +800,9 @@
     <ClInclude Include="..\FindTopWindowFromPID.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
+    <ClInclude Include="..\TrayIcon.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Test Files">
@@ -839,5 +848,9 @@
     <ResourceCompile Include="lsMiscTest.rc">
       <Filter>Resource</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon1.ico" />
+    <Image Include="iconMain.ico" />
   </ItemGroup>
 </Project>
