@@ -82,6 +82,23 @@ namespace Ambiesoft {
 			return h_;
 		}
 	};
+	class CHIcon
+	{
+		HICON h_;
+	public:
+		CHIcon(HICON h) : h_(h) {}
+		~CHIcon() {
+			if (h_ == nullptr)
+				return;
+			DestroyIcon(h_);
+		}
+		operator bool() const {
+			return !!h_;
+		}
+		operator HICON() const {
+			return h_;
+		}
+	};
 	class CHMenu
 	{
 		HMENU h_;

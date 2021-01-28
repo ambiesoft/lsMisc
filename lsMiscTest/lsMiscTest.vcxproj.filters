@@ -850,7 +850,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico" />
     <Image Include="iconMain.ico" />
   </ItemGroup>
 </Project>
