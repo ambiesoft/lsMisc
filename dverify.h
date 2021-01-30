@@ -30,4 +30,5 @@
 #else
 #define DASSERT(s) (void)0
 #define DVERIFY(s) s
+#define DVERIFY_LE(s) s
 #endif
