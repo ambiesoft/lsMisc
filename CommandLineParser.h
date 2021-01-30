@@ -941,26 +941,26 @@ typedef BasicOption<std::string> COptionA;
 		//	const MyS_ ops[] = { optionString1, optionString2 };
 		//	AddOptionRange(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
 		//}
-		template<class TARGET>
-		void AddOption(
-			std::initializer_list<MyS_> optionStrings,
-			int exactCount,
-			TARGET* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags_Default,
-			const MyS_& helpstring = MyS_())
-		{
-			AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
-		}
-		template<class TARGET>
-		void AddOption(
-			std::initializer_list<const Elem*> optionStrings,
-			int exactCount,
-			TARGET* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags_Default,
-			const MyS_& helpstring = MyS_())
-		{
-			AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
-		}
+		//template<class TARGET>
+		//void AddOption(
+		//	std::initializer_list<MyS_> optionStrings,
+		//	int exactCount,
+		//	TARGET* pTarget,
+		//	ArgEncodingFlags arf = ArgEncodingFlags_Default,
+		//	const MyS_& helpstring = MyS_())
+		//{
+		//	AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
+		//}
+		//template<class TARGET>
+		//void AddOption(
+		//	std::initializer_list<const Elem*> optionStrings,
+		//	int exactCount,
+		//	TARGET* pTarget,
+		//	ArgEncodingFlags arf = ArgEncodingFlags_Default,
+		//	const MyS_& helpstring = MyS_())
+		//{
+		//	AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
+		//}
 
 
 #ifdef _WIN32

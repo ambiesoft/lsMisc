@@ -41,10 +41,7 @@ TEST(CommandLineParser, IterateOur)
 
 TEST(CommandLineParser, BasicWchar)
 {
-	vector<wstring> vs;
-	vs.push_back(L"-a");
-	vs.push_back(L"-b");
-	vs.push_back(L"-c");
+
 
 	wchar_t* opXYZ[] = {
 		L"-xyz",
@@ -57,9 +54,9 @@ TEST(CommandLineParser, BasicWchar)
 	wstring path;
 	COption opMain(L"", ArgCount::ArgCount_Infinite);
 	CCommandLineParser clp;
-	clp.AddOption({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
-	clp.AddOptionRange(vs.begin(), vs.end(), 0, &isABC);
-	clp.AddOptionRange(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
+	clp.AddOptionRange({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
+	clp.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &isABC);
+	clp.AddOptionRange({ L"-xyz", L"-bbb" }, 0, &isXYZ);
 	clp.AddOption(L"-path", 1, &path);
 	clp.AddOption(&opMain);
 	wchar_t* argv[] = {
@@ -92,15 +89,8 @@ TEST(CommandLineParser, BasicWchar)
 
 TEST(CommandLineParser, BasicChar)
 {
-	vector<string> vs;
-	vs.push_back("-a");
-	vs.push_back("-b");
-	vs.push_back("-c");
 
-	char* opXYZ[] = {
-		"-xyz",
-		"-bbb",
-	};
+
 
 	bool isHelp = false;
 	bool isABC = false;
@@ -108,9 +98,9 @@ TEST(CommandLineParser, BasicChar)
 	string path;
 	COptionA opMain("", ArgCount::ArgCount_Infinite);
 	CCommandLineParserA clp;
-	clp.AddOption({ string("-h"), string("/?") }, 0, &isHelp);
-	clp.AddOptionRange(vs.begin(), vs.end(), 0, &isABC);
-	clp.AddOptionRange(opXYZ, opXYZ + _countof(opXYZ), 0, &isXYZ);
+	clp.AddOptionRange({ string("-h"), string("/?") }, 0, &isHelp);
+	clp.AddOptionRange({ "-a","-b","-c" }, 0, &isABC);
+	clp.AddOptionRange({ "-xyz", "-bbb" }, 0, &isXYZ);
 	clp.AddOption("-path", 1, &path);
 	clp.AddOption(&opMain);
 	char* argv[] = {
@@ -411,7 +401,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_FALSE(a);
 	}
@@ -425,7 +415,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -437,7 +427,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -449,7 +439,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -461,7 +451,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOption({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -476,7 +466,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOption({ wstring(L"-a"),wstring(L"-b"),wstring(L"-c") }, 0, &a);
+		parser.AddOptionRange({ wstring(L"-a"),wstring(L"-b"),wstring(L"-c") }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
