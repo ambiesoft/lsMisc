@@ -64,12 +64,19 @@ namespace Ambiesoft {
     #define CHAR16T_AVAILABLE
     #endif
 
-	#ifndef NOMINMAX
-	#error NOMINMAX must be defined
-	#endif
+	//#ifndef NOMINMAX
+	//#error NOMINMAX must be defined
+	//#endif
 #endif // _WIN32 __GNUC__
 
 
+#ifndef stdosd_max
+#define stdosd_max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef stdosd_min
+#define stdosd_min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define STDOSD_DEFAULTSEPARATOR "\\"
@@ -1251,7 +1258,7 @@ namespace Ambiesoft {
 				return str.substr(nlpos+1);
 			if (rpos != std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
 				return str.substr(rpos+1);
-			return str.substr(std::min(rpos, nlpos)+1);
+			return str.substr(stdosd_min(rpos, nlpos)+1);
 		}
 
 		template<typename C = wchar_t>
@@ -1299,3 +1306,7 @@ namespace Ambiesoft {
 		}
 	}
 }
+
+
+#undef stdosd_max
+#undef stdosd_min
