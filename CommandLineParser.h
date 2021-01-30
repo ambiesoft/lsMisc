@@ -439,18 +439,18 @@ namespace Ambiesoft {
 			argcountflag_ = acf;
 		}
 
-		template<class InputIterator>
-		BasicOption(InputIterator first, InputIterator last, const int exactcount)
-		{
-			init();
-			while (first != last)
-			{
-				options_.push_back(*first);
-				++first;
-			}
+		//template<class InputIterator>
+		//BasicOption(InputIterator first, InputIterator last, const int exactcount)
+		//{
+		//	init();
+		//	while (first != last)
+		//	{
+		//		options_.push_back(*first);
+		//		++first;
+		//	}
 
-			setArgFlag(exactcount);
-		}
+		//	setArgFlag(exactcount);
+		//}
 		
 		//BasicOption(MyS_ option1, MyS_ option2, ArgCount acf)
 		//{
@@ -460,18 +460,25 @@ namespace Ambiesoft {
 		//	argcountflag_ = acf;
 		//}
                 
-		// template<> isthis ok?
-		//BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
-		//{
-		//	init();
-		//	options_.push_back(option1);
-		//	options_.push_back(option2);
 
-		//	setArgFlag(exactcount);
-		//}
-		BasicOption(std::initializer_list<MyS_> optionStrings, const int exactcount) :
-			BasicOption(optionStrings.begin(), optionStrings.end(),
-				exactcount) {}
+		BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
+		{
+			init();
+			options_.push_back(option1);
+			options_.push_back(option2);
+
+			setArgFlag(exactcount);
+		}
+		BasicOption(std::initializer_list<MyS_> optionStrings, const int exactcount) 
+		{
+			init();
+			for(auto&& s : optionStrings)
+			{
+				options_.push_back(s);
+			}
+
+			setArgFlag(exactcount);
+		}
 		
 
 		//BasicOption(const Elem* p1, const Elem* p2, const int exactcount)
@@ -482,9 +489,9 @@ namespace Ambiesoft {
 
 		//	setArgFlag(exactcount);
 		//}
-		BasicOption(std::initializer_list<const Elem*> optionStrings, const int exactcount) :
-			BasicOption(optionStrings.begin(), optionStrings.end(),
-				exactcount) {}
+		//BasicOption(std::initializer_list<const Elem*> optionStrings, const int exactcount) :
+		//	BasicOption(optionStrings.begin(), optionStrings.end(),
+		//		exactcount) {}
 
 		BasicOption(MyS_ option)
 		{
@@ -891,16 +898,15 @@ typedef BasicOption<std::string> COptionA;
 #endif
 		
 		// Iterator option strings
-		template<class InputIterator, class TARGET>
+		template<class TARGET>
 		void AddOptionRange(
-			InputIterator first,
-			InputIterator last,
+			std::initializer_list<MyS_> optionStrings,
 			int exactCount,
 			TARGET* pTarget,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
-			MyO_ option(first, last, exactCount);
+			MyO_ option(optionStrings, exactCount);
 			option.case_ = case_;
 			check(&option);
 			// *pTarget = TARGET();
@@ -919,9 +925,7 @@ typedef BasicOption<std::string> COptionA;
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
-			MyS_* first = &optionString1;
-			MyS_* last = first + 1;
-			AddOptionRange(first, last, exactCount, pTarget, arf, helpstring);
+			AddOptionRange({ optionString1 }, exactCount, pTarget, arf, helpstring);
 		}
 
 		// two option strings

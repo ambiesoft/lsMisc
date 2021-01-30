@@ -40,7 +40,7 @@ Generating Code...
 #pragma comment(lib, "Shlwapi.lib")
 #include <winioctl.h>
 #include <Shlobj.h>
-
+#pragma comment(lib, "Shell32.lib")
 
 #include <regex>
 #include <locale>
