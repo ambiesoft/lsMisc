@@ -254,15 +254,16 @@ void i18nClearLangmap()
 LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
-	WCHAR szLang[4];
+	WCHAR szLangT[4];
 	if(!pLang || pLang[0]==0)
 	{
-		::GetLocaleInfoW(LOCALE_SYSTEM_DEFAULT ,
-						LOCALE_SABBREVLANGNAME,
-						szLang, 
-						4);
+		::GetLocaleInfoW(
+			LOCALE_SYSTEM_DEFAULT ,
+			LOCALE_SABBREVLANGNAME,
+			szLangT,
+			_countof(szLangT));
 
-		pLang = szLang;
+		pLang = szLangT;
 	}
 
 	assert(pLang[0]==0 || lstrlen(pLang)==3);
@@ -316,11 +317,11 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 						if (err || !f)
 						{
 #ifdef _DEBUG
-							wchar_t szT[1024]; szT[0] = 0;
-							_wcserror_s(szT, err);
+							wchar_t szTError[1024]; szTError[0] = 0;
+							_wcserror_s(szTError, err);
 							wstring message;
 							message.append(L"Failed to open lang-file: ");
-							message.append(szT);
+							message.append(szTError);
 							message.append(L": ");
 							message.append(szTry);
 							message.append(L"\r\n");
@@ -580,7 +581,7 @@ LPCWSTR I18NW(LPCWSTR pIN)
 
 static BOOL CALLBACK enumDlgChild(
   HWND hwnd,
-  LPARAM lParam)
+  LPARAM)
 {
 	TCHAR szClass[256];
 	if(!GetClassNameW(hwnd, szClass, countof(szClass)))
