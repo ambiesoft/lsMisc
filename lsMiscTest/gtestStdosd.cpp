@@ -237,6 +237,10 @@ TEST(stdosd, FormatW)
 
     s = stdFormat(L"%ls%d%ls", L"---",100,L"---");
     EXPECT_STREQ(s.c_str(), L"---100---");
+
+	wstring ss = L"abc";
+	s = stdFormat(L"%s", ss.c_str());
+	EXPECT_STREQ(s.c_str(), ss.c_str());
 }
 
 TEST(stdosd, int64)

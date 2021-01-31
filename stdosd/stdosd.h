@@ -631,41 +631,40 @@ namespace Ambiesoft {
 		}
 
 
-		template<typename StringType>
-		inline StringType stdFormatHelper(const StringType fmt, ...)
+		template<typename C>
+		inline std::basic_string<C> stdFormatHelper(const C* fmt, size_t size, ...)
 		{
-			using C = typename StringType::traits_type::char_type;
-
-            int size = (static_cast<int>(fmt.size())) * 2 + 50;   // Use a rubric appropriate for your code
-			StringType str;
+            int newsize = (static_cast<int>(size)) * 2 + 50;   // Use a rubric appropriate for your code
+			std::basic_string<C> strRet;
 			va_list ap;
-			while (1) {     // Maximum two passes on a POSIX system...
-				str.resize(size);
-				va_start(ap, fmt);
+			while (true) {     // Maximum two passes on a POSIX system...
+				strRet.resize(newsize);
+				va_start(ap, size);
 
-                int n = stdSprintF(const_cast<C*>(str.data()), size, size - 1, fmt.c_str(), ap);
+                int n = stdSprintF(const_cast<C*>(strRet.data()), newsize, newsize - 1, fmt, ap);
 
 				va_end(ap);
-				if (n > -1 && n < size) {  // Everything worked
-					str.resize(n);
-					return str;
+
+				if (n > -1 && n < newsize) {  // Everything worked
+					strRet.resize(n);
+					return strRet;
 				}
 				if (n > -1)  // Needed size returned
-					size = n + 1;   // For null char
+					newsize = n + 1;   // For null char
 				else
-					size *= 2;      // Guess at a larger size (OS specific)
+					newsize *= 2;      // Guess at a larger size (OS specific)
 			}
-			return str;
+			return strRet;
 		}
 		template<typename... ARGS>
 		inline std::string stdFormat(const std::string& fmt, ARGS... args)
 		{
-			return stdFormatHelper(fmt, args...);
+			return stdFormatHelper(fmt.c_str(), fmt.size(), args...);
 		}
 		template<typename... ARGS>
 		inline std::wstring stdFormat(const std::wstring& fmt, ARGS... args)
 		{
-			return stdFormatHelper(fmt, args...);
+			return stdFormatHelper(fmt.c_str(), fmt.size(), args...);
 		}
 #endif // __cplusplus_cli
 

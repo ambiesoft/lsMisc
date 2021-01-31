@@ -36,7 +36,7 @@
 #pragma once
 #include <Windows.h>
 namespace Ambiesoft {
-	LPCWSTR i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL, LPCWSTR pAppName=NULL);
+	bool i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL, LPCWSTR pAppName=NULL);
 	LPCWSTR i18nGetCurrentLang();
 
 	LPCWSTR I18NW(LPCWSTR pIN);
@@ -48,6 +48,7 @@ namespace Ambiesoft {
 
 	void i18nChangeWindowText(HWND hwnd);
 	void i18nChangeChildWindowText(HWND hwnd);
+	void i18nChangeDialogText(HWND hWnd, HWND* except = nullptr, int exceptCount = 0);
 	void i18nChangeMenuText(HMENU menu);
 
 	void i18nClearLangmap();

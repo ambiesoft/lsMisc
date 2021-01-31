@@ -251,7 +251,7 @@ void i18nClearLangmap()
 {
 	ClearMap();
 }
-LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
+bool i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 {
 	ghInst = hInst;
 	WCHAR szLangT[4];
@@ -264,14 +264,6 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 			_countof(szLangT));
 
 		pLang = szLangT;
-	}
-
-	assert(pLang[0]==0 || lstrlen(pLang)==3);
-	if (lstrcmpiW(pLang, stLang) != 0)
-	{
-		langinit = false;
-		ClearMap();
-		lstrcpyW(stLang, pLang);
 	}
 	
 	if(!atexitinit)
@@ -287,267 +279,273 @@ LPCWSTR i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 		}
 	}
 
-	if(!langinit)
 	{
+		i18nlock lock;
+		assert(pLang[0] == 0 || lstrlen(pLang) == 3);
+		if (lstrcmpiW(pLang, stLang) != 0)
 		{
-			i18nlock lock;
-			if(!langinit)
-			{
-				do
-				{
-					TCHAR szLang[4];
-					lstrcpy(szLang, stLang);
-					{
-                       
-                        mywcslwr(szLang, sizeof(szLang)/sizeof(szLang[0]));
-						TCHAR szT[MAX_PATH]={0};
-						GetModuleFileNameW(hInst,szT,(sizeof(szT)/sizeof(szT[0]))-1);
-						*(_tcsrchr(szT, L'\\'))=0;
-
-						TCHAR szTry[MAX_PATH];
-						if(pAppName && pAppName[0])
-							wsprintfW(szTry, _T("%s\\lang\\%s.%s.txt"),szT, pAppName, szLang);
-						else
-							wsprintfW(szTry, _T("%s\\lang\\%s.txt"), szT, szLang);
-
-						
-						FILE* f = NULL;
-						errno_t  err = _tfopen_s(&f, szTry, _T("rb"));
-						FileFreer ffreer(f);
-						if (err || !f)
-						{
-#ifdef _DEBUG
-							wchar_t szTError[1024]; szTError[0] = 0;
-							_wcserror_s(szTError, err);
-							wstring message;
-							message.append(L"Failed to open lang-file: ");
-							message.append(szTError);
-							message.append(L": ");
-							message.append(szTry);
-							message.append(L"\r\n");
-							OutputDebugString(message.c_str());
-#endif
-							break;
-						}
-
-#ifdef _DEBUG
-						{
-							wstring message;
-							message.append(L"Lang file opened: ");
-							message.append(szTry);
-							message.append(L"\r\n");
-							OutputDebugString(message.c_str());
-						}
-#endif
-						
-
-						BYTE* pB=NULL;
-						BYTE b;
-						size_t count=0;
-						size_t bomcount=0;
-						while(1==fread((void*)&b, 1, 1, f))
-						{
-							if(count == 0 && bomcount < 3)
-							{
-								if(bomcount==0)
-								{
-									if(b==0xEF)
-									{
-										++bomcount;
-										continue;
-									}
-									else
-										bomcount=4;
-								}
-								else if(bomcount==1)
-								{
-									if(b==0xBB)
-									{
-										++bomcount;
-										continue;
-									}
-									else
-									{
-										++count;
-										pB = (BYTE*)realloc(pB, count);
-										pB[count-1]=0xFE;
-
-										bomcount=4;
-									}
-
-								}
-								else if(bomcount==2)
-								{
-									if(b==0xBF)
-									{
-										++bomcount;
-										continue;
-									}
-									else
-									{
-										++count;
-										pB = (BYTE*)realloc(pB, count);
-										pB[count-1]=0xFE;
-
-										++count;
-										pB = (BYTE*)realloc(pB, count);
-										pB[count-1]=0xBB;
-
-										bomcount=4;
-									}
-								}
-							}
-							++count;
-							pB = (BYTE*)realloc(pB, count);
-							pB[count-1]=b;
-						}
-						++count;
-						pB = (BYTE*)realloc(pB, count);
-						pB[count-1]=0;
-
-						
-						WCHAR* pA = (WCHAR*)UTF8_2_UTF16(pB);
-						free(pB);
-						CFreer pAFreer(pA);
-
-						wchar_t *context = NULL;
-						LPCWSTR pTok = wcstok_s(pA, L"\n", &context);
-						while(pTok)
-						{
-							wstring left;
-							wstring right;
-							int phase=0;
-							bool done = false;
-							bool esc = false;
-							for( ; *pTok ; ++pTok)
-							{
-								if(phase==0)
-								{
-									if(*pTok==L'#')
-									{
-										done=true;
-										break;
-									}
-
-									if(*pTok != L'"')
-										continue;
-
-									phase = 1;
-									continue;
-								}
-								else if(phase==1)
-								{
-									if(esc)
-									{
-										esc = false;
-										if(*pTok==L'n')
-										{
-											left+=L"\n";
-										}
-										else if(*pTok==L'r')
-										{
-											left+=L"\r";
-										}
-										else
-											left+=*pTok;
-										continue;
-									}
-									if(*pTok==L'\\')
-									{
-										esc = true;
-										continue;
-									}
-									if(*pTok==L'"')
-									{
-										phase=2;
-										continue;
-									}
-									left+=*pTok;
-									continue;
-								}
-								else if(phase==2)
-								{
-									if(*pTok != L'=')
-										continue;
-
-									phase = 3;
-								}
-								else if(phase==3)
-								{
-									if(*pTok != L'"')
-										continue;
-
-									phase = 4;
-									continue;
-								}
-								else if(phase==4)
-								{
-									if(esc)
-									{
-										esc = false;
-										if(*pTok==L'n')
-										{
-											right+=L"\n";
-										}
-										else if(*pTok==L'r')
-										{
-											right+=L"\r";
-										}
-										else
-										{
-											right+=*pTok;
-										}
-										continue;
-									}
-									if(*pTok==L'\\')
-									{
-										esc = true;
-										continue;
-									}
-									if(*pTok==L'"')
-									{
-										phase=5;
-										continue;
-									}
-									right+=*pTok;
-									continue;
-								}
-								else if(phase==5)
-								{
-									break;
-								}
-								else
-								{
-									assert(false);
-								}
-							}
-							
-							if(!left.empty())
-							{
-#ifdef _DEBUG
-								if(i18map.count(left.c_str()) != 0)
-								{
-									aru.insert(left);
-								}
-#endif
-								i18map[_wcsdup(left.c_str())] = right;
-							}
-
-							pTok = wcstok_s(NULL, L"\n", &context);
-						}
-
-					}
-
-
-				} while(0);
-				
-
-			}
-			langinit=true;
+			langinit = false;
+			ClearMap();
+			lstrcpynW(stLang, pLang, _countof(stLang));
 		}
 	}
 
-	return stLang;
+	bool bRet = true;
+	if (!langinit)
+	{
+		i18nlock lock;
+
+		if (!langinit)
+		{
+			do
+			{
+				TCHAR szLang[4];
+				lstrcpy(szLang, stLang);
+
+				mywcslwr(szLang, sizeof(szLang) / sizeof(szLang[0]));
+				TCHAR szT[MAX_PATH] = { 0 };
+				GetModuleFileNameW(hInst, szT, (sizeof(szT) / sizeof(szT[0])) - 1);
+				*(_tcsrchr(szT, L'\\')) = 0;
+
+				TCHAR szTry[MAX_PATH];
+				if (pAppName && pAppName[0])
+					wsprintfW(szTry, _T("%s\\lang\\%s.%s.txt"), szT, pAppName, szLang);
+				else
+					wsprintfW(szTry, _T("%s\\lang\\%s.txt"), szT, szLang);
+
+
+				FILE* f = NULL;
+				errno_t  err = _tfopen_s(&f, szTry, _T("rb"));
+				FileFreer ffreer(f);
+				if (err || !f)
+				{
+#ifdef _DEBUG
+					wchar_t szTError[1024]; szTError[0] = 0;
+					_wcserror_s(szTError, err);
+					wstring message;
+					message.append(L"Failed to open lang-file: ");
+					message.append(szTError);
+					message.append(L": ");
+					message.append(szTry);
+					message.append(L"\r\n");
+					OutputDebugString(message.c_str());
+#endif
+					bRet = false;
+					break;
+				}
+
+#ifdef _DEBUG
+				{
+					wstring message;
+					message.append(L"Lang file opened: ");
+					message.append(szTry);
+					message.append(L"\r\n");
+					OutputDebugString(message.c_str());
+				}
+#endif
+
+
+				BYTE* pB = NULL;
+				BYTE b;
+				size_t count = 0;
+				size_t bomcount = 0;
+				while (1 == fread((void*)&b, 1, 1, f))
+				{
+					if (count == 0 && bomcount < 3)
+					{
+						if (bomcount == 0)
+						{
+							if (b == 0xEF)
+							{
+								++bomcount;
+								continue;
+							}
+							else
+								bomcount = 4;
+						}
+						else if (bomcount == 1)
+						{
+							if (b == 0xBB)
+							{
+								++bomcount;
+								continue;
+							}
+							else
+							{
+								++count;
+								pB = (BYTE*)realloc(pB, count);
+								pB[count - 1] = 0xFE;
+
+								bomcount = 4;
+							}
+
+						}
+						else if (bomcount == 2)
+						{
+							if (b == 0xBF)
+							{
+								++bomcount;
+								continue;
+							}
+							else
+							{
+								++count;
+								pB = (BYTE*)realloc(pB, count);
+								pB[count - 1] = 0xFE;
+
+								++count;
+								pB = (BYTE*)realloc(pB, count);
+								pB[count - 1] = 0xBB;
+
+								bomcount = 4;
+							}
+						}
+					}
+					++count;
+					pB = (BYTE*)realloc(pB, count);
+					pB[count - 1] = b;
+				}
+				++count;
+				pB = (BYTE*)realloc(pB, count);
+				pB[count - 1] = 0;
+
+
+				WCHAR* pA = (WCHAR*)UTF8_2_UTF16(pB);
+				free(pB);
+				CFreer pAFreer(pA);
+
+				wchar_t* context = NULL;
+				LPCWSTR pTok = wcstok_s(pA, L"\n", &context);
+				while (pTok)
+				{
+					wstring left;
+					wstring right;
+					int phase = 0;
+					bool done = false;
+					bool esc = false;
+					for (; *pTok; ++pTok)
+					{
+						if (phase == 0)
+						{
+							if (*pTok == L'#')
+							{
+								done = true;
+								break;
+							}
+
+							if (*pTok != L'"')
+								continue;
+
+							phase = 1;
+							continue;
+						}
+						else if (phase == 1)
+						{
+							if (esc)
+							{
+								esc = false;
+								if (*pTok == L'n')
+								{
+									left += L"\n";
+								}
+								else if (*pTok == L'r')
+								{
+									left += L"\r";
+								}
+								else
+									left += *pTok;
+								continue;
+							}
+							if (*pTok == L'\\')
+							{
+								esc = true;
+								continue;
+							}
+							if (*pTok == L'"')
+							{
+								phase = 2;
+								continue;
+							}
+							left += *pTok;
+							continue;
+						}
+						else if (phase == 2)
+						{
+							if (*pTok != L'=')
+								continue;
+
+							phase = 3;
+						}
+						else if (phase == 3)
+						{
+							if (*pTok != L'"')
+								continue;
+
+							phase = 4;
+							continue;
+						}
+						else if (phase == 4)
+						{
+							if (esc)
+							{
+								esc = false;
+								if (*pTok == L'n')
+								{
+									right += L"\n";
+								}
+								else if (*pTok == L'r')
+								{
+									right += L"\r";
+								}
+								else
+								{
+									right += *pTok;
+								}
+								continue;
+							}
+							if (*pTok == L'\\')
+							{
+								esc = true;
+								continue;
+							}
+							if (*pTok == L'"')
+							{
+								phase = 5;
+								continue;
+							}
+							right += *pTok;
+							continue;
+						}
+						else if (phase == 5)
+						{
+							break;
+						}
+						else
+						{
+							assert(false);
+						}
+					}
+
+					if (!left.empty())
+					{
+#ifdef _DEBUG
+						if (i18map.count(left.c_str()) != 0)
+						{
+							aru.insert(left);
+						}
+#endif
+						i18map[_wcsdup(left.c_str())] = right;
+					}
+
+					pTok = wcstok_s(NULL, L"\n", &context);
+				}
+			} while (0);
+
+		}
+		langinit = true;
+	}
+
+	return bRet;
 }
 
 LPCWSTR I18NW(LPCWSTR pIN)
@@ -579,7 +577,7 @@ LPCWSTR I18NW(LPCWSTR pIN)
 
 
 
-static BOOL CALLBACK enumDlgChild(
+static BOOL CALLBACK enumChild(
   HWND hwnd,
   LPARAM)
 {
@@ -607,16 +605,52 @@ void i18nChangeWindowText(HWND hwnd)
 		LPTSTR p = new TCHAR[size+1];
 		if(size == ::GetWindowTextW(hwnd, p, size+1))
 		{
-			::SetWindowTextW(hwnd, I18N(p));
+			LPCWSTR q = I18N(p);
+			if (lstrcmp(p, q) != 0)
+				::SetWindowTextW(hwnd, q);
 		}
 		delete[] p;
 	}
 }
-void i18nChangeChildWindowText(HWND hDlg)
+void i18nChangeChildWindowText(HWND hWnd)
 {
-	EnumChildWindows(hDlg,
-		enumDlgChild,
+	if (!::IsWindow(hWnd))
+		return;
+	EnumChildWindows(hWnd,
+		enumChild,
 		0);
+}
+
+struct ENUMDIALOGDATA
+{
+	HWND* except;
+	int count;
+};
+
+static BOOL CALLBACK enumDialog(
+	HWND hwnd,
+	LPARAM lParam)
+{
+	ENUMDIALOGDATA* ed = (ENUMDIALOGDATA*)lParam;
+	for (int i = 0; i < ed->count; ++i)
+	{
+		if (hwnd == ed->except[i])
+			return TRUE;
+	}
+
+	i18nChangeWindowText(hwnd);
+
+	return TRUE;
+}
+void i18nChangeDialogText(HWND hWnd, HWND* except, int exceptCount)
+{
+	if (!::IsWindow(hWnd))
+		return;
+	ENUMDIALOGDATA ed;
+	ed.except = except;
+	ed.count = exceptCount;
+	EnumChildWindows(hWnd, enumDialog, (LPARAM)&ed);
+	i18nChangeWindowText(hWnd);
 }
 
 void i18nChangeMenuText(HMENU menu)
