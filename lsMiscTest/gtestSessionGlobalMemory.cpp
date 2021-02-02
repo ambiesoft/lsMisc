@@ -32,7 +32,7 @@ TEST(SessionGlobalMemory, RemoteProcess)
 	EXPECT_TRUE(!!PathFileExists(setExe.c_str()));
 	LPCWSTR pEventName = L"MyLsMiscTestEvent";
 	LPCSTR pSgName = "aaa";
-	Ambiesoft::CHandle event = CreateEvent(nullptr, TRUE, FALSE, pEventName);
+	Ambiesoft::CHandle event(CreateEvent(nullptr, TRUE, FALSE, pEventName));
 	Ambiesoft::CHandle process;
 	CSessionGlobalMemory<int> sgaaaa(pSgName,333);
 	EXPECT_TRUE(!!OpenCommon(

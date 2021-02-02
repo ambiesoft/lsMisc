@@ -219,6 +219,26 @@ TEST(stdosd, SplitStringToLineA)
 	EXPECT_STREQ(v[2].c_str(), "bbb");
 }
 
+static string getLongString()
+{
+	string ret;
+	for (int i = 1; i < 1000; ++i)
+		ret += to_string(i);
+	return ret;
+}
+
+// https://stackoverflow.com/a/41985035
+template<std::size_t... S>
+string unpack_vector(const std::vector<int>& vec, string fmt, std::index_sequence<S...>) {
+	return stdFormat(fmt, vec[S]...);
+}
+
+template<std::size_t size>
+string unpack_vector(const std::vector<int>& vec, string fmt) {
+	if (vec.size() != size)
+		EXPECT_TRUE(false);
+	return unpack_vector(vec, fmt, std::make_index_sequence<size>());
+}
 TEST(stdosd, FormatA)
 {
     string s;
@@ -227,6 +247,27 @@ TEST(stdosd, FormatA)
 
     s = stdFormat("%s%d%s", "---",100,"---");
     EXPECT_STREQ(s.c_str(), "---100---");
+
+	EXPECT_STREQ(stdFormat(getLongString()).c_str(), getLongString().c_str());
+
+	// 100 '%d's
+	{
+		string ppd100;
+		vector<int> d100;
+		string result100;
+		for (int i = 0; i < 100; ++i)
+		{
+			ppd100 += "%d";
+			d100.push_back(i);
+			result100 += to_string(i);
+		}
+		s = unpack_vector<100>(d100, ppd100);
+		EXPECT_STREQ(s.c_str(), result100.c_str());
+	}
+
+	// long %s
+	s = getLongString();
+	EXPECT_STREQ(stdFormat("XXX%sYYY", s.c_str()).c_str(), ("XXX" + s + "YYY").c_str());
 }
 
 TEST(stdosd, FormatW)

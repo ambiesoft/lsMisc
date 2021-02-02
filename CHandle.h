@@ -30,7 +30,7 @@ namespace Ambiesoft {
 		HANDLE h_;
 	public:
 		CHandle() : h_(nullptr){}
-		CHandle(HANDLE h) :h_(h) {
+		explicit CHandle(HANDLE h) :h_(h) {
 
 		}
 		CHandle(const CHandle& that) {
@@ -67,9 +67,8 @@ namespace Ambiesoft {
 	{
 		HWND h_;
 	public:
-		CHWnd(HWND h) :h_(h) {
-
-		}
+		CHWnd():h_(nullptr) {}
+		explicit CHWnd(HWND h) :h_(h) {}
 		~CHWnd() {
 			if (h_ == nullptr)
 				return;
@@ -81,12 +80,20 @@ namespace Ambiesoft {
 		operator HWND() const {
 			return h_;
 		}
+		const CHWnd& operator=(CHWnd& that) {
+			this->h_ = that.h_;
+			return *this;
+		}
+		const CHWnd& operator=(HWND h) {
+			this->h_ = h;
+			return *this;
+		}
 	};
 	class CHIcon
 	{
 		HICON h_;
 	public:
-		CHIcon(HICON h) : h_(h) {}
+		explicit CHIcon(HICON h) : h_(h) {}
 		~CHIcon() {
 			if (h_ == nullptr)
 				return;
@@ -103,9 +110,7 @@ namespace Ambiesoft {
 	{
 		HMENU h_;
 	public:
-		CHMenu(HMENU h) :h_(h) {
-
-		}
+		explicit CHMenu(HMENU h) :h_(h) {}
 		~CHMenu() {
 			if (h_ == nullptr)
 				return;
@@ -130,7 +135,7 @@ namespace Ambiesoft {
 			}
 		}
 	public:
-		CHModule(HMODULE h, bool autoclose = true) :
+		explicit CHModule(HMODULE h, bool autoclose = true) :
 			h_(h),
 			autoclose_(autoclose) {};
 		~CHModule() {

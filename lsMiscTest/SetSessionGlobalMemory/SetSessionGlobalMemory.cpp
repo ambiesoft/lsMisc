@@ -43,7 +43,7 @@ int main(int argc, const char* argv[])
         cerr << "eventname is empty" << endl;
         return 1;
     }
-    Ambiesoft::CHandle event = CreateEventA(nullptr, TRUE, TRUE, eventname.c_str());
+    Ambiesoft::CHandle event(CreateEventA(nullptr, TRUE, TRUE, eventname.c_str()));
     if (!event)
     {
         cerr << "failed to CreateEvent" << endl;

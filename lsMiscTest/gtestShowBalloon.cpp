@@ -16,7 +16,7 @@ TEST(ShowBalloon, Show)
 				 L"teeeeeeeext",
 				 NULL,
 				 3000,
-				 3332,
+				 GetTickCount(),
 				 FALSE,
  				 1));
 }
