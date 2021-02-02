@@ -35,6 +35,7 @@ using namespace std;
 
 #include "showballoon.h"
 #include "CreateSimpleWindow.h"
+#include "CHandle.h"
 
 #pragma comment(lib,"Comctl32.lib")
 #pragma comment(lib,"shlwapi.lib")
@@ -263,18 +264,11 @@ LRESULT CALLBACK WaitWindowProc(
 		break;
 	case WM_TIMER:
 		sCounter++;
-		if(sCounter>=smaxcount)
+		if (sCounter >= smaxcount)
 		{
-			KillTimer(hwnd,sntimer);
+			KillTimer(hwnd, sntimer);
 			DestroyWindow(hwnd);
 		}
-		//else
-		//{
-		//	if(spWaitParam && ((smaxcount-sCounter) > 5))
-		//	{
-		//		(*spWaitParam)(hwnd);
-		//	}
-		//}
 		break;
 	case WM_APP_TRAYMESSAGE:
 		// MessageBoxA(NULL,"ddd","",0);
@@ -289,7 +283,11 @@ LRESULT CALLBACK WaitWindowProc(
 
 
 
-
+#if 0
+#define DEBUGMESSAGE do { MessageBoxA(NULL, to_string(__LINE__).c_str(),"aaa",0);} while(false)
+#else
+#define DEBUGMESSAGE (void)0
+#endif
 
 BOOL showballoon(HWND hWnd, 
 				 const wstring& title,
@@ -302,7 +300,7 @@ BOOL showballoon(HWND hWnd,
 {
 	// CoInitialize(NULL);
 
-	HWND hwndToDel = NULL;
+	CHWnd hwndToDel;
 	WaitParam param(
 		NIM_MODIFY,
 		uTrayID,
@@ -324,72 +322,35 @@ BOOL showballoon(HWND hWnd,
 			0,
 			0,
 			(void*)&param);
-		hwndToDel= hWnd;
+		hwndToDel = hWnd;
 	}
-
-	//InitCommonControls();
-	//HWND hBalloon = CreateWindowW(L"tooltips_class32",
-	//	NULL,
-	//	WS_POPUP|0x02|0x40|0x01,
-	//	CW_USEDEFAULT,
-	//	CW_USEDEFAULT,
-	//	CW_USEDEFAULT,
-	//	CW_USEDEFAULT,
-	//	NULL,
-	//	NULL,
-	//	NULL,
-	//	NULL);
-	//if(!hBalloon)
-	//{
-	//	// MessageBoxW(NULL, L"balloon",NULL,MB_ICONERROR);
-	//	return FALSE;
-	//}
-	//if(!SendMessageW(hBalloon,
-	//	TTM_SETTITLE, // Adds a standard icon and title string to a ToolTip    
-	//	1,
-	//	(LPARAM)L"title"))
-	//{
-	//	return FALSE;
-	//}
-
 
 	if(!bOnlyModify)
 	{
-		NotifyIconizeW(hWnd,uTrayID,NIM_DELETE, hIcon, duration, NULL, NULL);
-		if(!NotifyIconizeW(hWnd,uTrayID,NIM_ADD, hIcon, duration,NULL, NULL))
+		NotifyIconizeW(hWnd, uTrayID, NIM_DELETE, hIcon, duration, NULL, NULL);
+		if (!NotifyIconizeW(hWnd, uTrayID, NIM_ADD, hIcon, duration, NULL, NULL))
 		{
+			DEBUGMESSAGE;
 			return FALSE;
 		}
 	}
 
-
-
 	if(!NotifyIconizeW(hWnd,uTrayID, NIM_MODIFY, hIcon, duration,title.c_str(), text.c_str(),dwBalloonIcon  ))
 	{
-		// MessageBoxA(NULL, "NotifyModify",NULL,MB_ICONERROR);
+		DEBUGMESSAGE;
 		return FALSE;
 	}
 
 	if(!bOnlyModify)
 	{
-		// Sleep(duration);
 		MSG msg;
-		while( GetMessage(&msg, NULL, 0, 0) ) 
+		while (GetMessage(&msg, NULL, 0, 0))
 		{
-			// if( !TranslateAccelerator (msg.hwnd, hAccelTable, &msg) ) 
-			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
-			}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 		NotifyIconizeW(hWnd,uTrayID, NIM_DELETE, hIcon, duration,NULL, NULL);
 	}
-//	DestroyWindow(hBalloon);
-//	DestroyIcon(ghIcon);
-
-	if(hwndToDel)
-		DestroyWindow(hwndToDel);
-
 	return TRUE;
 }
 
