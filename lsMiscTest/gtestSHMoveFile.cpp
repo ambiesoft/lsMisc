@@ -80,12 +80,12 @@ TEST_F(FileOperationTest, MoveFileTestMoveSingle)
 		EXPECT_TRUE(PathFileExists(p1.c_str()));
 		EXPECT_FALSE(PathFileExists(p2.c_str()));
 
-		EXPECT_EQ(SHMoveFile(p2.c_str(), p1.c_str()), 0);
+		EXPECT_EQ(SHMoveFileEx( p1.c_str(), p2.c_str()), 0);
 
 		EXPECT_FALSE(PathFileExists(p1.c_str()));
 		EXPECT_TRUE(PathFileExists(p2.c_str()));
 
-		EXPECT_EQ(SHMoveFile(p1.c_str(), p2.c_str()), 0);
+		EXPECT_EQ(SHMoveFileEx( p2.c_str(), p1.c_str()), 0);
 
 		EXPECT_TRUE(PathFileExists(p1.c_str()));
 		EXPECT_FALSE(PathFileExists(p2.c_str()));
@@ -109,8 +109,8 @@ TEST_F(FileOperationTest, MoveFileTestCopySingle)
 		EXPECT_FALSE(PathFileExists(p3.c_str()));
 		EXPECT_FALSE(PathFileExists(p4.c_str()));
 
-		EXPECT_EQ(SHCopyFile(p3.c_str(), testFile.c_str(), FOF_NO_UI), 0);
-		EXPECT_EQ(SHCopyFile(p4.c_str(), testFile.c_str(), FOF_NO_UI), 0);
+		EXPECT_EQ(SHCopyFileEx( testFile.c_str(), p3.c_str(), FOF_NO_UI), 0);
+		EXPECT_EQ(SHCopyFileEx( testFile.c_str(), p4.c_str(), FOF_NO_UI), 0);
 
 		EXPECT_TRUE(PathFileExists(p3.c_str()));
 		EXPECT_TRUE(PathFileExists(p4.c_str()));
@@ -143,15 +143,15 @@ TEST_F(FileOperationTest, MoveFileTestMoveMultiSame)
 	
 		wstring p3 = stdCombinePath(testRoot(), L"New1.txt");
 		wstring p4 = stdCombinePath(testRoot(), L"New2.txt");
-		EXPECT_EQ(SHCopyFile(p3.c_str(), testFile.c_str(), FOF_NO_UI), 0);
-		EXPECT_EQ(SHCopyFile(p4.c_str(), testFile.c_str(), FOF_NO_UI), 0);
+		EXPECT_EQ(SHCopyFileEx( testFile.c_str(), p3.c_str(), FOF_NO_UI), 0);
+		EXPECT_EQ(SHCopyFileEx( testFile.c_str(), p4.c_str(), FOF_NO_UI), 0);
 
 		vector<wstring> ws;
 		ws.push_back(p3);
 		ws.push_back(p4);
 		EXPECT_TRUE(PathFileExists(p3.c_str()));
 		EXPECT_TRUE(PathFileExists(p4.c_str()));
-		EXPECT_TRUE(SHMoveFile(newdir.c_str(), ws, FOF_NO_UI) == 0);
+		EXPECT_TRUE(SHMoveFileEx(ws, newdir.c_str(), FOF_NO_UI) == 0);
 		EXPECT_FALSE(PathFileExists(p3.c_str()));
 		EXPECT_FALSE(PathFileExists(p4.c_str()));
 		wstring newLocation1 = stdCombinePath(newdir, stdGetFileName(p3));
@@ -203,7 +203,7 @@ TEST_F(FileOperationTest, MoveFileTestMoveMultiDiff)
 
 		EXPECT_TRUE(PathFileExists(file1.c_str()));
 		EXPECT_TRUE(PathFileExists(file2.c_str()));
-		EXPECT_TRUE(SHMoveFile(targetdir.c_str(), ws, FOF_NO_UI) == 0);
+		EXPECT_TRUE(SHMoveFileEx( ws, targetdir.c_str(), FOF_NO_UI) == 0);
 		EXPECT_FALSE(PathFileExists(file1.c_str()));
 		EXPECT_FALSE(PathFileExists(file2.c_str()));
 
@@ -251,7 +251,7 @@ TEST_F(FileOperationTest, MoveFileTestCopyMultiSame)
 		vector<wstring> ws;
 		ws.push_back(nf1);
 		ws.push_back(nf2);
-		EXPECT_TRUE(SHCopyFile(targetdir.c_str(), ws, FOF_NO_UI) == 0);
+		EXPECT_TRUE(SHCopyFileEx( ws, targetdir.c_str(), FOF_NO_UI) == 0);
 		wstring tf1 = stdCombinePath(targetdir, pF1);
 		wstring tf2 = stdCombinePath(targetdir, pF2);
 		unique_ptr<const wchar_t, void(*)(const wchar_t*)> tf1remover(tf1.c_str(),
@@ -315,7 +315,7 @@ TEST_F(FileOperationTest, MoveFileTestMoveMultiToMulti)
 		EXPECT_TRUE(PathFileExists(nf2.c_str()));
 		EXPECT_TRUE(!PathFileExists(nf5.c_str()));
 		EXPECT_TRUE(!PathFileExists(nf6.c_str()));
-		EXPECT_TRUE(SHMoveFile(wsD, wsS, FOF_NO_UI) == 0);
+		EXPECT_TRUE(SHMoveFileEx( wsS, wsD, FOF_NO_UI) == 0);
 		EXPECT_TRUE(!PathFileExists(nf1.c_str()));
 		EXPECT_TRUE(!PathFileExists(nf2.c_str()));
 		EXPECT_TRUE(PathFileExists(nf5.c_str()));
@@ -377,7 +377,7 @@ TEST_F(FileOperationTest, MoveFileTestCopyMultiToMulti)
 		EXPECT_TRUE(PathFileExists(nf2.c_str()));
 		EXPECT_TRUE(!PathFileExists(nf5.c_str()));
 		EXPECT_TRUE(!PathFileExists(nf6.c_str()));
-		EXPECT_TRUE(SHCopyFile(wsD, wsS, FOF_NO_UI) == 0);
+		EXPECT_TRUE(SHCopyFileEx( wsS, wsD, FOF_NO_UI) == 0);
 		EXPECT_TRUE(PathFileExists(nf1.c_str()));
 		EXPECT_TRUE(PathFileExists(nf2.c_str()));
 		EXPECT_TRUE(PathFileExists(nf5.c_str()));

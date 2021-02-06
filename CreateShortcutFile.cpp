@@ -187,7 +187,7 @@ BOOL CreateShortcutFile(HWND hWnd,
 		return FALSE;
 	}
 
-	if (0 != SHMoveFile(hWnd, pszShortcutFile, szTempFile, FOF_NOCONFIRMATION))
+	if (0 != SHMoveFileEx(hWnd, szTempFile, pszShortcutFile, FOF_NOCONFIRMATION))
 		return FALSE;
 
 	return TRUE;

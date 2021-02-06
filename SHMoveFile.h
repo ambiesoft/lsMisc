@@ -33,35 +33,35 @@ namespace Ambiesoft {
 		default_fopFlags = FOF_ALLOWUNDO,
 	};
 	
-	int SHMoveFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFileEx(HWND hWnd,  LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFileEx( LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
 
-	int SHCopyFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHCopyFileEx(HWND hWnd,  LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHCopyFileEx( LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
 
-	int SHDeleteFile(HWND hWnd, LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHDeleteFile(LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags);
-
-
+	int SHDeleteFileEx(HWND hWnd, LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHDeleteFileEx(LPCTSTR lpFile, FILEOP_FLAGS fopFlags = default_fopFlags);
 
 
-	int SHMoveFile(HWND hWnd, LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHMoveFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 
-	int SHCopyFile(HWND hWnd, LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHCopyFile(LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 
-	int SHDeleteFile(HWND hWnd, const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHDeleteFile(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFileEx(HWND hWnd,  const std::vector<std::wstring>& sourcefiles, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFileEx( const std::vector<std::wstring>& sourcefiles, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHCopyFileEx(HWND hWnd,  const std::vector<std::wstring>& sourcefiles, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHCopyFileEx( const std::vector<std::wstring>& sourcefiles, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags = default_fopFlags);
+
+	int SHDeleteFileEx(HWND hWnd, const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHDeleteFileEx(const std::vector<std::wstring>& files, FILEOP_FLAGS fopFlags = default_fopFlags);
 
 
 	
 	
-	int SHMoveFile(HWND hWnd, const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHMoveFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFileEx(HWND hWnd,  const std::vector<std::wstring>& sourcefiles, const std::vector<std::wstring>& destfiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHMoveFileEx( const std::vector<std::wstring>& sourcefiles, const std::vector<std::wstring>& destfiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 
-	int SHCopyFile(HWND hWnd, const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
-	int SHCopyFile(const std::vector<std::wstring>& destfiles, const std::vector<std::wstring>& sourcefiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHCopyFileEx(HWND hWnd,  const std::vector<std::wstring>& sourcefiles, const std::vector<std::wstring>& destfiles, FILEOP_FLAGS fopFlags = default_fopFlags);
+	int SHCopyFileEx( const std::vector<std::wstring>& sourcefiles, const std::vector<std::wstring>& destfiles, FILEOP_FLAGS fopFlags = default_fopFlags);
 
 	std::wstring GetSHFileOpErrorString(int nRet);
 }

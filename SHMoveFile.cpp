@@ -128,35 +128,19 @@ namespace Ambiesoft {
 		free(p);
 	}
 
-	enum CopyORMove {
-		CopyORMove_Copy,
-		CopyORMove_Move,
-		CopyORMove_Delete,
-	};
 
-	static UINT GetwFunc(CopyORMove cm)
-	{
-		switch (cm)
-		{
-		case CopyORMove_Copy:return FO_COPY;
-		case CopyORMove_Move:return FO_MOVE;
-		case CopyORMove_Delete:return FO_DELETE;
-		}
-		assert(false);
-		return 0;
-	}
-	static BOOL SHCopyOrMoveFileImpl(
+	static BOOL SHCopyOrMoveFileImplEx(
 		HWND hWnd,
-		CopyORMove copyormove, 
+		UINT func,
 		bool ismultidest, 
-		LPCTSTR lpzzFileTo, 
 		LPCTSTR lpzzFileFrom, 
+		LPCTSTR lpzzFileTo,
 		FILEOP_FLAGS fopFlags=FOF_ALLOWUNDO,
 		int* pnRet=NULL)
 	{
 		SHFILEOPSTRUCT sfo = { 0 };
 		sfo.hwnd = hWnd;
-		sfo.wFunc = GetwFunc(copyormove);
+		sfo.wFunc = func;
 		sfo.pFrom = lpzzFileFrom;
 		sfo.pTo = lpzzFileTo;
 		sfo.fFlags = fopFlags |
@@ -209,15 +193,20 @@ namespace Ambiesoft {
 	}
 
 	
-	static BOOL SHCopyOrMoveFile(HWND hWnd, CopyORMove cm, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags, int* pnRet)
+	static BOOL SHCopyOrMoveFileEx(HWND hWnd, 
+		UINT func,
+		LPCTSTR lpFileFrom, 
+		LPCTSTR lpFileTo,
+		FILEOP_FLAGS fopFlags,
+		int* pnRet)
 	{
-		if (cm != CopyORMove_Delete)
+		if (func != FO_DELETE)
 		{
 			assert(lpFileTo && lpFileFrom);
 			if (!(lpFileTo && lpFileFrom))
 				return FALSE;
 		}
-		else if (cm == CopyORMove_Delete)
+		else if (func == FO_DELETE)
 		{
 			assert(lpFileFrom);
 			assert(!lpFileTo);
@@ -225,184 +214,171 @@ namespace Ambiesoft {
 				return FALSE;
 		}
 
-		//LPTSTR pFrom = CreateDNString(lpFileFrom, pnRet);
 		std::unique_ptr<TCHAR, std::function<void(void*)>> from(CreateDNString(lpFileFrom, pnRet), myFree);
-		// stlsoft::scoped_handle<void*> ha(pFrom, myFree);
 
-		// LPTSTR pTo = NULL;
 		std::unique_ptr<TCHAR, std::function<void(void*)>> to(nullptr, myFree);
-		if (cm != CopyORMove_Delete)
+		if (func != FO_DELETE)
 		{
 			to.reset(CreateDNString(lpFileTo, pnRet));
 		}
-		// stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
-		return SHCopyOrMoveFileImpl(hWnd, cm, false, to.get(), from.get(), fopFlags, pnRet);
+		return SHCopyOrMoveFileImplEx(hWnd, func, false, from.get(), to.get(), fopFlags, pnRet);
 	}
-	int SHMoveFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags)
+	int SHMoveFileEx(HWND hWnd, LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Move, lpFileTo, lpFileFrom, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_MOVE, lpFileFrom, lpFileTo, fopFlags, &ret);
 		return ret;
 	}
-	int SHMoveFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags)
+	int SHMoveFileEx(LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags)
 	{
-		return SHMoveFile(NULL, lpFileTo, lpFileFrom, fopFlags);
+		return SHMoveFileEx(NULL, lpFileFrom, lpFileTo, fopFlags);
 	}
 	
-	int SHCopyFile(HWND hWnd, LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags)
+	int SHCopyFileEx(HWND hWnd, LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Copy, lpFileTo, lpFileFrom, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_COPY, lpFileFrom, lpFileTo, fopFlags, &ret);
 		return ret;
 	}
-	int SHCopyFile(LPCTSTR lpFileTo, LPCTSTR lpFileFrom, FILEOP_FLAGS fopFlags)
+	int SHCopyFileEx( LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags)
 	{
-		return SHCopyFile(NULL, lpFileTo, lpFileFrom, fopFlags);
+		return SHCopyFileEx(NULL,  lpFileFrom, lpFileTo, fopFlags);
 	}
 	
-	int SHDeleteFile(HWND hWnd, LPCTSTR lpFile, FILEOP_FLAGS fopFlags)
+	int SHDeleteFileEx(HWND hWnd, LPCTSTR lpFile, FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Delete, NULL, lpFile, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_DELETE, lpFile, NULL, fopFlags, &ret);
 		return ret;
 	}
-	int SHDeleteFile(LPCTSTR lpFile, FILEOP_FLAGS fopFlags)
+	int SHDeleteFileEx(LPCTSTR lpFile, FILEOP_FLAGS fopFlags)
 	{
-		return SHDeleteFile(NULL, lpFile, fopFlags);
+		return SHDeleteFileEx(NULL, lpFile, fopFlags);
 	}
 
 
 
 	// Move many file to 1 folder
-	static BOOL SHCopyOrMoveFile(
+	static BOOL SHCopyOrMoveFileEx(
 		HWND hWnd,
-		CopyORMove cm, 
-		LPCTSTR lpFileTo, const std::vector<std::wstring>& sourcefiles, 
+		UINT func, 
+		const std::vector<std::wstring>& sourcefiles,
+		LPCTSTR lpFileTo, 
 		FILEOP_FLAGS fopFlags,
 		int* pnRet)
 	{
 		std::unique_ptr<TCHAR, std::function<void(void*)>> from(CreateDNString(sourcefiles, pnRet), myFree);
-		// LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
-		// stlsoft::scoped_handle<void*> ha(pFroms, myFree);
-
-		// LPTSTR pTo = NULL;
 		std::unique_ptr<TCHAR, std::function<void(void*)>> to(nullptr, myFree);
-		if (cm != CopyORMove_Delete)
+		if (func != FO_DELETE)
 		{
 			to.reset(CreateDNString(lpFileTo, pnRet));
 		}
-		// stlsoft::scoped_handle<void*> hi(pTo, myFree);
 
-		return SHCopyOrMoveFileImpl(hWnd, cm, false, to.get(), from.get(), fopFlags, pnRet);
+		return SHCopyOrMoveFileImplEx(hWnd, func, false,  from.get(), to.get(), fopFlags, pnRet);
 	}
-	int SHMoveFile(
+	int SHMoveFileEx(
 		HWND hWnd,
-		LPCTSTR lpFileTo,
 		const std::vector<std::wstring>& sourcefiles,
+		LPCTSTR lpFileTo,
 		FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Move, lpFileTo, sourcefiles, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_MOVE,  sourcefiles, lpFileTo, fopFlags, &ret);
 		return ret;
 	}
-	int SHMoveFile(
-		LPCTSTR lpFileTo,
+	int SHMoveFileEx(
 		const std::vector<std::wstring>& sourcefiles,
+		LPCTSTR lpFileTo,
 		FILEOP_FLAGS fopFlags)
 	{
-		return SHMoveFile(NULL, lpFileTo, sourcefiles, fopFlags);
+		return SHMoveFileEx(NULL, sourcefiles, lpFileTo, fopFlags);
 	}
 
 	// Copy many files to 1 folder
-	int SHCopyFile(
+	int SHCopyFileEx(
 		HWND hWnd,
-		LPCTSTR lpFileTo,
 		const std::vector<std::wstring>& sourcefiles,
+		LPCTSTR lpFileTo,
 		FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Copy, lpFileTo, sourcefiles, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_COPY,  sourcefiles, lpFileTo, fopFlags, &ret);
 		return ret;
 	}
-	int SHCopyFile(
-		LPCTSTR lpFileTo,
+	int SHCopyFileEx(
 		const std::vector<std::wstring>& sourcefiles,
+		LPCTSTR lpFileTo,
 		FILEOP_FLAGS fopFlags)
 	{
-		return SHCopyFile(NULL, lpFileTo, sourcefiles, fopFlags);
+		return SHCopyFileEx(NULL,  sourcefiles, lpFileTo, fopFlags);
 	}
 	
-	int SHDeleteFile(
+	int SHDeleteFileEx(
 		HWND hWnd,
 		const std::vector<std::wstring>& files,
 		FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Delete, NULL, files, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_DELETE,  files, NULL, fopFlags, &ret);
 		return ret;
 	}
-	int SHDeleteFile(const std::vector<std::wstring>& files,
+	int SHDeleteFileEx(const std::vector<std::wstring>& files,
 		FILEOP_FLAGS fopFlags)
 	{
-		return SHDeleteFile(NULL, files, fopFlags);
+		return SHDeleteFileEx(NULL, files, fopFlags);
 	}
 
 	// move multiple files to multiple files
-	static BOOL SHCopyOrMoveFile(
+	static BOOL SHCopyOrMoveFileEx(
 		HWND hWnd,
-		CopyORMove cm, 
-		const vector<wstring>& destfiles, 
+		UINT func, 
 		const vector<wstring>& sourcefiles, 
+		const vector<wstring>& destfiles,
 		FILEOP_FLAGS fopFlags,
 		int* pnRet)
 	{
-		// LPTSTR pFroms = CreateDNString(sourcefiles, pnRet);
 		std::unique_ptr<TCHAR, std::function<void(void*)>> from(CreateDNString(sourcefiles, pnRet), myFree);
-		// stlsoft::scoped_handle<void*> ha(pFroms, myFree);
-
-		// LPTSTR pTos = CreateDNString(destfiles, pnRet);
 		std::unique_ptr<TCHAR, std::function<void(void*)>> to(CreateDNString(destfiles, pnRet), myFree);
-		//stlsoft::scoped_handle<void*> hi(pTos, myFree);
 		
-		return SHCopyOrMoveFileImpl(hWnd, cm, true, to.get(), from.get(), fopFlags, pnRet);
+		return SHCopyOrMoveFileImplEx(hWnd, func, true,  from.get(), to.get(), fopFlags, pnRet);
 	}
 
 
-	int SHMoveFile(
+	int SHMoveFileEx(
 		HWND hWnd,
-		const vector<wstring>& destfiles,
 		const vector<wstring>& sourcefiles,
+		const vector<wstring>& destfiles,
 		FILEOP_FLAGS fopFlags)
 	{
 		int ret = -1;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Move, destfiles, sourcefiles, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_MOVE,  sourcefiles, destfiles, fopFlags, &ret);
 		return ret;
 	}
-	int SHMoveFile(
-		const vector<wstring>& destfiles,
+	int SHMoveFileEx(
 		const vector<wstring>& sourcefiles,
+		const vector<wstring>& destfiles,
 		FILEOP_FLAGS fopFlags)
 	{
-		return SHMoveFile(NULL, destfiles, sourcefiles, fopFlags);
+		return SHMoveFileEx(NULL,  sourcefiles, destfiles, fopFlags);
 	}
 
-	int SHCopyFile(
+	int SHCopyFileEx(
 		HWND hWnd,
-		const vector<wstring>& destfiles,
 		const vector<wstring>& sourcefiles,
+		const vector<wstring>& destfiles,
 		FILEOP_FLAGS fopFlags)
 	{
 		int ret;
-		SHCopyOrMoveFile(hWnd, CopyORMove_Copy, destfiles, sourcefiles, fopFlags, &ret);
+		SHCopyOrMoveFileEx(hWnd, FO_COPY,  sourcefiles, destfiles, fopFlags, &ret);
 		return ret;
 	}
-	int SHCopyFile(
-		const vector<wstring>& destfiles,
+	int SHCopyFileEx(
 		const vector<wstring>& sourcefiles,
+		const vector<wstring>& destfiles,
 		FILEOP_FLAGS fopFlags)
 	{
-		return SHCopyFile(NULL, destfiles, sourcefiles, fopFlags);
+		return SHCopyFileEx(NULL,  sourcefiles, destfiles, fopFlags);
 	}
 
 } // namespace
