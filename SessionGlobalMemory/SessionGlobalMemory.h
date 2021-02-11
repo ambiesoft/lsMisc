@@ -124,6 +124,9 @@ namespace Ambiesoft {
 			m_pName = rhv.m_pName;
 			rhv.m_pName = NULL;
 
+			m_pNameFileMap = rhv.m_pNameFileMap;
+			rhv.m_pNameFileMap = NULL;
+
 			m_pMutexName = rhv.m_pMutexName;
 			rhv.m_pMutexName = NULL;
 
@@ -173,9 +176,12 @@ namespace Ambiesoft {
 			m_ = NULL;
 
 			size_t32 len = lstrlenA(pName);
-			m_pName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_FileMap") - 1 + sizeof(char));
+			m_pName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof(char));
 			lstrcpyA(m_pName, pName);
-			lstrcatA(m_pName, "_FileMap");
+
+			m_pNameFileMap = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_FileMap") - 1 + sizeof(char));
+			lstrcpyA(m_pNameFileMap, pName);
+			lstrcatA(m_pNameFileMap, "_FileMap");
 
 			m_pMutexName = (LPSTR)LocalAlloc(LMEM_FIXED, len + sizeof("_Mutex") - 1 + sizeof(char));
 			lstrcpyA(m_pMutexName, pName);
@@ -205,6 +211,7 @@ namespace Ambiesoft {
 				m_ = NULL;
 			}
 			AMBIESOFT_VERIFY_ZERO(LocalFree(m_pName));
+			AMBIESOFT_VERIFY_ZERO(LocalFree(m_pNameFileMap));
 			AMBIESOFT_VERIFY_ZERO(LocalFree(m_pMutexName));
 		}
 		void ensure() const {
@@ -222,7 +229,7 @@ namespace Ambiesoft {
 					NULL,
 					PAGE_READWRITE,
 					0, internalsize(),
-					m_pName);
+					m_pNameFileMap);
 				assert(h_);
 				if (h_ && GetLastError() != ERROR_ALREADY_EXISTS)
 				{
@@ -284,7 +291,9 @@ namespace Ambiesoft {
 		bool first_;
 		mutable HANDLE h_;
 		mutable HANDLE m_;
+
 		LPSTR m_pName;
+		LPSTR m_pNameFileMap;
 		LPSTR m_pMutexName;
 		mutable void* p_;
 		// prohibitted, use NTS
