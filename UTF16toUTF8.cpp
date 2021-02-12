@@ -39,7 +39,7 @@ using namespace std;
 
 namespace Ambiesoft {
 
-	char* UTF16toMultiByte_new(UINT cp, LPCWSTR pIN, int inLen, int* pOutLen)
+	char* UTF16toMultiByteEx(UINT cp, LPCWSTR pIN, int inLen, int* pOutLen)
 	{
 		if (pIN == nullptr)
 		{
@@ -61,6 +61,12 @@ namespace Ambiesoft {
 			NULL,
 			NULL);
 
+		if (nReqSize <= 0)
+		{
+			if (pOutLen)
+				*pOutLen = 0;
+			return NULL;
+		}
 
 		char* pOut = new char[nReqSize + 1]; // (char*)malloc(nReqSize + 1);
 		int nRet = WideCharToMultiByte(cp,
@@ -88,13 +94,13 @@ namespace Ambiesoft {
 		return pOut;
 
 	}
-	char* UTF16toUTF8_new(LPCWSTR pIN, int inLen, int* pOutLen)
+	char* UTF16toUTF8Ex(LPCWSTR pIN, int inLen, int* pOutLen)
 	{
-		return UTF16toMultiByte_new(CP_UTF8, pIN, inLen, pOutLen);
+		return UTF16toMultiByteEx(CP_UTF8, pIN, inLen, pOutLen);
 	}
 
 
-	LPWSTR UTF16_convertEndian_new(LPCWSTR pIN)
+	LPWSTR UTF16ConvertEndianEx(LPCWSTR pIN)
 	{
 		if (pIN == NULL)
 			return NULL;
@@ -116,7 +122,7 @@ namespace Ambiesoft {
 
 
 
-	LPWSTR MultiBytetoUTF16_new(UINT cp, LPCSTR pIN, int inByteLen, int* pOutLen)
+	LPWSTR MultiBytetoUTF16Ex(UINT cp, LPCSTR pIN, int inByteLen, int* pOutLen)
 	{
 		if (pIN == nullptr)
 		{
@@ -138,6 +144,12 @@ namespace Ambiesoft {
 			inLen,
 			NULL,
 			0);
+		if (nReqSize <= 0)
+		{
+			if (pOutLen)
+				*pOutLen = 0;
+			return NULL;
+		}
 
 		LPWSTR pOut = new wchar_t[nReqSize + 1];  // (LPWSTR)malloc((nReqSize + 1)*sizeof(WCHAR));
 		int nRet = MultiByteToWideChar(cp,
@@ -165,25 +177,33 @@ namespace Ambiesoft {
 		return pOut;
 	}
 
-	LPWSTR UTF8toUTF16_new(const char* pIN, int inByteLen, int* pOutLen)
+	LPWSTR UTF8toUTF16Ex(const char* pIN, int inByteLen, int* pOutLen)
 	{
-		return MultiBytetoUTF16_new(CP_UTF8, pIN, inByteLen, pOutLen);
+		return MultiBytetoUTF16Ex(CP_UTF8, pIN, inByteLen, pOutLen);
 	}
 
-	string toStdString(int acp, const wstring& w)
+	string toStdString(int acp, const wstring::value_type* pStr, size_t size)
 	{
-		// BYTE* p = UTF16toUTF8(w.c_str(), (int)w.size());
-		// char* p = UTF16toMultiByte(acp, w.c_str(), (int)w.size());
-		unique_ptr<char> p(UTF16toMultiByte_new(acp, w.c_str(), (int)w.size()));
+		unique_ptr<char> p(UTF16toMultiByteEx(acp, pStr, (int)size));
 		if (!p)
 			return string();
-		//string ret = (char* )p;
-		//free((void*)p);
 		return p.get();
+	}
+	string toStdUtf8String(int acp, LPCSTR pstr, size_t size)
+	{
+		return toStdUtf8String(toStdWstring(acp, pstr, (int)size));
+	}
+	string toStdString(int acp, const wstring& w)
+	{
+		return toStdString(acp, w.c_str(), w.size());
 	}
 	std::string toStdUtf8String(const std::wstring& w)
 	{
 		return toStdString(CP_UTF8, w);
+	}
+	std::string toStdUtf8String(wchar_t c)
+	{
+		return toStdString(CP_UTF8, &c, 1);
 	}
 	std::string toStdAcpString(const std::wstring& w)
 	{
@@ -194,7 +214,7 @@ namespace Ambiesoft {
 	wstring toStdWstring(int acp, const char* pString, int inByteLen)
 	{
 		// LPCWSTR p = MultiBytetoUTF16(acp, pString, inByteLen);
-		unique_ptr<wchar_t> p(MultiBytetoUTF16_new(acp, pString, inByteLen));
+		unique_ptr<wchar_t> p(MultiBytetoUTF16Ex(acp, pString, inByteLen));
 		if (!p)
 			return wstring();
 		//wstring ret = p;
@@ -224,10 +244,10 @@ namespace Ambiesoft {
 
 
 #ifdef __cplusplus_cli  
-	char* UTF16toUTF8_new(System::String^ s)
+	char* UTF16toUTF8Ex(System::String^ s)
 	{
 		pin_ptr<const wchar_t> p = PtrToStringChars(s);
-		return UTF16toUTF8_new(p);
+		return UTF16toUTF8Ex(p);
 	}
 #endif //__cplusplus_cli  
 

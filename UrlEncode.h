@@ -49,7 +49,7 @@ namespace Ambiesoft {
 			return std::wstring();
 
 		int outsize = 0;
-		std::unique_ptr<char> p8(UTF16toUTF8_new(pstr, size, &outsize));
+		std::unique_ptr<char> p8(UTF16toUTF8Ex(pstr, size, &outsize));
 		std::unique_ptr<char> pRet8(UrlEncode_new(p8.get(), outsize));
 		return toStdWstringFromUtf8(pRet8.get());
 	}
@@ -65,7 +65,7 @@ namespace Ambiesoft {
 	}
 	template<> inline std::string UrlDecodeStd<std::string>(const wchar_t* penc)
 	{
-		std::unique_ptr<char> p8(UTF16toUTF8_new(penc));
+		std::unique_ptr<char> p8(UTF16toUTF8Ex(penc));
 		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
 
 		return p8dec.get();
@@ -78,7 +78,7 @@ namespace Ambiesoft {
 	}
 	template<> inline std::wstring UrlDecodeStd<std::wstring>(const wchar_t* penc)
 	{
-		std::unique_ptr<char> p8(UTF16toUTF8_new(penc));
+		std::unique_ptr<char> p8(UTF16toUTF8Ex(penc));
 		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
 
 		return toStdWstringFromUtf8((const char*)p8dec.get());

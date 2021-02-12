@@ -319,7 +319,7 @@ namespace Ambiesoft {
 								pB[count - 1] = 0;
 
 
-								unique_ptr<wchar_t> pA(UTF8toUTF16_new((char*)pB));
+								unique_ptr<wchar_t> pA(UTF8toUTF16Ex((char*)pB));
 								free(pB);
 								// CFreer pAFreer(pA);
 

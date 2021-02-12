@@ -39,7 +39,7 @@ static void prepareLang()
 		//	return;
 
 		wstring data(L"\"AAA\"=\"あああ\"");
-		unique_ptr<char> pUtf8(UTF16toUTF8_new(data.c_str()));
+		unique_ptr<char> pUtf8(UTF16toUTF8Ex(data.c_str()));
 
 		FILE* f = NULL;
 		_wfopen_s(&f, langfile.c_str(), L"wb");
