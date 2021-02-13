@@ -82,18 +82,17 @@ TEST(SessionGlobalMemory, DynamicBasic2)
 
 TEST(SessionGlobalMemory, DynamicBig)
 {
-	constexpr int size = 256;
-	BYTE byte[size];
-	for (int i = 0; i < size; ++i)
+	BYTE byte[256];
+	for (int i = 0; i < _countof(byte); ++i)
 		byte[i] = i;
 
 	const char* pName = "big";
-	CDynamicSessionGlobalMemory ddd(pName, size);
+	CDynamicSessionGlobalMemory ddd(pName, _countof(byte));
 	ddd.set(byte);
 
 	CDynamicSessionGlobalMemory ddd2(pName);
-	BYTE byte2[size];
+	BYTE byte2[256];
 	ddd2.get(byte2);
-	EXPECT_TRUE(memcmp(byte, byte2, size) == 0);
+	EXPECT_TRUE(memcmp(byte, byte2, _countof(byte2)) == 0);
 	EXPECT_EQ(byte[100], byte2[100]);
 }

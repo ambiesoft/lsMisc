@@ -30,16 +30,16 @@ TEST(UrlEncode, Complex)
 {
 	{
 		LPCSTR p = "https://social.msdn.microsoft.com/Search/en-US?query=isalnum&beta=0&ac=8";
-		unique_ptr<char> penc(UrlEncode_new(p));
-		unique_ptr<char> pdec(UrlDecode_new(penc.get()));
+		unique_ptr<char> penc(UrlEncodeEx(p));
+		unique_ptr<char> pdec(UrlDecodeEx(penc.get()));
 		
 		EXPECT_STREQ(p, pdec.get());
 	}
 
 	{
 		LPCSTR p = "https://social.msdn.microsoft.com/Search/en-US?query=%e3%81%82%e3%81%b0%e3%81%b0%e3%81%b0%ef%bd%82%e3%81%98%e3%81%88%e3%81%88%ef%bd%97%e3%82%8c%ef%bd%97&beta=0&ac=8";
-		unique_ptr<char> penc(UrlEncode_new(p));
-		unique_ptr<char> pdec(UrlDecode_new(penc.get()));
+		unique_ptr<char> penc(UrlEncodeEx(p));
+		unique_ptr<char> pdec(UrlDecodeEx(penc.get()));
 		EXPECT_STREQ(p, pdec.get());
 
 		LPCSTR cp = "https://social.msdn.microsoft.com/Search/en-US?query=%e3%81%82%e3%81%b0%e3%81%b0%e3%81%b0%ef%bd%82%e3%81%98%e3%81%88%e3%81%88%ef%bd%97%e3%82%8c%ef%bd%97&beta=0&ac=8";

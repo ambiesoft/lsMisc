@@ -61,13 +61,6 @@ namespace Ambiesoft {
 			NULL,
 			NULL);
 
-		if (nReqSize <= 0)
-		{
-			if (pOutLen)
-				*pOutLen = 0;
-			return NULL;
-		}
-
 		char* pOut = new char[nReqSize + 1]; // (char*)malloc(nReqSize + 1);
 		int nRet = WideCharToMultiByte(cp,
 			0,
@@ -144,12 +137,6 @@ namespace Ambiesoft {
 			inLen,
 			NULL,
 			0);
-		if (nReqSize <= 0)
-		{
-			if (pOutLen)
-				*pOutLen = 0;
-			return NULL;
-		}
 
 		LPWSTR pOut = new wchar_t[nReqSize + 1];  // (LPWSTR)malloc((nReqSize + 1)*sizeof(WCHAR));
 		int nRet = MultiByteToWideChar(cp,

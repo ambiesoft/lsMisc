@@ -100,7 +100,7 @@ TEST(UTF8TOUTF16, convert16to8)
 	}
 }
 
-TEST(UTF8TOUTF16, EUC)
+TEST(DISABLED_UTF8TOUTF16, EUC)
 {
 	{
 		unsigned char t[2] = { 0xb0, 0xb1 };

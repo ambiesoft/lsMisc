@@ -68,7 +68,7 @@ namespace Ambiesoft {
 			return wstring();
 
 		WCHAR filename[MAX_PATH];
-		CHandle processHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+		CHandle processHandle(OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid));
 		if (processHandle != NULL) {
 			if (fnGetModuleFileNameExW.GetProc()(processHandle, NULL, filename, MAX_PATH) == 0) {
 				if (pLastError)

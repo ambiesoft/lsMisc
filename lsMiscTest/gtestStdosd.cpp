@@ -227,6 +227,37 @@ static string getLongString()
 	return ret;
 }
 
+TEST(stdosd, FormatA)
+{
+	string s;
+	s = stdFormat("%d", 100);
+	EXPECT_STREQ(s.c_str(), "100");
+
+	s = stdFormat("%s%d%s", "---", 100, "---");
+	EXPECT_STREQ(s.c_str(), "---100---");
+
+	EXPECT_STREQ(stdFormat(getLongString()).c_str(), getLongString().c_str());
+}
+
+
+TEST(stdosd, FormatW)
+{
+    wstring s;
+    s = stdFormat(L"%d", 100);
+    EXPECT_STREQ(s.c_str(), L"100");
+
+    s = stdFormat(L"%ls%d%ls", L"---",100,L"---");
+    EXPECT_STREQ(s.c_str(), L"---100---");
+
+	wstring ss = L"abc";
+	s = stdFormat(L"%s", ss.c_str());
+	EXPECT_STREQ(s.c_str(), ss.c_str());
+}
+
+
+
+#if _MSC_VER > 1900
+
 // https://stackoverflow.com/a/41985035
 template<std::size_t... S>
 string unpack_vector(const std::vector<int>& vec, string fmt, std::index_sequence<S...>) {
@@ -239,17 +270,11 @@ string unpack_vector(const std::vector<int>& vec, string fmt) {
 		EXPECT_TRUE(false);
 	return unpack_vector(vec, fmt, std::make_index_sequence<size>());
 }
-TEST(stdosd, FormatA)
+
+
+TEST(stdosd, FormatABig)
 {
-    string s;
-    s = stdFormat("%d", 100);
-    EXPECT_STREQ(s.c_str(), "100");
-
-    s = stdFormat("%s%d%s", "---",100,"---");
-    EXPECT_STREQ(s.c_str(), "---100---");
-
-	EXPECT_STREQ(stdFormat(getLongString()).c_str(), getLongString().c_str());
-
+	string s;
 	// 100 '%d's
 	{
 		string ppd100;
@@ -270,19 +295,9 @@ TEST(stdosd, FormatA)
 	EXPECT_STREQ(stdFormat("XXX%sYYY", s.c_str()).c_str(), ("XXX" + s + "YYY").c_str());
 }
 
-TEST(stdosd, FormatW)
-{
-    wstring s;
-    s = stdFormat(L"%d", 100);
-    EXPECT_STREQ(s.c_str(), L"100");
+#endif
 
-    s = stdFormat(L"%ls%d%ls", L"---",100,L"---");
-    EXPECT_STREQ(s.c_str(), L"---100---");
 
-	wstring ss = L"abc";
-	s = stdFormat(L"%s", ss.c_str());
-	EXPECT_STREQ(s.c_str(), ss.c_str());
-}
 
 TEST(stdosd, int64)
 {
@@ -786,14 +801,14 @@ TEST(stdosd, stdXmlEncodeTest)
 
 TEST(stdosd, stdRegexReplace)
 {
-	function<string(const smatch &)> nonefunc = [](const smatch & match) {
+    function<string(const smatch &)> nonefunc = [](const smatch &) {
 		return string();
 	};
 	EXPECT_STREQ(stdRegexReplace(string(""), regex(), nonefunc).c_str(), "");
 	EXPECT_STREQ(stdRegexReplace(string("aaa"), regex(), nonefunc).c_str(), "aaa");
 	EXPECT_STREQ(stdRegexReplace(string("aaa"), regex("a"), nonefunc).c_str(), "");
 
-	function<string(const smatch &)> zfunc = [](const smatch & match) {
+    function<string(const smatch &)> zfunc = [](const smatch &) {
 		return string("z");
 	};
 	EXPECT_STREQ(stdRegexReplace(string(""), regex(), zfunc).c_str(), "");
@@ -803,7 +818,7 @@ TEST(stdosd, stdRegexReplace)
 
 	wstring input = L"aaa[2]bbb[1]ccc";
 	int writeIndex = 1;
-	function<wstring(const wsmatch &)> kfunc = [&](const wsmatch & match) {
+    function<wstring(const wsmatch &)> kfunc = [&](const wsmatch &) {
 		return wstring(L"[") + to_wstring(writeIndex++) + L"]";
 	};
 	wstring output = stdRegexReplace(input, wregex(L"\\[\\d+\\]"), kfunc);

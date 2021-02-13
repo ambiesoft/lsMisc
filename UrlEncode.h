@@ -32,13 +32,13 @@
 
 namespace Ambiesoft {
 
-	char *UrlEncode_new(const char *pstr, int size = -1);
-	char* UrlDecode_new(const char* penc, int* psize = NULL);
+	char* UrlEncodeEx(const char *pstr, int size = -1);
+	char* UrlDecodeEx(const char* penc, int* psize = NULL);
 
 
 	inline std::string UrlEncodeStd(const char *pstr, int size = -1)
 	{
-		std::unique_ptr<char> pEncoded(UrlEncode_new(pstr, size));
+		std::unique_ptr<char> pEncoded(UrlEncodeEx(pstr, size));
 		if (!pEncoded)
 			return std::string();
 		return pEncoded.get();
@@ -50,7 +50,7 @@ namespace Ambiesoft {
 
 		int outsize = 0;
 		std::unique_ptr<char> p8(UTF16toUTF8Ex(pstr, size, &outsize));
-		std::unique_ptr<char> pRet8(UrlEncode_new(p8.get(), outsize));
+		std::unique_ptr<char> pRet8(UrlEncodeEx(p8.get(), outsize));
 		return toStdWstringFromUtf8(pRet8.get());
 	}
 
@@ -60,30 +60,28 @@ namespace Ambiesoft {
 	// string
 	template<> inline std::string UrlDecodeStd<std::string>(const char* penc)
 	{
-		std::unique_ptr<char> p8(UrlDecode_new(penc));
+		std::unique_ptr<char> p8(UrlDecodeEx(penc));
 		return p8.get();
 	}
 	template<> inline std::string UrlDecodeStd<std::string>(const wchar_t* penc)
 	{
 		std::unique_ptr<char> p8(UTF16toUTF8Ex(penc));
-		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
+		std::unique_ptr<char> p8dec(UrlDecodeEx(p8.get()));
 
 		return p8dec.get();
 	}
 	// wstring
 	template<> inline std::wstring UrlDecodeStd<std::wstring>(const char* penc)
 	{
-		std::unique_ptr<char> p8(UrlDecode_new(penc));
+		std::unique_ptr<char> p8(UrlDecodeEx(penc));
 		return toStdWstringFromUtf8((const char*)p8.get());
 	}
 	template<> inline std::wstring UrlDecodeStd<std::wstring>(const wchar_t* penc)
 	{
 		std::unique_ptr<char> p8(UTF16toUTF8Ex(penc));
-		std::unique_ptr<char> p8dec(UrlDecode_new(p8.get()));
+		std::unique_ptr<char> p8dec(UrlDecodeEx(p8.get()));
 
 		return toStdWstringFromUtf8((const char*)p8dec.get());
 	}
 
-
-	// std::wstring Utf8UrlEncode(const std::wstring& input);
-} // namespace
+} // namespace Ambiesoft

@@ -137,7 +137,7 @@ namespace Ambiesoft {
 
 
 	////////////// Encoding ////////////////////
-	char *UrlEncode_new(const char *pstr, int size)
+	char *UrlEncodeEx(const char *pstr, int size)
 	{
 		char
 			*buf,
@@ -157,7 +157,6 @@ namespace Ambiesoft {
 			return p;
 		}
 
-		// pbuf = buf = (char *)malloc(size * 3 + 1);
 		pbuf = buf = new char[size * 3 + 1];
 
 		while (size--) {
@@ -184,10 +183,9 @@ namespace Ambiesoft {
 
 
 	////////////// Decoding ////////////////////
-	char* UrlDecode_new(const char* penc, int* psize)
+	char* UrlDecodeEx(const char* penc, int* psize)
 	{
 		unsigned int size = 0;
-		// unsigned char* pOrig = (unsigned char*)malloc(strlen(penc) + 1);
 		unsigned char* pOrig = new unsigned char[strlen(penc) + 1];
 		unsigned char* p = pOrig;
 		for (; *penc; ++penc, ++p, ++size)
@@ -222,7 +220,6 @@ namespace Ambiesoft {
 				}
 
 				c = ((c1con << 4) | c2con);
-				//c = a2i(c1, c2);
 			}
 			else if (c == '+')
 			{
