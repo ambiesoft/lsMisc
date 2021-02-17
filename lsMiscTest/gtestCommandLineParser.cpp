@@ -471,3 +471,23 @@ TEST(CommandLineParser, SameOption)
 		EXPECT_TRUE(a);
 	}
 }
+
+TEST(CommandLineParser, EndWithDQComma)
+{
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"\"aaa\",",
+		NULL
+		};
+		CCommandLineParser parser;
+		
+		COption opMain(L"", ArgCount::ArgCount_Infinite);
+		parser.AddOption(&opMain);
+
+		parser.Parse(_countof(argv) - 1, argv);
+
+		EXPECT_EQ(opMain.getValueCount(), 1);
+		EXPECT_STREQ(opMain.getValue(0).c_str(), L"\"aaa\",");
+	}
+}
