@@ -1286,7 +1286,7 @@ namespace Ambiesoft {
 				return str.substr(0, nlpos);
 			if (rpos != std::basic_string<C>::npos && nlpos == std::basic_string<C>::npos)
 				return str.substr(0, rpos);
-			return str.substr(0, std::min(rpos, nlpos));
+			return str.substr(0, stdosd_min(rpos, nlpos));
 		}
 
 

@@ -49,8 +49,8 @@ namespace Ambiesoft {
 			return std::wstring();
 
 		int outsize = 0;
-		std::unique_ptr<char> p8(UTF16toUTF8Ex(pstr, size, &outsize));
-		std::unique_ptr<char> pRet8(UrlEncodeEx(p8.get(), outsize));
+		std::unique_ptr<char[]> p8(UTF16toUTF8Ex(pstr, size, &outsize));
+		std::unique_ptr<char[]> pRet8(UrlEncodeEx(p8.get(), outsize));
 		return toStdWstringFromUtf8(pRet8.get());
 	}
 
