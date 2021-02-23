@@ -266,4 +266,42 @@ QString ToAsciiLower(const QString& s)
     return QString::fromStdWString(w);
 }
 
+// https://stackoverflow.com/a/26991243
+bool fileExists(const QString& path) {
+    QFileInfo check_file(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (check_file.exists() && check_file.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool fileEmpty(const QString& path)
+{
+    if(!fileExists(path))
+        return false;
+    {
+        QFileInfo fi(path);
+        if(fi.size()==0)
+            return true;
+        if(fi.size() != 3)
+            return false;
+    }
+
+    // file size == 3
+    QFile file(path);
+    QByteArray all = file.readAll();
+    if(all.size() != 3)
+        return false;
+
+    unsigned char c1 = all.data()[0];
+    unsigned char c2 = all.data()[1];
+    unsigned char c3 = all.data()[2];
+
+    if(c1==0xEF && c2==0xBB && c3==0xBF)
+        return true;
+
+    return false;
+}
 } // namespace AmbiesoftQt

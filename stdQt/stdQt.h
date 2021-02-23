@@ -64,6 +64,8 @@ QString RemoveExtensionFromPath(QString path);
 bool GetExeVersionCommon(const QString& exe, QString& errString, QString& outString);
 QString MakeUniquablePath(const QString& path);
 QString ToAsciiLower(const QString& s);
+bool fileExists(const QString& path);
+bool fileEmpty(const QString& path);
 
 } // namespace AmbiesoftQt
 
