@@ -147,7 +147,7 @@ namespace Ambiesoft {
 		HDC screen = GetDC(0);
 
 		int dpiX = GetDeviceCaps(screen, LOGPIXELSX);
-		//int dpiY = GetDeviceCaps(screen, LOGPIXELSY);
+		int dpiY = GetDeviceCaps(screen, LOGPIXELSY);
 
 		ReleaseDC(0, screen);
 		return dpiX;
