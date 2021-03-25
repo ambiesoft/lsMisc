@@ -44,6 +44,16 @@ namespace Ambiesoft {
 		myDPI_AWARENESS_PER_MONITOR_AWARE = 2
 	} myDPI_AWARENESS;
 
+	enum {
+		InitRet_Uninitialized = -1,
+		InitRet_Success = 0,
+		InitRet_AlreadyInitialized = 1,
+		InitRet_LoadLibraryFailed = 2,
+		InitRet_ThreadOK = 3,
+		InitRet_ProcessOK = 4,
+		InitRet_NotAvailable = 5,
+	};
+
 	typedef void*(WINAPI *fnSetThreadDpiAwarenessContext)(void* dpiContext);
 	static fnSetThreadDpiAwarenessContext mySetThreadDpiAwarenessContext;
 
@@ -79,8 +89,20 @@ namespace Ambiesoft {
 		);
 	static fnGetSystemMetricsForDpi myGetSystemMetricsForDpi;
 
-	static void prepareFunctions()
+	static int prepareFunctions()
 	{
+		static int ret = InitRet_Uninitialized;
+		if (ret != InitRet_Uninitialized)
+			return ret;
+
+		if (ghUser32)
+			return InitRet_AlreadyInitialized;
+
+		ghUser32 = LoadLibraryA("user32.dll");
+
+		if (!ghUser32)
+			return InitRet_LoadLibraryFailed;
+
 		mySetThreadDpiAwarenessContext =
 			(fnSetThreadDpiAwarenessContext)GetProcAddress(
 				ghUser32, "SetThreadDpiAwarenessContext");
@@ -116,12 +138,53 @@ namespace Ambiesoft {
 		myGetSystemMetricsForDpi =
 			(fnGetSystemMetricsForDpi)GetProcAddress(
 				ghUser32, "GetSystemMetricsForDpi");
+
+		return ret = InitRet_Success;
 	}
 
-	UINT GetWindowDPIHighDPISupport(HWND hWnd)
+	int GetDPIScale()
+	{
+		HDC screen = GetDC(0);
+
+		int dpiX = GetDeviceCaps(screen, LOGPIXELSX);
+		//int dpiY = GetDeviceCaps(screen, LOGPIXELSY);
+
+		ReleaseDC(0, screen);
+		return dpiX;
+	}
+
+	double GetDPIScaleX(HWND hWnd)
+	{
+		HMONITOR monitor = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+
+		// Get the logical width and height of the monitor
+		MONITORINFOEX monitorInfoEx;
+		monitorInfoEx.cbSize = sizeof(monitorInfoEx);
+		GetMonitorInfo(monitor, &monitorInfoEx);
+		auto cxLogical = monitorInfoEx.rcMonitor.right - monitorInfoEx.rcMonitor.left;
+		auto cyLogical = monitorInfoEx.rcMonitor.bottom - monitorInfoEx.rcMonitor.top;
+
+		// Get the physical width and height of the monitor
+		DEVMODE devMode;
+		devMode.dmSize = sizeof(devMode);
+		devMode.dmDriverExtra = 0;
+		EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+		auto cxPhysical = devMode.dmPelsWidth;
+		auto cyPhysical = devMode.dmPelsHeight;
+
+		// Calculate the scaling factor
+		auto horizontalScale = ((double)cxPhysical / (double)cxLogical);
+		auto verticalScale = ((double)cyPhysical / (double)cyLogical);
+
+		return horizontalScale;
+	}
+
+	UINT GetWindowDPIHighDPISupport_For10(HWND hWnd)
 	{
 		UINT uDpi = 96;
-
+		if (InitRet_Success != prepareFunctions())
+			return uDpi;
+		
 		if (!myGetAwarenessFromDpiAwarenessContext || !myGetThreadDpiAwarenessContext)
 			return uDpi;
 
@@ -197,23 +260,10 @@ namespace Ambiesoft {
 	//	return CallNextHookEx(gHook, code, wParam, lParam);
 	//}
 
-	enum {
-		InitRet_Success = 0,
-		InitRet_AlreadyInitialized = 1,
-		InitRet_LoadLibraryFailed = 2,
-		InitRet_ThreadOK = 3,
-		InitRet_ProcessOK = 4,
-		InitRet_NotAvailable = 5,
-	};
+
 	int InitHighDPISupport(bool bThread)
 	{
-		if (ghUser32)
-			return InitRet_AlreadyInitialized;
 
-		ghUser32 = LoadLibraryA("user32.dll");
-		
-		if (!ghUser32)
-			return InitRet_LoadLibraryFailed;
 
 		prepareFunctions();
 
@@ -249,7 +299,7 @@ namespace Ambiesoft {
 		if (!mySystemParametersInfoForDpi)
 			return SystemParametersInfoA(uiAction, uiParam, pvParam, fWinIni);
 
-		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		UINT dpi = GetWindowDPIHighDPISupport_For10(hWnd);
 		return mySystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, dpi);
 	}
 	BOOL SystemParamInfoHighDPISupportW(
@@ -262,7 +312,7 @@ namespace Ambiesoft {
 		if (!mySystemParametersInfoForDpi)
 			return SystemParametersInfoW(uiAction, uiParam, pvParam, fWinIni);
 
-		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		UINT dpi = GetWindowDPIHighDPISupport_For10(hWnd);
 		return mySystemParametersInfoForDpi(uiAction, uiParam, pvParam, fWinIni, dpi);
 	}
 
@@ -271,13 +321,13 @@ namespace Ambiesoft {
 		if (!myGetSystemMetricsForDpi)
 			return GetSystemMetrics(nIndex);
 
-		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		UINT dpi = GetWindowDPIHighDPISupport_For10(hWnd);
 		return myGetSystemMetricsForDpi(nIndex, dpi);
 	}
 
 	void AdjustWindowSizeHighDPISupport(HWND hWnd)
 	{
-		UINT dpi = GetWindowDPIHighDPISupport(hWnd);
+		UINT dpi = GetWindowDPIHighDPISupport_For10(hWnd);
 		RECT rcWindow = {};
 		GetWindowRect(hWnd, &rcWindow);
 		LONG width = rcWindow.right - rcWindow.left;

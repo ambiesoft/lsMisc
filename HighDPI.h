@@ -42,5 +42,7 @@ namespace Ambiesoft {
 		UINT fWinIni);
 	int GetSystemMetricsHighDPISupport(HWND hWnd, int nIndex);
 	void AdjustWindowSizeHighDPISupport(HWND hWnd);
-	UINT GetWindowDPIHighDPISupport(HWND hWnd);
+	UINT GetWindowDPIHighDPISupport_For10(HWND hWnd);
+
+	int GetDPIScale();
 }
