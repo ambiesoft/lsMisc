@@ -26,6 +26,7 @@
 #include "HighDPI.h"
 
 #pragma comment(lib, "user32.lib")
+#pragma comment(lib, "Gdi32.lib")
 
 
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
