@@ -97,7 +97,7 @@ namespace Ambiesoft {
 		}
 
 #if !defined(AMBIESOFT_NO_RVALUE_)
-		CSessionGlobalMemory(MYT&& rhv)
+		CSessionGlobalMemory(MYT&& rhv) noexcept
 		{
 #ifdef _DEBUG
 			initialized_ = 0;
@@ -120,7 +120,7 @@ namespace Ambiesoft {
 		}
 
 
-		void move(MYT&& rhv) {
+		void move(MYT&& rhv) noexcept {
 			m_pName = rhv.m_pName;
 			rhv.m_pName = NULL;
 
