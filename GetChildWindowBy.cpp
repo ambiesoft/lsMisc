@@ -93,13 +93,10 @@ namespace Ambiesoft{
 			}
 		};
 
-		static BOOL CALLBACK enumProc(
-			_In_ HWND   hwnd,
-			_In_ LPARAM lParam
-			)
+		static BOOL CALLBACK enumProc(HWND hwnd, LPARAM lParam)
 		{
 			ContextData* pCxt = (ContextData*)lParam;
-			
+
 			if (pCxt->enumBy() == EnumBy::ENUM_BY_ALL ||
 				pCxt->enumBy() == EnumBy::ENUM_BY_TEXT ||
 				pCxt->enumBy() == EnumBy::ENUM_BY_CLASSNAME)
@@ -165,7 +162,7 @@ namespace Ambiesoft{
 	}
 	std::vector<HWND> GetChildWindowsByClassName(HWND hwndParent, LPCWSTR pName)
 	{
-		ContextData context(1, ENUM_BY_CLASSNAME, pName);
+		ContextData context(std::numeric_limits<size_t>::max(), ENUM_BY_CLASSNAME, pName);
 
 		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
 
