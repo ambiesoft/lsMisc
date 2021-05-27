@@ -27,7 +27,7 @@
 
 namespace Ambiesoft{
 	HWND GetChildWindowByText(HWND hwndParent, LPCWSTR pName);
-	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName);
+	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName, DWORD* pdwLE = NULL);
 	std::vector<HWND> GetChildWindowsByClassName(HWND hwndParent, LPCWSTR pName);
 	std::vector<HWND> GetChildWindows(HWND hwndParent);
 	bool IsChildHasFocus(HWND hwndParent);

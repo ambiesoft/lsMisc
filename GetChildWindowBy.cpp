@@ -152,12 +152,15 @@ namespace Ambiesoft{
 
 		return context.isResultEmpty() ? NULL : context.getFirstResult();
 	}
-	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName)
+	HWND GetChildWindowByClassName(HWND hwndParent, LPCWSTR pName, DWORD* pdwLE)
 	{
-		ContextData context(1, ENUM_BY_CLASSNAME, pName);
+		ContextData context(1, ENUM_BY_CLASSNAME, pName, true);
 
 		EnumChildWindows(hwndParent, enumProc, (LPARAM)&context);
-
+		if (pdwLE)
+		{
+			*pdwLE = GetLastError();
+		}
 		return context.isResultEmpty() ? NULL : context.getFirstResult();
 	}
 	std::vector<HWND> GetChildWindowsByClassName(HWND hwndParent, LPCWSTR pName)
