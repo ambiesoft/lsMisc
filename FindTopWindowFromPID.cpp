@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include <set>
 
+#include <windows.h>
+
 #include "FindTopWindowFromPID.h"
 
 using namespace std;
