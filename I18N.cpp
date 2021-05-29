@@ -550,6 +550,11 @@ bool i18nInitLangmap(HINSTANCE hInst, LPCWSTR pLang, LPCWSTR pAppName)
 
 LPCWSTR I18NW(LPCWSTR pIN)
 {
+	if (pIN == nullptr)
+		return nullptr;
+	if (pIN[0] == L'\0')
+		return pIN;
+
 	// Restore the value of GetLastError at the end of this function.
 	RestoreValue<DWORD> restoreGE(GetLastError(), [](const DWORD& le) {
 		SetLastError(le);
