@@ -846,3 +846,28 @@ TEST(stdosd, stdGetFirstLine)
 	EXPECT_STREQ(stdGetFirstLine(string("\r    \nabc\r\nxyz"), true).c_str(), "abc");
 	EXPECT_STREQ(stdGetFirstLine(string("\r  \t  \nabc\r\nxyz"), true).c_str(), "abc");
 }
+
+TEST(stdosd, stdJoinStrings)
+{
+	{
+		vector<string> nullv;
+		string out = stdJoinStrings(nullv);
+		EXPECT_TRUE(out.empty());
+	}
+	{
+		vector<string> vs{ "aaa","bbb","ccc" };
+		string out = stdJoinStrings(vs);
+		EXPECT_STREQ(out.c_str(), "'aaa', 'bbb', 'ccc'");
+	}
+	{
+		vector<wstring> vs{ L"aaa",L"bbb",L"ccc" };
+		wstring out = stdJoinStrings(vs);
+		EXPECT_STREQ(out.c_str(), L"'aaa', 'bbb', 'ccc'");
+	}
+	{
+		vector<wstring> vs{ L"aaa",L"bbb",L"ccc" };
+		wstring out = stdJoinStrings(vs, L":", L"(", L")");
+		EXPECT_STREQ(out.c_str(), L"(aaa):(bbb):(ccc)");
+	}
+
+}

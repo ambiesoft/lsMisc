@@ -1303,6 +1303,27 @@ namespace Ambiesoft {
 			}
 			return ret;
 		}
+
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdJoinStrings(const std::vector<std::basic_string<C>>& strs,
+			const C* separator = stdLiterals<C>::JOINSEPARATOR(),
+			const C* startparen = stdLiterals<C>::JOINSTARTPAREN(),
+			const C* endparen = stdLiterals<C>::JOINENDPAREN())
+		{
+			std::basic_string<C> ret;
+			for (size_t i = 0; i < strs.size(); ++i)
+			{
+				ret += startparen;
+				ret += strs[i];
+				ret += endparen;
+
+				if ((i + 1) < strs.size())
+				{
+					ret += separator;
+				}
+			}
+			return ret;
+		}
 	}
 }
 
