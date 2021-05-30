@@ -89,7 +89,16 @@ namespace Ambiesoft {
 			hInst,
 			param);
 	}
-
+	HWND CreateSimpleWindow(WNDPROC WndProc)
+	{
+		return CreateSimpleWindow(NULL,
+			NULL,
+			NULL,
+			WndProc,
+			0L,
+			0L,
+			NULL);
+	}
 	int WaitSimpleWindowClose(HWND hWnd)
 	{
 		BOOL bRet;

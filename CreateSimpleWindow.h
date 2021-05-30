@@ -30,6 +30,8 @@ namespace Ambiesoft {
 		DWORD dwStyles = 0,
 		DWORD dwExStyles = 0,
 		void* param = NULL
-		);
+	);
+	HWND CreateSimpleWindow(WNDPROC WndProc);
+
 	int WaitSimpleWindowClose(HWND hWnd);
 }
