@@ -571,6 +571,7 @@
     <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />
     <ClInclude Include="..\stdosd\stdosd.h" />
+    <ClInclude Include="..\stdosd\stdosd_literal.h" />
     <ClInclude Include="..\stdwin32\stdwin32.h" />
     <ClInclude Include="..\stlScopedClear.h" />
     <ClInclude Include="..\stringEndwith.h" />

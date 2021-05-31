@@ -396,9 +396,6 @@
     <ClCompile Include="..\CloseConsoleWin.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetAppVersion.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestGetAppVersion.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
@@ -407,9 +404,6 @@
     </ClCompile>
     <ClCompile Include="gtestFindTopWindowFromPID.cpp">
       <Filter>GTest Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\FindTopWindowFromPID.cpp">
-      <Filter>lsMisc</Filter>
     </ClCompile>
     <ClCompile Include="gtestISqlPrivateProfile.cpp">
       <Filter>GTest Files</Filter>
@@ -420,11 +414,17 @@
     <ClCompile Include="gtestSessionGlobalMemory.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\TrayIcon.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestTrayIcon.cpp">
       <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\FindTopWindowFromPID.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetAppVersion.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\TrayIcon.cpp">
+      <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -791,17 +791,20 @@
     <ClInclude Include="..\CloseConsoleWin.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\GetAppVersion.h">
-      <Filter>lsMisc</Filter>
-    </ClInclude>
     <ClInclude Include="..\MakeFilenamable.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\FindTopWindowFromPID.h">
-      <Filter>lsMisc</Filter>
-    </ClInclude>
     <ClInclude Include="..\TrayIcon.h">
-      <Filter>lsMisc</Filter>
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetAppVersion.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FindTopWindowFromPID.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\stdosd_literal.h">
+      <Filter>stdosd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

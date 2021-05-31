@@ -149,6 +149,7 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_CHAR(NSlash			,'/');						\
 			STDOSD_DEFINE_CHAR(NBackSlash		,'\\');						\
 			STDOSD_DEFINE_CHAR(NColon			,':');						\
+			STDOSD_DEFINE_CHAR(NSemiColon		,';');						\
 			STDOSD_DEFINE_CHAR(NSpace			,' ');						\
 			STDOSD_DEFINE_CHAR(NDoubleQuote		,'"');						\
 			STDOSD_DEFINE_CHAR(NAmpasand		,'&');						\
@@ -163,6 +164,7 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(pathSeparators, STDOSD_PATHSEPARATORS);		\
 			STDOSD_DEFINE_STRINGFUNCTION(nulString, "");								\
 			STDOSD_DEFINE_STRINGFUNCTION(spaceString, " ");								\
+			STDOSD_DEFINE_STRINGFUNCTION(semicolonString, ";");							\
 			STDOSD_DEFINE_STRINGFUNCTION(num0String, "0");								\
 			STDOSD_DEFINE_STRINGFUNCTION(offString, "off");								\
 			STDOSD_DEFINE_STRINGFUNCTION(falseString, "false");							\
@@ -178,6 +180,7 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(JOINSEPARATOR,", ");							\
 			STDOSD_DEFINE_STRINGFUNCTION(JOINSTARTPAREN,"'");							\
 			STDOSD_DEFINE_STRINGFUNCTION(JOINENDPAREN,"'");								\
+			STDOSD_DEFINE_STRINGFUNCTION(PATH,"PATH");									\
 		}
 
 #define STDOSD_DEFINE_CHAR(name, chara) static STDOSD_CONSTEXPR CHART name = LITEL(chara)

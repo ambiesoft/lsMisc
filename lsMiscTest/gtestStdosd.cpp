@@ -871,3 +871,21 @@ TEST(stdosd, stdJoinStrings)
 	}
 
 }
+
+TEST(stdosd, stdGetFullPathExecutable)
+{
+	{
+		string fullnote1 = stdGetFullPathExecutable("notepad.exe");
+		char szT[MAX_PATH];
+		GetSystemDirectoryA(szT, _countof(szT));
+		string fullnote2 = stdCombinePath(szT, "notepad.exe");
+		EXPECT_EQ(fullnote1, fullnote2);
+	}
+	{
+		wstring fullnote1 = stdGetFullPathExecutable(L"notepad.exe");
+		wchar_t szT[MAX_PATH];
+		GetSystemDirectoryW(szT, _countof(szT));
+		wstring fullnote2 = stdCombinePath(szT, L"notepad.exe");
+		EXPECT_EQ(fullnote1, fullnote2);
+	}
+}

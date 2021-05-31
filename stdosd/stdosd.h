@@ -1324,6 +1324,71 @@ namespace Ambiesoft {
 			}
 			return ret;
 		}
+
+		inline errno_t stdDupEnv(char** ppValue, size_t* pLen, const char* varname)
+		{
+			return _dupenv_s(ppValue, pLen, varname);
+		}
+		inline errno_t stdDupEnv(wchar_t** ppValue, size_t* pLen, const wchar_t* varname)
+		{
+			return _wdupenv_s(ppValue, pLen, varname);
+		}
+
+		template<typename C>
+		inline std::basic_string<C> stdGetenv(const C* varname)
+		{
+			C* pValue = nullptr;
+			size_t dummy;
+			errno_t err = stdDupEnv(&pValue, &dummy, varname);
+			if (err)
+			{
+				assert(pValue == nullptr);
+				return std::basic_string<C>();
+			}
+			assert(pValue != nullptr);
+			std::basic_string<C> ret{ pValue };
+			free(pValue);
+			return ret;
+		}
+
+		template<typename C>
+		inline bool stdFileExists(const	C* file)
+		{
+			static_assert(false);
+		}
+		template<>
+		inline bool stdFileExists(const char* file)
+		{
+			struct stat buffer;
+			return (stat(file, &buffer) == 0);
+		}
+		template<>
+		inline bool stdFileExists(const wchar_t* file)
+		{
+			struct _stat  buffer;
+			return (_wstat(file, &buffer) == 0);
+		}
+
+		template<typename C>
+		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
+		{
+			std::basic_string<C> envpath = stdGetenv(stdLiterals<C>::PATH());
+			std::vector<std::basic_string<C>> vPaths = stdSplitString(envpath, stdLiterals<C>::semicolonString());
+			for (auto&& onepath : vPaths)
+			{
+				std::basic_string<C> full = stdCombinePath(onepath, path);
+				if (stdFileExists(full.c_str()))
+					return full;
+			}
+			return std::basic_string<C>();
+		}
+		template<typename C>
+		inline std::basic_string<C> stdGetFullPathExecutable(const std::basic_string<C>& path)
+		{
+			return stdGetFullPathExecutable(path.c_str());
+		}
+
+
 	}
 }
 
