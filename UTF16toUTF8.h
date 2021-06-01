@@ -24,6 +24,7 @@
 #pragma once
 #include <Windows.h>
 #include <string>
+#include <vector>
 namespace Ambiesoft {
 
 
@@ -37,12 +38,26 @@ LPWSTR UTF8toUTF16Ex(const char* pIN, int inByteLen = -1, int* pOutLen = nullptr
 
 std::string toStdString(int acp, const std::wstring& w);
 std::string toStdUtf8String(const std::wstring& w);
+inline std::vector<std::string> toStdUtf8String(const std::vector<std::wstring>& wvs)
+{
+	std::vector<std::string> rets;
+	for (auto&& ws : wvs)
+		rets.emplace_back(toStdUtf8String(ws));
+	return rets;
+}
 std::string toStdUtf8String(wchar_t c);
 std::string toStdUtf8String(int acp, LPCSTR pstr, size_t size);
 std::string toStdAcpString(const std::wstring& w);
 
 std::wstring toStdWstring(int acp, const char* pString, int inByteLen);
 std::wstring toStdWstringFromUtf8(const std::string& s);
+inline std::vector<std::wstring> toStdWstringFromUtf8(const std::vector<std::string>& vs)
+{
+	std::vector<std::wstring> rets;
+	for (auto&& s : vs)
+		rets.emplace_back(toStdWstringFromUtf8(s));
+	return rets;
+}
 std::wstring toStdWstringFromUtf8(const char* pUtf8, int inByteLen = -1);
 std::wstring toStdWstringFromACP(const std::string& s);
 std::wstring toStdWstringFromACP(const char* pApcString, int inByteLen = -1);
