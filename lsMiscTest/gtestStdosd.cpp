@@ -889,3 +889,19 @@ TEST(stdosd, stdGetFullPathExecutable)
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
 }
+
+TEST(stdosd, stdUniqueVector)
+{
+	{
+		vector<int> v = { 1,2,3,1 };
+		vector<int> vExpect = { 1,2,3 };
+		v = stdUniqueVector(v);
+		EXPECT_EQ(v, vExpect);
+	}
+	{
+		vector<string> v = { "yyy", "aaa", "yyy", "bbb", "yyy", "bbb" };
+		vector<string> vExpect = { "yyy", "aaa", "bbb" };
+		v = stdUniqueVector(v);
+		EXPECT_EQ(v, vExpect);
+	}
+}

@@ -28,6 +28,7 @@
 #include <memory>
 #include <regex>
 #include <functional>
+#include <set>
 
 #include <cstdio>
 #include <cstdarg>
@@ -1388,6 +1389,23 @@ namespace Ambiesoft {
 			return stdGetFullPathExecutable(path.c_str());
 		}
 
+		template<typename C>
+		inline std::vector<C> stdUniqueVector(const std::vector<C>& v)
+		{
+			std::vector<C> vRet;
+			std::set<C> sc;
+			for (auto&& item : v)
+			{
+				if (sc.find(item) != sc.end())
+				{
+					// already added to vt
+					continue;
+				}
+				sc.insert(item);
+				vRet.emplace_back(item);
+			}
+			return vRet;
+		}
 
 	}
 }
