@@ -215,7 +215,11 @@ void CSendKeys::SendKeyDown(BYTE VKey, WORD NumTimes, bool GenUpMsg, bool bDelay
 
   if (VKey == VK_NUMLOCK)
   {
+#pragma warning(push)
+#pragma warning(disable:4996)
     DWORD dwVersion = ::GetVersion();
+#pragma warning(pop)
+
 
     for (Cnt=1; Cnt<=NumTimes; Cnt++)
     {
