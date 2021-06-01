@@ -905,3 +905,28 @@ TEST(stdosd, stdUniqueVector)
 		EXPECT_EQ(v, vExpect);
 	}
 }
+
+TEST(stdosd, stdIsSamePath)
+{
+	EXPECT_TRUE(stdIsSamePath(nullptr, nullptr));
+	EXPECT_TRUE(stdIsSamePath(L"", L""));
+	EXPECT_TRUE(stdIsSamePath(nullptr, L""));
+	EXPECT_TRUE(stdIsSamePath(L"", nullptr));
+
+	EXPECT_FALSE(stdIsSamePath(nullptr, L"1"));
+	EXPECT_FALSE(stdIsSamePath(L"2", nullptr));
+
+	EXPECT_TRUE(stdIsSamePath(L"abc", L"abc"));
+	EXPECT_FALSE(stdIsSamePath(L"abcz", L"abc"));
+
+	EXPECT_TRUE(stdIsSamePath(L"abc", L"abc/"));
+	EXPECT_TRUE(stdIsSamePath(L"abc\\", L"abc"));
+
+	EXPECT_TRUE(stdIsSamePath(L"./abc", L"abc"));
+	EXPECT_TRUE(stdIsSamePath(L"./abc", L"././abc"));
+	EXPECT_TRUE(stdIsSamePath(L"./abc", L"././abc/xyz/.."));
+
+	EXPECT_FALSE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"Y:\\aaa\\bbb\\ccc"));
+	EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc"));
+	EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc\\ddd\\..\\"));
+}

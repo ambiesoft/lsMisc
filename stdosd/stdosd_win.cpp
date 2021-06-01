@@ -85,7 +85,7 @@ namespace Ambiesoft {
 		using namespace std;
 
 		namespace {
-			std::wstring stdGetFullPathName(LPCWSTR pPath)
+			std::wstring stdGetFullPathNameImpl(LPCWSTR pPath)
 			{
 				std::wstring ret;
 				if (pPath == NULL || pPath[0] == 0)
@@ -160,16 +160,16 @@ namespace Ambiesoft {
 				return result;
 			}
 		}
-		std::wstring stdGetFullPathName(const std::wstring& ws)
+		std::wstring stdGetFullPathName(const wchar_t* p)
 		{
-			return stdGetFullPathName(ws.c_str());
+			return stdGetFullPathNameImpl(p);
 		}
 		std::wstring resolveLink(const std::wstring& instring)
 		{
 			if (instring.empty())
 				return instring;
 
-			wstring full = stdGetFullPathName(instring);
+			wstring full = stdGetFullPathName(instring.c_str());
 			if (full.empty())
 				return instring;
 
@@ -507,6 +507,11 @@ namespace Ambiesoft {
 				return false;
 			*path = t;
 			return true;
+		}
+
+		bool stdIsFileSystemCaseSensitive()
+		{
+			return false;
 		}
 	}
 }

@@ -797,8 +797,7 @@ namespace Ambiesoft {
 		}
 
 
-		std::wstring stdGetFullPathName(const std::wstring& ws);
-
+		std::wstring stdGetFullPathName(const wchar_t* p);
 		std::wstring resolveLink(const std::wstring& fullstring);
 
 
@@ -1014,7 +1013,21 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-
+		template<typename C>
+		inline int stdStrCmp(const C* p1, const C* p2, bool ignorecase = false)
+		{
+			static_assert(false);
+		}
+		template<>
+		inline int stdStrCmp(const char* p1, const char* p2, bool ignorecase)
+		{
+			return ignorecase ? _stricmp(p1, p2) : strcmp(p1, p2);
+		}
+		template<>
+		inline int stdStrCmp(const wchar_t* p1, const wchar_t* p2, bool ignorecase)
+		{
+			return ignorecase ? _wcsicmp(p1, p2) : wcscmp(p1, p2);
+		}
 
 		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size);
 		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size);
@@ -1405,6 +1418,55 @@ namespace Ambiesoft {
 				vRet.emplace_back(item);
 			}
 			return vRet;
+		}
+
+		bool stdIsFileSystemCaseSensitive();
+
+		template<typename C>
+		inline bool stdIsSamePath(const C* path1, const C* path2)
+		{
+			std::basic_string<C> full1 = stdGetFullPathName(path1);
+			std::basic_string<C> full2 = stdGetFullPathName(path2);
+
+			std::basic_string<C> trimmed1 = stdTrimEnd(full1, stdLiterals<C>::pathSeparators());
+			std::basic_string<C> trimmed2 = stdTrimEnd(full2, stdLiterals<C>::pathSeparators());
+
+			return stdStrCmp(trimmed1.c_str(), trimmed2.c_str(),
+				!stdIsFileSystemCaseSensitive())==0;
+		}
+		template<typename C>
+		inline bool stdIsSamePath(const std::nullptr_t* n1, const C* p2)
+		{
+			if (p2 == nullptr)
+				return true;
+			if (p2[0] == 0)
+				return true;
+			return false;
+		}
+		template<typename C>
+		inline bool stdIsSamePath(const C* p1, const std::nullptr_t* n2)
+		{
+			return stdIsSamePath(n2, p1);
+		}
+		inline bool stdIsSamePath(const std::nullptr_t* n1, const std::nullptr_t* n2)
+		{
+			return true;
+		}
+
+		template<typename C>
+		inline bool stdIsSamePath(const std::basic_string<C>& path1, const std::basic_string<C>& path2)
+		{
+			return stdIsSamePath(path1.c_str(), path2.c_str());
+		}
+		template<typename C>
+		inline bool stdIsSamePath(const std::basic_string<C>& path1, const C* path2)
+		{
+			return stdIsSamePath(path1.c_str(), path2);
+		}
+		template<typename C>
+		inline bool stdIsSamePath(const C* path1, const std::basic_string<C>& path2)
+		{
+			return stdIsSamePath(path1, path2.c_str());
 		}
 
 	}

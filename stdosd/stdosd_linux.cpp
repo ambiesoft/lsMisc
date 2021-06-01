@@ -80,5 +80,11 @@ namespace Ambiesoft {
 		{
 			return L"";
 		}
+
+		bool stdIsFileSystemCaseSensitive()
+		{
+			return true;
+		}
+
 	}
 }
