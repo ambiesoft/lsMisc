@@ -26,7 +26,7 @@
 #ifdef _DEBUG
 #define DASSERT(s) assert(s)
 #define DVERIFY(s) DASSERT(s)
-#define DVERIFY_LE(s) do { DWORD le=GetLastError(); DASSERT( (s) && le==NOERROR); } while(false)
+#define DVERIFY_LE(s) do { SetLastError(NOERROR); DASSERT((s)); DWORD le=GetLastError(); if(le != NOERROR) {DTRACE(le);}DASSERT(le==NOERROR); } while(false)
 #else
 #define DASSERT(s) (void)0
 #define DVERIFY(s) s
