@@ -181,6 +181,11 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(JOINSTARTPAREN,"'");							\
 			STDOSD_DEFINE_STRINGFUNCTION(JOINENDPAREN,"'");								\
 			STDOSD_DEFINE_STRINGFUNCTION(PATH,"PATH");									\
+			STDOSD_DEFINE_STRINGFUNCTION(program,"program");							\
+			STDOSD_DEFINE_STRINGFUNCTION(commandlineseparator,"  ");					\
+			STDOSD_DEFINE_STRINGFUNCTION(commandlinemultipleargs, " [Arg1 [Arg2 [...]]]");\
+			STDOSD_DEFINE_STRINGFUNCTION(commandlinetwoargs, " Arg1 Arg2");				\
+			STDOSD_DEFINE_STRINGFUNCTION(Arg,"Arg");									\
 		}
 
 #define STDOSD_DEFINE_CHAR(name, chara) static STDOSD_CONSTEXPR CHART name = LITEL(chara)

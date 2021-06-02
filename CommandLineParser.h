@@ -674,6 +674,7 @@ typedef BasicOption<std::string> COptionA;
 		bool parsed_;
 		CaseFlags case_;
 		MyS_ description_;
+		MyS_ appname_;
 		MyS_ program_;
 
 		MyO_* FindOption(const MyS_& option)
@@ -720,12 +721,12 @@ typedef BasicOption<std::string> COptionA;
 				// main arg
 				if (argcount == ArgCount::ArgCount_Infinite)
 				{
-					usage += L" [Arg1 [Arg2 [...]]]";
+					usage += stdosd::stdLiterals<Elem>::commandlinemultipleargs();
 					addkaigyo(usage);
 				}
 				else if (argcount == ArgCount::ArgCount_Two)
 				{
-					usage += L" Arg1 Arg2";
+					usage += stdosd::stdLiterals<Elem>::commandlinetwoargs();
 					addkaigyo(usage);
 				}
 			}
@@ -737,7 +738,7 @@ typedef BasicOption<std::string> COptionA;
 
 			// explain
 			if (optionstring.empty())
-				explain += L"Arg";
+				explain += stdosd::stdLiterals<Elem>::Arg();
 			else
 				explain += optionstring;
 			
@@ -753,39 +754,62 @@ typedef BasicOption<std::string> COptionA;
 			}
 			addkaigyo(explain);
 		}
-
-	public:
-		BasicCommandLineParser()
-		{
-			init();
+		static MyS_ toOptionString(const std::vector<MyS_>& vs) {
+			MyS_ rets;
+			for (size_t i = 0; i < vs.size(); ++i) {
+				rets += vs[i];
+				if ((i + 1) < vs.size())
+					rets += stdosd::stdLiterals<Elem>::commandlineseparator();
+			}
+			return rets;
 		}
-		BasicCommandLineParser(CaseFlags kase, const MyS_& description = MyS_())
+	public:
+		BasicCommandLineParser(CaseFlags kase, const MyS_& description = MyS_(), const MyS_& appname = MyS_())
 		{
 			init();
 			case_ = kase;
 			description_ = description;
+			appname_ = appname;
 		}
-		BasicCommandLineParser(const MyS_& description)
+		BasicCommandLineParser(const MyS_& description, const MyS_& appname = MyS_())
 		{
 			init();
 			description_ = description;
+			appname_ = appname;
+		}
+		BasicCommandLineParser()
+		{
+			init();
 		}
 
 		MyS_ getHelpMessage() const {
+			MyS_ appname;
 			MyS_ description;
 			MyS_ explain;
 			MyS_ usage;
 
+			if (!appname_.empty())
+			{
+				appname += appname_;
+				addkaigyo(appname);
+			}
 			if (!description_.empty())
 			{
 				description += description_;
 				addkaigyo(description);
 				addkaigyo(description);
+				if (!appname.empty())
+				{
+					MyS_ t;
+					addspace(t);
+					t += description;
+					description = std::move(t);
+				}
 			}
 
 			MyS_ program;
 			if (program_.empty())
-				program = L"program";
+				program = stdosd::stdLiterals<Elem>::program();
 			else
 			{
 				program = getFileName(program_);
@@ -807,19 +831,32 @@ typedef BasicOption<std::string> COptionA;
 			}
 			for (size_t i = 0; i < inneroptions_.size(); ++i)
 			{
+				ArgCount argcount = ArgCount::ArgCount_Uninitialized;
+				std::vector<MyS_> options;
+				MyS_ helpString;
 				for (size_t j = 0; j < inneroptions_[i].options_.size(); ++j)
 				{
+					assert(argcount == ArgCount::ArgCount_Uninitialized || argcount == inneroptions_[i].argcountflag_);
+					argcount = inneroptions_[i].argcountflag_;
+
+					assert(helpString.empty() || helpString == inneroptions_[i].helpString_);
+					helpString = inneroptions_[i].helpString_;
+
+					options.emplace_back(inneroptions_[i].options_[j]);
+				}
+				if (inneroptions_[i].options_.size() != 0)
+				{
 					processOptionStringHelper(
-						inneroptions_[i].argcountflag_,
-						inneroptions_[i].options_[j],
-						inneroptions_[i].helpString_,
+						argcount,
+						toOptionString(options),
+						helpString,
 						explain,
 						usage);
 				}
 			}
 
 			addkaigyo(usage);
-			return description + usage + explain;
+			return appname + description + usage + explain;
 		}
 		bool isEmpty() const
 		{

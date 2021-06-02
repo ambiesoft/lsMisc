@@ -11,8 +11,6 @@
 #include "../UrlEncode.h"
 #include "../CommandLineParser.h"
 
-
-
 using namespace Ambiesoft;
 using namespace std;
 
@@ -41,8 +39,6 @@ TEST(CommandLineParser, IterateOur)
 
 TEST(CommandLineParser, BasicWchar)
 {
-
-
 	wchar_t* opXYZ[] = {
 		L"-xyz",
 		L"-bbb",
@@ -89,9 +85,6 @@ TEST(CommandLineParser, BasicWchar)
 
 TEST(CommandLineParser, BasicChar)
 {
-
-
-
 	bool isHelp = false;
 	bool isABC = false;
 	bool isXYZ = false;
@@ -489,5 +482,104 @@ TEST(CommandLineParser, EndWithDQComma)
 
 		EXPECT_EQ(opMain.getValueCount(), 1);
 		EXPECT_STREQ(opMain.getValue(0).c_str(), L"\"aaa\",");
+	}
+}
+
+TEST(CommandLineParser, Help)
+{
+	{
+		char* argv[] = {
+			   "exe.exe",
+			   "-op delete",
+			   NULL
+		};
+		CCommandLineParserA parser(CaseFlags_Default, "Rename or remove a folder", "lsMiscTest");
+
+		COptionA optionDefault("",
+			ArgCount::ArgCount_Infinite,
+			ArgEncodingFlags_Default,
+			("specify directory"));
+		parser.AddOption(&optionDefault);
+
+		bool bHelp = false;
+		parser.AddOptionRange({ "-h", "/h", "/?" },
+			0,
+			&bHelp,
+			ArgEncodingFlags_Default,
+			("show help"));
+
+		bool bVersion = false;
+		parser.AddOptionRange({ "-v", "/v", "--version" },
+			0,
+			&bVersion,
+			ArgEncodingFlags_Default,
+			("show version"));
+
+		string operation;
+		parser.AddOption("-op",
+			1,
+			&operation,
+			ArgEncodingFlags_Default,
+			("Operation: One of 'rename', 'trash', 'delete'"));
+
+		parser.Parse(_countof(argv) - 1, argv);
+
+		EXPECT_EQ(IDOK, MessageBoxA(nullptr, parser.getHelpMessage().c_str(), "", MB_OKCANCEL));
+	}
+	{
+		wchar_t* argv[] = {
+			   L"exe.exe",
+			   L"-op delete -pri 3 \"C:\\aaa bbb\\cc dd\\xxx.txt\"",
+			   NULL
+		};
+		CCommandLineParser parser(CaseFlags_Default, L"Rename or remove a folder", L"lsMiscTestWchar");
+
+		COption optionDefault(L"",
+			ArgCount::ArgCount_Infinite,
+			ArgEncodingFlags_Default,
+			(L"specify directory"));
+		parser.AddOption(&optionDefault);
+
+		bool bHelp = false;
+		parser.AddOptionRange({ L"-h", L"/h" },
+			0,
+			&bHelp,
+			ArgEncodingFlags_Default,
+			(L"show help"));
+
+		bool bVersion = false;
+		parser.AddOptionRange({ L"-v", L"/v" },
+			0,
+			&bVersion,
+			ArgEncodingFlags_Default,
+			(L"show version"));
+
+		wstring operation;
+		parser.AddOption(L"-op",
+			1,
+			&operation,
+			ArgEncodingFlags_Default,
+			(L"Operation: One of 'rename', 'trash', 'delete'"));
+
+		wstring renameto;
+		parser.AddOption(L"-to",
+			1,
+			&renameto,
+			ArgEncodingFlags_Default,
+			(L"Specify new name"));
+
+		int priority = -1;
+		parser.AddOption(L"-pri",
+			1,
+			&priority,
+			ArgEncodingFlags_Default,
+			(L"Specify priority, 0=High 1=Normal 2=Low 3=Idle"));
+
+		parser.Parse(_countof(argv) - 1, argv);
+
+		EXPECT_EQ(IDOK, MessageBox(nullptr, parser.getHelpMessage().c_str(), L"", MB_OKCANCEL));
+	}
+	{
+
 	}
 }
