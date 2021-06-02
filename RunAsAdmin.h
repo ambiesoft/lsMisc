@@ -25,6 +25,8 @@
 
 namespace Ambiesoft {
 
-	bool RunThisAsAdmin();
+	bool RunThisAsAdmin(
+		const wchar_t* pApp = nullptr,
+		const wchar_t* pArg = nullptr);
 
 } // namespace

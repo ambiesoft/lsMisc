@@ -34,12 +34,22 @@ using namespace std;
 using namespace Ambiesoft::stdosd;
 
 namespace Ambiesoft {
-	bool RunThisAsAdmin()
+	bool RunThisAsAdmin(
+		const wchar_t* pApp,
+		const wchar_t* pArg)
 	{
-		wstring app = stdGetModuleFileName<wchar_t>();
+		wstring app = pApp ? pApp : stdGetModuleFileName<wchar_t>();
 
-		CCommandLineString cmsString;
-		wstring arg = cmsString.subString(1);
+		wstring arg;
+		if (pArg)
+		{
+			arg = pArg;
+		}
+		else
+		{
+			CCommandLineString cmsString;
+			arg = cmsString.subString(1);
+		}
 
 		return !!OpenCommon(NULL,
 			app.c_str(),
