@@ -798,6 +798,10 @@ namespace Ambiesoft {
 
 
 		std::wstring stdGetFullPathName(const wchar_t* p);
+		inline std::wstring stdGetFullPathName(const std::wstring& s)
+		{
+			return stdGetFullPathName(s.c_str());
+		}
 		std::wstring resolveLink(const std::wstring& fullstring);
 
 
