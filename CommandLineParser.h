@@ -469,12 +469,12 @@ namespace Ambiesoft {
 
 			setArgFlag(exactcount);
 		}
-		BasicOption(std::initializer_list<MyS_> optionStrings, const int exactcount) 
+		BasicOption(const std::vector<MyS_>& optionStrings, const int exactcount) 
 		{
 			init();
 			for(auto&& s : optionStrings)
 			{
-				options_.push_back(s);
+				options_.emplace_back(s);
 			}
 
 			setArgFlag(exactcount);
@@ -937,7 +937,7 @@ typedef BasicOption<std::string> COptionA;
 		// Iterator option strings
 		template<class TARGET>
 		void AddOptionRange(
-			std::initializer_list<MyS_> optionStrings,
+			const std::vector<MyS_>& optionStrings,
 			int exactCount,
 			TARGET* pTarget,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,

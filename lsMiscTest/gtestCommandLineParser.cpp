@@ -502,7 +502,7 @@ TEST(CommandLineParser, Help)
 		parser.AddOption(&optionDefault);
 
 		bool bHelp = false;
-		parser.AddOptionRange({ "-h", "/h", "/?" },
+		parser.AddOptionRange({ "-h", "/h", "/?","--help","-H", "-hh"},
 			0,
 			&bHelp,
 			ArgEncodingFlags_Default,
