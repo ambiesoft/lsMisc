@@ -45,4 +45,18 @@ TEST(CHandle, Basic)
 		DestroyWindow(h);
 		EXPECT_FALSE(h);
 	}
+
+	{
+		constexpr size_t count = 3;
+		vector<CHandle> threads;
+		threads.reserve(count);
+
+		for (int i = 0; i < count; ++i)
+		{
+			unsigned dwThreadId = 0;
+			CHandle t(CreateEvent(NULL,TRUE,FALSE,NULL));
+
+			threads.emplace_back(move(t));
+		}
+	}
 }

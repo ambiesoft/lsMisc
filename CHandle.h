@@ -36,7 +36,7 @@ namespace Ambiesoft {
 		CHandle(const CHandle& that) {
 			h_ = that.h_;
 		}
-		CHandle(CHandle&& that) {
+		CHandle(CHandle&& that) noexcept {
 			h_ = that.h_;
 			that.h_ = nullptr;
 		}
@@ -61,6 +61,11 @@ namespace Ambiesoft {
 		}
 		HANDLE* operator &() {
 			return &h_;
+		}
+		HANDLE Release() {
+			HANDLE h = h_;
+			h_ = nullptr;
+			return h;
 		}
 	};
 	class CHWnd
