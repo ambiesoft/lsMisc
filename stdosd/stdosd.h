@@ -806,16 +806,17 @@ namespace Ambiesoft {
 
 
 		template<typename C>
-        inline std::basic_string<C> stdAddDQIfNecessary(const C* fullString, size_t size = static_cast<size_t>(-1)) {
-            if (size == static_cast<size_t>(-1))
+		inline bool stdIsDQNecessary(const C* fullString, size_t size = static_cast<size_t>(-1))
+		{
+			if (size == static_cast<size_t>(-1))
 				size = getCharLength(fullString);
 
 			if (size == 0)
-				return fullString;
+				return false;
 
 			if (fullString[0] == stdLiterals<C>::NDoubleQuote &&
 				fullString[size - 1] == stdLiterals<C>::NDoubleQuote)
-				return fullString;
+				return false;
 
 			bool hasSpace = false;
 			for (size_t i = 0; i < size; ++i)
@@ -828,6 +829,23 @@ namespace Ambiesoft {
 			}
 
 			if (!hasSpace)
+				return false;
+
+			return true;
+		}
+		template<typename C>
+		inline bool stdIsDQNecessary(const std::basic_string<C>& fullString)
+		{
+			return stdIsDQNecessary(fullString.c_str(), fullString.size());
+		}
+
+		template<typename C>
+        inline std::basic_string<C> stdAddDQIfNecessary(const C* fullString, size_t size = static_cast<size_t>(-1)) 
+		{
+            if (size == static_cast<size_t>(-1))
+				size = getCharLength(fullString);
+
+			if (!stdIsDQNecessary(fullString, size))
 				return fullString;
 
 			return std::basic_string<C>() + stdLiterals<C>::NDoubleQuote + fullString + stdLiterals<C>::NDoubleQuote;

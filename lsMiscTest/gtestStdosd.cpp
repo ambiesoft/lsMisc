@@ -578,18 +578,30 @@ TEST(stdosd, CNativeValueTest)
 	EXPECT_TRUE(ci == 200);
 }
 
-TEST(stdosd, stdAddDQIfNecessaryTest)
+TEST(stdosd, DoubleQuote)
 {
-	EXPECT_STREQ(stdAddDQIfNecessary("").c_str(), "");
-	EXPECT_STREQ(stdAddDQIfNecessary("a").c_str(), "a");
-	EXPECT_STREQ(stdAddDQIfNecessary("aa").c_str(), "aa");
-	EXPECT_STREQ(stdAddDQIfNecessary(" a").c_str(), "\" a\"");
-	EXPECT_STREQ(stdAddDQIfNecessary("a ").c_str(), "\"a \"");
-	EXPECT_STREQ(stdAddDQIfNecessary("a b c").c_str(), "\"a b c\"");
-	EXPECT_STREQ(stdAddDQIfNecessary("\"").c_str(), "\"");
-	EXPECT_STREQ(stdAddDQIfNecessary("\"\"").c_str(), "\"\"");
-	EXPECT_STREQ(stdAddDQIfNecessary("\"abc\"").c_str(), "\"abc\"");
-	
+	{
+		EXPECT_TRUE(!stdIsDQNecessary(""));
+		EXPECT_TRUE(!stdIsDQNecessary("a"));
+		EXPECT_TRUE(!stdIsDQNecessary("aa"));
+		EXPECT_TRUE(stdIsDQNecessary(" a"));
+		EXPECT_TRUE(stdIsDQNecessary("a "));
+		EXPECT_TRUE(stdIsDQNecessary("a b c"));
+		EXPECT_TRUE(!stdIsDQNecessary("\""));
+		EXPECT_TRUE(!stdIsDQNecessary("\"\""));
+		EXPECT_TRUE(!stdIsDQNecessary("\"abc\""));
+	}
+	{
+		EXPECT_STREQ(stdAddDQIfNecessary("").c_str(), "");
+		EXPECT_STREQ(stdAddDQIfNecessary("a").c_str(), "a");
+		EXPECT_STREQ(stdAddDQIfNecessary("aa").c_str(), "aa");
+		EXPECT_STREQ(stdAddDQIfNecessary(" a").c_str(), "\" a\"");
+		EXPECT_STREQ(stdAddDQIfNecessary("a ").c_str(), "\"a \"");
+		EXPECT_STREQ(stdAddDQIfNecessary("a b c").c_str(), "\"a b c\"");
+		EXPECT_STREQ(stdAddDQIfNecessary("\"").c_str(), "\"");
+		EXPECT_STREQ(stdAddDQIfNecessary("\"\"").c_str(), "\"\"");
+		EXPECT_STREQ(stdAddDQIfNecessary("\"abc\"").c_str(), "\"abc\"");
+	}
 }
 
 TEST(stdosd, stdStringLowerTest)
