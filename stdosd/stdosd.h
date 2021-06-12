@@ -519,6 +519,15 @@ namespace Ambiesoft {
 		}
 
 
+		template<typename C>
+		inline std::basic_string<C> stdToCRLFString(const std::basic_string<C>& str)
+		{
+			std::basic_string<C> ret = stdStringReplace(str, stdLiterals<C>::CRLF(), stdLiterals<C>::LF());
+			ret = stdStringReplace(ret, stdLiterals<C>::CR(), stdLiterals<C>::LF());
+			ret = stdStringReplace(ret, stdLiterals<C>::LF(), stdLiterals<C>::CRLF());
+			
+			return ret;
+		}
 
 
 		// https://stackoverflow.com/a/13172514

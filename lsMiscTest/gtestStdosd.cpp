@@ -942,3 +942,11 @@ TEST(stdosd, stdIsSamePath)
 	EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc"));
 	EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc\\ddd\\..\\"));
 }
+
+TEST(stdosd, stdToCRLFString)
+{
+	EXPECT_EQ(stdToCRLFString(string("aaa\r\nbbb")), string("aaa\r\nbbb"));
+	EXPECT_EQ(stdToCRLFString(string("aaa\rbbb")), string("aaa\r\nbbb"));
+	EXPECT_EQ(stdToCRLFString(string("aaa\n\nbbb")), string("aaa\r\n\r\nbbb"));
+	EXPECT_EQ(stdToCRLFString(string("aaa\n\r\nbbb")), string("aaa\r\n\r\nbbb"));
+}
