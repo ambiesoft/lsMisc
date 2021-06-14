@@ -24,7 +24,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReturnMainWndHandle", "Retu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SetSessionGlobalMemory", "SetSessionGlobalMemory\SetSessionGlobalMemory.vcxproj", "{D2E2ED31-84BD-4184-BDA3-1F5E9F270A1A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GetOpenFileTest", "..\GetOpenFileTest\GetOpenFileTest.vcxproj", "{77CD3990-ECC3-4D56-8984-D835ADEE529A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GetOpenFileTest", "GetOpenFileTest\GetOpenFileTest.vcxproj", "{77CD3990-ECC3-4D56-8984-D835ADEE529A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

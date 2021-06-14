@@ -532,10 +532,10 @@ namespace Ambiesoft {
 				return true;
 			}
 			vector<wchar_t> v;
-			v.reserve(len + 1);
+			v.resize(len + 1);
 			if (len != GetWindowTextW(hWindow, v.data(), len + 1))
 				return false;
-			v[len] = L'\0';
+			assert(v[len] == L'\0');
 			*result = v.data();
 			return true;
 		}

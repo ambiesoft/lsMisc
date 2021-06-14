@@ -27,10 +27,10 @@
     <ClInclude Include="GetOpenFileTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\GetOpenFile.h">
+    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="..\..\GetOpenFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -38,7 +38,7 @@
     <ClCompile Include="GetOpenFileTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetOpenFile.cpp">
+    <ClCompile Include="..\..\GetOpenFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

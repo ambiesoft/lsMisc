@@ -5,7 +5,7 @@
 
 #include "framework.h"
 #include "GetOpenFileTest.h"
-#include "../GetOpenFile.h"
+#include "../../GetOpenFile.h"
 
 using namespace std;
 using namespace Ambiesoft;
@@ -32,7 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     wstring fullpath;
-    GetOpenFile(nullptr,
+    GetOpenFile(nullptr, nullptr,
         GETFILEFILTER::APP,
         nullptr,
         L"TTT",
