@@ -28,6 +28,8 @@ Generating Code...
 */
 // #include "stdafx.h"
 
+#include <cassert>
+
 #if defined(_WIN32)
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -513,5 +515,34 @@ namespace Ambiesoft {
 		{
 			return false;
 		}
+
+		bool stdGetWindowText(HWND hWindow, std::string* result)
+		{
+			assert(false);
+			return false;
+		}
+		bool stdGetWindowText(HWND hWindow, std::wstring* result)
+		{
+			int len = GetWindowTextLengthW(hWindow);
+			if (GetLastError() != NO_ERROR)
+				return false;
+			if (len == 0)
+			{
+				*result = std::wstring();
+				return true;
+			}
+			vector<wchar_t> v;
+			v.reserve(len + 1);
+			if (len != GetWindowTextW(hWindow, v.data(), len + 1))
+				return false;
+			v[len] = L'\0';
+			*result = v.data();
+			return true;
+		}
+		bool stdSetWindowText(HWINDOWHANDLE hWindow, const std::wstring& text)
+		{
+			return !!SetWindowTextW(hWindow, text.c_str());
+		}
+
 	}
 }

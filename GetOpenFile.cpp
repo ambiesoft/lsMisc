@@ -39,7 +39,31 @@ using namespace std;
 #endif
 
 namespace Ambiesoft {
+
+#define OFNBUFFERSIZE 1024
+	struct OFNBUFFER
+	{
+		LPTSTR pFile_;
+		LPTSTR pFileTitle_;
+		LPTSTR pFilter_;
+		OFNBUFFER() :
+			pFile_(new TCHAR[OFNBUFFERSIZE]),
+			pFileTitle_(new TCHAR[OFNBUFFERSIZE]),
+			pFilter_(new TCHAR[OFNBUFFERSIZE]) {
+			pFile_[0] = 0;
+			pFileTitle_[0] = 0;
+			pFilter_[0] = 0;
+		}
+
+		~OFNBUFFER() {
+			delete[] pFile_;
+			delete[] pFileTitle_;
+			delete[] pFilter_;
+		}
+	};
+
 	BOOL GetOpenFile(
+		HINSTANCE hInst,
 		HWND hWnd,
 		LPCTSTR pFilter,
 		LPCTSTR pInitialDir,
@@ -50,22 +74,27 @@ namespace Ambiesoft {
 
 		ZeroMemory(&ofn, sizeof(ofn));
 		ofn.lStructSize = sizeof(ofn);
+		ofn.hInstance = hInst;
 		ofn.hwndOwner = hWnd;
 		ofn.Flags =
 			OFN_DONTADDTORECENT |
 			OFN_ENABLESIZING |
 			OFN_FILEMUSTEXIST |
-			OFN_HIDEREADONLY |
+			// OFN_HIDEREADONLY |
+			OFN_PATHMUSTEXIST | 
 			0;
 
 		OFNBUFFER buff;
 		if (pFilter)
 		{
+			memset(buff.pFilter_, 0, OFNBUFFERSIZE);
 			lstrcpy(buff.pFilter_, pFilter);
 			LPTSTR p = buff.pFilter_;
 			while (*p && (p = _tcschr(p, L'|')))
 				*p++ = 0;
+
 			ofn.lpstrFilter = buff.pFilter_;
+			ofn.nFilterIndex = 1;
 		}
 
 		ofn.lpstrFile = buff.pFile_;
@@ -77,6 +106,7 @@ namespace Ambiesoft {
 		ofn.lpstrInitialDir = pInitialDir;
 
 		ofn.lpstrTitle = pTitle;
+
 		if (!GetOpenFileName(&ofn))
 			return FALSE;
 
@@ -85,6 +115,25 @@ namespace Ambiesoft {
 
 		*fullpath = ofn.lpstrFile;
 		return TRUE;
+	}
+
+	BOOL GetOpenFile(
+		HINSTANCE hInst,
+		HWND hWnd,
+		GETFILEFILTER filter,
+		LPCTSTR pInitialDir,
+		LPCTSTR pTitle,
+		std::wstring* fullpath, std::wstring* path)
+	{
+		std::wstring strFilter;
+		switch (filter)
+		{
+		case GETFILEFILTER::APP:
+			strFilter = _T("Application|*.exe;*.com|All Files|*.*");
+			break;
+		}
+		return GetOpenFile(hInst, hWnd, strFilter.c_str(), pInitialDir, pTitle,
+			fullpath, path);
 	}
 
 

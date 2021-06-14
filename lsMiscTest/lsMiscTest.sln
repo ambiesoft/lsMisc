@@ -24,6 +24,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReturnMainWndHandle", "Retu
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SetSessionGlobalMemory", "SetSessionGlobalMemory\SetSessionGlobalMemory.vcxproj", "{D2E2ED31-84BD-4184-BDA3-1F5E9F270A1A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GetOpenFileTest", "..\GetOpenFileTest\GetOpenFileTest.vcxproj", "{77CD3990-ECC3-4D56-8984-D835ADEE529A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -80,6 +82,14 @@ Global
 		{D2E2ED31-84BD-4184-BDA3-1F5E9F270A1A}.Release|Win32.Build.0 = Release|Win32
 		{D2E2ED31-84BD-4184-BDA3-1F5E9F270A1A}.Release|x64.ActiveCfg = Release|x64
 		{D2E2ED31-84BD-4184-BDA3-1F5E9F270A1A}.Release|x64.Build.0 = Release|x64
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Debug|Win32.Build.0 = Debug|Win32
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Debug|x64.ActiveCfg = Debug|x64
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Debug|x64.Build.0 = Debug|x64
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Release|Win32.ActiveCfg = Release|Win32
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Release|Win32.Build.0 = Release|Win32
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Release|x64.ActiveCfg = Release|x64
+		{77CD3990-ECC3-4D56-8984-D835ADEE529A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

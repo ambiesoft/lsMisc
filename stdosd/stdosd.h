@@ -36,6 +36,10 @@
 #include <cstring>
 #include <wctype.h>
 
+#ifdef WIN32
+#include <Windows.h>
+#endif
+
 #include "stdosd_literal.h"
 
 namespace Ambiesoft {
@@ -1025,13 +1029,18 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-		typedef void* HWINDOWHANDLE;
+#ifdef WIN32
+		typedef HWND HWINDOWHANDLE;
+#endif
 		template<typename C>
 		inline bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
 		{
 			// TODO: implement
 		}
 
+
+		bool stdGetWindowText(HWINDOWHANDLE hWindow, std::wstring* result);
+		bool stdSetWindowText(HWINDOWHANDLE hWindow, const std::wstring& text);
 
 		template<typename C>
 		inline C* stdStrDup(const C* p)

@@ -28,28 +28,7 @@
 #include "tstring.h"
 
 namespace Ambiesoft {
-#define OFNBUFFERSIZE 1024
-	struct OFNBUFFER
-	{
 
-		LPTSTR pFile_;
-		LPTSTR pFileTitle_;
-		LPTSTR pFilter_;
-		OFNBUFFER() :
-			pFile_(new TCHAR[OFNBUFFERSIZE]),
-			pFileTitle_(new TCHAR[OFNBUFFERSIZE]),
-			pFilter_(new TCHAR[OFNBUFFERSIZE]) {
-			pFile_[0] = 0;
-			pFileTitle_[0] = 0;
-			pFilter_[0] = 0;
-		}
-
-		~OFNBUFFER() {
-			delete[] pFile_;
-			delete[] pFileTitle_;
-			delete[] pFilter_;
-		}
-	};
 
 	class CGetOpenFileFilter{
 		std::vector<tstring> descs_;
@@ -93,9 +72,22 @@ namespace Ambiesoft {
 		}
 	};
 
+	enum class GETFILEFILTER
+	{
+		NONE,
+		APP,
+	};
 	BOOL GetOpenFile(
+		HINSTANCE hInst,
 		HWND hWnd,
 		LPCTSTR pFilter,
+		LPCTSTR pInitialDir,
+		LPCTSTR pTitle,
+		std::wstring* fullpath, std::wstring* path = NULL);
+	BOOL GetOpenFile(
+		HINSTANCE hInst,
+		HWND hWnd,
+		GETFILEFILTER filter,
 		LPCTSTR pInitialDir,
 		LPCTSTR pTitle,
 		std::wstring* fullpath, std::wstring* path = NULL);
