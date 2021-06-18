@@ -226,6 +226,23 @@ namespace Ambiesoft {
 	}
 	int SHMoveFileEx(HWND hWnd, LPCTSTR lpFileFrom, LPCTSTR lpFileTo, FILEOP_FLAGS fopFlags)
 	{
+		// FO_RENAME does not work to overwrite existing file
+		//if ( (FileExists(lpFileTo) && FileExists(lpFileFrom)) ||
+		//	(DirectoryExists(lpFileTo) && DirectoryExists(lpFileFrom)) )
+		//{
+		//	wstring from = stdosd::stdGetFullPathName(lpFileFrom);
+		//	wstring to = stdosd::stdGetFullPathName(lpFileTo);
+
+		//	if (stdosd::stdIsSamePath(
+		//		stdosd::stdGetParentDirectory(from),
+		//		stdosd::stdGetParentDirectory(to)))
+		//	{
+		//		wstring toFileOnly = stdosd::stdGetFileName(lpFileTo);
+		//		int ret = -1;
+		//		SHCopyOrMoveFileEx(hWnd, FO_RENAME, lpFileFrom, lpFileTo, 0, &ret);
+		//		return ret;
+		//	}
+		//}
 		int ret = -1;
 		SHCopyOrMoveFileEx(hWnd, FO_MOVE, lpFileFrom, lpFileTo, fopFlags, &ret);
 		return ret;
