@@ -22,6 +22,8 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <Windows.h>
+
 namespace Ambiesoft {
 	HWND CreateSimpleWindow(HINSTANCE hInst = NULL,
 		LPCTSTR pClassName = NULL,
