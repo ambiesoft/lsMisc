@@ -36,7 +36,7 @@
 #include <cstring>
 #include <wctype.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <Windows.h>
 #endif
 
@@ -1029,7 +1029,7 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-#ifdef WIN32
+#if defined(_WIN32)
 		typedef HWND HWINDOWHANDLE;
 #endif
 		template<typename C>
