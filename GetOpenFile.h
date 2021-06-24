@@ -78,14 +78,12 @@ namespace Ambiesoft {
 		APP,
 	};
 	BOOL GetOpenFile(
-		HINSTANCE hInst,
 		HWND hWnd,
 		LPCTSTR pFilter,
 		LPCTSTR pInitialDir,
 		LPCTSTR pTitle,
 		std::wstring* fullpath, std::wstring* path = NULL);
 	BOOL GetOpenFile(
-		HINSTANCE hInst,
 		HWND hWnd,
 		GETFILEFILTER filter,
 		LPCTSTR pInitialDir,

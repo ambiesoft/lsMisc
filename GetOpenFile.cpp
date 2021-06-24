@@ -63,7 +63,6 @@ namespace Ambiesoft {
 	};
 
 	BOOL GetOpenFile(
-		HINSTANCE hInst,
 		HWND hWnd,
 		LPCTSTR pFilter,
 		LPCTSTR pInitialDir,
@@ -74,7 +73,6 @@ namespace Ambiesoft {
 
 		ZeroMemory(&ofn, sizeof(ofn));
 		ofn.lStructSize = sizeof(ofn);
-		ofn.hInstance = hInst;
 		ofn.hwndOwner = hWnd;
 		ofn.Flags =
 			OFN_DONTADDTORECENT |
@@ -118,7 +116,6 @@ namespace Ambiesoft {
 	}
 
 	BOOL GetOpenFile(
-		HINSTANCE hInst,
 		HWND hWnd,
 		GETFILEFILTER filter,
 		LPCTSTR pInitialDir,
@@ -132,7 +129,7 @@ namespace Ambiesoft {
 			strFilter = _T("Application|*.exe;*.com|All Files|*.*");
 			break;
 		}
-		return GetOpenFile(hInst, hWnd, strFilter.c_str(), pInitialDir, pTitle,
+		return GetOpenFile(hWnd, strFilter.c_str(), pInitialDir, pTitle,
 			fullpath, path);
 	}
 
