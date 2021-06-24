@@ -1509,6 +1509,20 @@ namespace Ambiesoft {
 			return stdIsSamePath(path1, path2.c_str());
 		}
 
+		template<typename C>
+		inline std::basic_string<C> stdRemoveDoubleQuote(const std::basic_string<C>& text)
+		{
+			if (text.size() < 2)
+				return text;
+
+			if (!(text[0] == stdLiterals<C>::NDoubleQuote &&
+				text[text.size() - 1] == stdLiterals<C>::NDoubleQuote))
+			{
+				return text;
+			}
+			return text.substr(1, text.size() - 1 - 1);
+		}
+
 	}
 }
 

@@ -32,7 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     wstring fullpath;
-    GetOpenFile(nullptr, nullptr,
+    GetOpenFile(nullptr,
         GETFILEFILTER::APP,
         nullptr,
         L"TTT",

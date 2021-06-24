@@ -950,3 +950,17 @@ TEST(stdosd, stdToCRLFString)
 	EXPECT_EQ(stdToCRLFString(string("aaa\n\nbbb")), string("aaa\r\n\r\nbbb"));
 	EXPECT_EQ(stdToCRLFString(string("aaa\n\r\nbbb")), string("aaa\r\n\r\nbbb"));
 }
+
+TEST(stdosd, stdRemoveDoubleQuote)
+{
+	EXPECT_EQ(stdRemoveDoubleQuote(string("")), string(""));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("\"")), string("\""));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("\"\"")), string(""));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("a")), string("a"));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("abc")), string("abc"));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("a\"bc")), string("a\"bc"));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("abc\"")), string("abc\""));
+	EXPECT_EQ(stdRemoveDoubleQuote(string("\"abc")), string("\"abc"));
+	
+	EXPECT_EQ(stdRemoveDoubleQuote(string("\"abc\"")), string("abc"));
+}
