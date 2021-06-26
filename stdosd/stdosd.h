@@ -1091,6 +1091,11 @@ namespace Ambiesoft {
 			free((void*)p);
 			return ret;
 		}
+		template<typename C = wchar_t>
+		inline std::basic_string<C> stdExpandEnvironmentStrings(const std::basic_string<C>& str)
+		{
+			return stdExpandEnvironmentStrings(str.c_str());
+		}
 
 
 
