@@ -35,13 +35,6 @@
 
 
 
-using namespace std;
-
-static tstring convertChar(TCHAR t1, bool bToSjisZen)
-{
-
-}
-
 tstring MakeFilenamable(LPCTSTR pch, bool bToSjisZen, LPCTSTR pDefault)
 {
 	if (!pch || !pch[0])
