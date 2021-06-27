@@ -61,7 +61,7 @@ bool GetFolderIniDirEx(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	LPCTSTR pCreator, LPCTSTR pApp)
 {
 	TCHAR szT[MAX_PATH];
-	if(!GetModuleFileName(NULL, szT, sizeof(szT)/sizeof(TCHAR)))
+	if(!GetModuleFileName(hInst, szT, sizeof(szT)/sizeof(TCHAR)))
 	{
 		throw tstring(_T("Fatal Error"));
 	}
