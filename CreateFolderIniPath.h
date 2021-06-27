@@ -25,13 +25,9 @@
 
 namespace Ambiesoft {
 
-bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
+// Old version uses 'presetting' as section
+// but now it changes to 'Main'
+bool GetFolderIniDirEx(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	LPCTSTR pCreator, LPCTSTR pApp);
-//void CreateFolderIniPath(HINSTANCE hInst,
-//	LPCTSTR pIniFileName,
-//	LPTSTR pOut,
-//	LPCTSTR pApp,
-//	LPCTSTR pCreator,
-//	LPCTSTR pErrorTemplate);
 
 }

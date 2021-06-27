@@ -57,7 +57,7 @@
 
 namespace Ambiesoft {
 
-bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
+bool GetFolderIniDirEx(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	LPCTSTR pCreator, LPCTSTR pApp)
 {
 	TCHAR szT[MAX_PATH];
@@ -72,7 +72,7 @@ bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	wsprintf(szI, _T("%s\\folder.ini"), szT);
 
 	tstring tmpS;
-	int pathtype = GetPrivateProfileInt(_T("presettings"),
+	int pathtype = GetPrivateProfileInt(_T("Main"),
 		_T("pathType"),
 		-1,
 		szI);
@@ -107,7 +107,7 @@ bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 
 	case 3:
 	{
-		if (GetPrivateProfileString(_T("presettings"),
+		if (GetPrivateProfileString(_T("Main"),
 			_T("folder"),
 			_T(""),
 			szFolder,
@@ -123,42 +123,42 @@ bool GetFolderIniDir(HINSTANCE hInst, LPTSTR szFolder, DWORD nfSize,
 	return false;
 }
 
-void CreateFolderIniPath_obsoletes(HINSTANCE hInst,
-	LPCTSTR pIniFileName, 
-	LPTSTR pOut, 
-	LPCTSTR pCreator,
-	LPCTSTR pApp,
-	LPCTSTR pErrorTemplate)
-{
-	TCHAR szT[MAX_PATH];
-	TCHAR szFolder[MAX_PATH];
-	
-	if(GetFolderIniDir(hInst, 
-		szFolder,
-		(sizeof(szFolder)/sizeof(TCHAR))-sizeof(TCHAR),
-		pCreator,
-		pApp)
-	   && (szFolder[0] != 0 ))
-	{
-		wsprintf(szT, _T("%s\\%s"), szFolder, pIniFileName);
-		if(!PathFileExists(szT))
-		{
-			TCHAR message[MAX_PATH + 128];
-			wsprintf(message, (pErrorTemplate ? pErrorTemplate : _T("%s is not found. Exiting.")), szT);
-			throw tstring(message);
-		}
-		lstrcpy(pOut, szT);
-	}
-	else
-	{
-		if(!GetModuleFileName(NULL, szT, sizeof(szT)/sizeof(TCHAR)))
-		{
-			throw tstring(_T("Fatal Error"));
-		}
-
-		*_tcsrchr(szT, _T('\\'))=0;
-		wsprintf(pOut, _T("%s\\%s"), szT, pIniFileName);
-	}
-}
+//void CreateFolderIniPath_obsoletes(HINSTANCE hInst,
+//	LPCTSTR pIniFileName, 
+//	LPTSTR pOut, 
+//	LPCTSTR pCreator,
+//	LPCTSTR pApp,
+//	LPCTSTR pErrorTemplate)
+//{
+//	TCHAR szT[MAX_PATH];
+//	TCHAR szFolder[MAX_PATH];
+//	
+//	if(GetFolderIniDir(hInst, 
+//		szFolder,
+//		(sizeof(szFolder)/sizeof(TCHAR))-sizeof(TCHAR),
+//		pCreator,
+//		pApp)
+//	   && (szFolder[0] != 0 ))
+//	{
+//		wsprintf(szT, _T("%s\\%s"), szFolder, pIniFileName);
+//		if(!PathFileExists(szT))
+//		{
+//			TCHAR message[MAX_PATH + 128];
+//			wsprintf(message, (pErrorTemplate ? pErrorTemplate : _T("%s is not found. Exiting.")), szT);
+//			throw tstring(message);
+//		}
+//		lstrcpy(pOut, szT);
+//	}
+//	else
+//	{
+//		if(!GetModuleFileName(NULL, szT, sizeof(szT)/sizeof(TCHAR)))
+//		{
+//			throw tstring(_T("Fatal Error"));
+//		}
+//
+//		*_tcsrchr(szT, _T('\\'))=0;
+//		wsprintf(pOut, _T("%s\\%s"), szT, pIniFileName);
+//	}
+//}
 
 } // namespace
