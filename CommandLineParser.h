@@ -897,6 +897,7 @@ typedef BasicOption<std::string> COptionA;
 			}
 
 			addkaigyo(usage);
+			addkaigyo(usage);
 			return appname + description + usage + explain;
 		}
 		bool isEmpty() const
