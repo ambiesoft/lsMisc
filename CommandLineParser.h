@@ -39,7 +39,7 @@
 #include "UTF16toUTF8.h"
 #include "CommandLineString.h"
 
-#include "stdosd/stdosd_literal.h"
+#include "stdosd/stdosd.h"
 
 namespace Ambiesoft {
 
@@ -708,15 +708,27 @@ typedef BasicOption<std::string> COptionA;
 			case_ = CaseFlags_Default;
 		}
 
+		bool isEmptyOptionStrings(const std::vector<MyS_>& options) const
+		{
+			for (auto&& s : options)
+			{
+				if (!s.empty())
+					return false;
+			}
+			return true;
+		}
+		MyS_ toArgSymbol(const MyS_& s) const {
+			return stdosd::stdStringUpper(stdosd::stdTrimStart(s, stdosd::stdLiterals<Elem>::OptionPrefix()));
+		}
 		void processOptionStringHelper(
 			const ArgCount& argcount,
-			const MyS_& optionstring,
+			const std::vector<MyS_>& options,
 			const MyS_& helpstring,
 			MyS_& explain,
 			MyS_& usage) const
 		{
 			// usage
-			if (optionstring.empty())
+			if (isEmptyOptionStrings(options))
 			{
 				// main arg
 				if (argcount == ArgCount::ArgCount_Infinite)
@@ -732,16 +744,48 @@ typedef BasicOption<std::string> COptionA;
 			}
 			else
 			{
+				if (argcount == ArgCount::ArgCount_Zero)
+				{
+					usage += stdosd::stdLiterals<Elem>::NSquareBlacketBegin;
+					stdosd::IsBetweenLoop isBetween;
+					for (auto&& s : options)
+					{
+						if (isBetween)
+							usage += stdosd::stdLiterals<Elem>::NVerticalBar;
+						usage += s;
+					}
+					usage += stdosd::stdLiterals<Elem>::NSquareBlacketEnd;
+					usage += stdosd::stdLiterals<Elem>::NSpace;
+				}
+				else if (argcount == ArgCount::ArgCount_One)
+				{
+					usage += stdosd::stdLiterals<Elem>::NSquareBlacketBegin;
+					MyS_ argSymbol;
+					stdosd::IsBetweenLoop isBetween;
+					for (auto&& s : options)
+					{
+						if (isBetween)
+							usage += stdosd::stdLiterals<Elem>::NVerticalBar;
+						if (toArgSymbol(s).size() > argSymbol.size())
+							argSymbol = toArgSymbol(s);
+						usage += s;
+					}
+					usage += stdosd::stdLiterals<Elem>::NSpace;
+					usage += argSymbol;
+					usage += stdosd::stdLiterals<Elem>::NSquareBlacketEnd;
+					usage += stdosd::stdLiterals<Elem>::NSpace;
+				}
 			}
 			
 			
 
 			// explain
-			if (optionstring.empty())
+			if (isEmptyOptionStrings(options))
 				explain += stdosd::stdLiterals<Elem>::Arg();
 			else
-				explain += optionstring;
-			
+			{
+				explain += toOptionString(options);
+			}
 			addkaigyo(explain);
 
 			if (!helpstring.empty())
@@ -819,15 +863,12 @@ typedef BasicOption<std::string> COptionA;
 			
 			for (size_t i = 0; i < useroptions_.size(); ++i)
 			{
-				for (size_t j = 0; j < useroptions_[i]->options_.size(); ++j)
-				{
-					processOptionStringHelper(
-						useroptions_[i]->argcountflag_,
-						useroptions_[i]->options_[j],
-						useroptions_[i]->helpString_,
-						explain,
-						usage);
-				}
+				processOptionStringHelper(
+					useroptions_[i]->argcountflag_,
+					useroptions_[i]->options_,
+					useroptions_[i]->helpString_,
+					explain,
+					usage);
 			}
 			for (size_t i = 0; i < inneroptions_.size(); ++i)
 			{
@@ -848,7 +889,7 @@ typedef BasicOption<std::string> COptionA;
 				{
 					processOptionStringHelper(
 						argcount,
-						toOptionString(options),
+						options,
 						helpString,
 						explain,
 						usage);
