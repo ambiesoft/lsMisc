@@ -125,8 +125,20 @@ namespace Ambiesoft {
             }
         };
 
+		// Use in for loop
+		class IsBetweenLoop
+		{
+			bool called_ = false;
+		public:
+			operator bool() {
+				if (called_)
+					return true;
+				called_ = true;
+				return false;
+			}
+		};
 
-		
+
 		template<typename C>
 		inline bool isEmptyString(const C* str, size_t len) {
 			return (len == 0 || !str || str[0] == 0);
@@ -921,6 +933,44 @@ namespace Ambiesoft {
 			stdCopyString(ptr.get(), str.size() + 1, str.c_str());
 			return stdStringLower(ptr.get(), str.size());
 		}
+
+
+
+		template<typename C>
+		inline C* stdStringUpper(C* pD1, size_t size);
+		template<>
+		inline char* stdStringUpper(char* pc, size_t size)
+		{
+			_strupr_s(pc, size + 1);
+			return pc;
+		}
+		template<>
+		inline wchar_t* stdStringUpper(wchar_t* pwc, size_t size)
+		{
+			_wcsupr_s(pwc, size + 1);
+			return pwc;
+		}
+
+		template<class C>
+		inline std::basic_string<C> stdStringUpper(const std::basic_string<C>& str)
+		{
+			std::unique_ptr<C[]> ptr(new C[str.size() + 1]);
+			stdCopyString(ptr.get(), str.size() + 1, str.c_str());
+			return stdStringUpper(ptr.get(), str.size());
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         HFILEITERATOR stdCreateFileIterator(const std::string& directory);
         bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi);
