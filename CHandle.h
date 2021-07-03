@@ -28,28 +28,31 @@ namespace Ambiesoft {
 	class CHandle
 	{
 		HANDLE h_;
+		void Close() {
+			if (h_ == nullptr || h_ == INVALID_HANDLE_VALUE)
+				return;
+			CloseHandle(h_);
+			h_ = nullptr;
+		}
 	public:
 		CHandle() : h_(nullptr){}
 		explicit CHandle(HANDLE h) :h_(h) {
 
 		}
-		CHandle(const CHandle& that) {
-			h_ = that.h_;
-		}
+		CHandle(const CHandle& that) = delete;
 		CHandle(CHandle&& that) noexcept {
 			h_ = that.h_;
 			that.h_ = nullptr;
 		}
 		~CHandle() {
-			if (h_ == nullptr || h_ == INVALID_HANDLE_VALUE)
-				return;
-			CloseHandle(h_);
+			Close();
 		}
 		const CHandle& operator=(CHandle& that) {
 			this->h_ = that.h_;
 			return *this;
 		}
 		const CHandle& operator=(HANDLE h) {
+			Close();
 			this->h_ = h;
 			return *this;
 		}
@@ -146,6 +149,16 @@ namespace Ambiesoft {
 		~CHModule() {
 			if(autoclose_)
 				Close();
+		}
+		CHModule(const CHModule& that) = delete;
+		CHModule(CHModule&& that) noexcept {
+			h_ = that.h_;
+			that.h_ = nullptr;
+		}
+		const CHModule& operator=(HMODULE h) {
+			Close();
+			this->h_ = h;
+			return *this;
 		}
 		operator bool() const {
 			return !!h_;
