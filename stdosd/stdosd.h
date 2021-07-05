@@ -1460,6 +1460,14 @@ namespace Ambiesoft {
 			return ret;
 		}
 
+		inline bool stdFileExists(unsigned short mode)
+		{
+			if ((S_IFREG & mode) == 0)
+				return false;
+			if((S_IFDIR & mode) != 0)
+				return false;
+			return true;
+		}
 		template<typename C>
 		inline bool stdFileExists(const	C* file)
 		{
@@ -1469,14 +1477,34 @@ namespace Ambiesoft {
 		inline bool stdFileExists(const char* file)
 		{
 			struct stat buffer;
-			return (stat(file, &buffer) == 0);
+			return stat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
 		}
 		template<>
 		inline bool stdFileExists(const wchar_t* file)
 		{
 			struct _stat  buffer;
-			return (_wstat(file, &buffer) == 0);
+			return _wstat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
 		}
+
+
+		template<typename C>
+		inline bool stdDirectoryExists(const	C* folder)
+		{
+			static_assert(false);
+		}
+		template<>
+		inline bool stdDirectoryExists(const char* folder)
+		{
+			struct stat buffer;
+			return stat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
+		}
+		template<>
+		inline bool stdDirectoryExists(const wchar_t* folder)
+		{
+			struct _stat  buffer;
+			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
+		}
+
 
 		template<typename C>
 		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
