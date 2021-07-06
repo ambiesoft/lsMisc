@@ -12,7 +12,7 @@
 using namespace Ambiesoft;
 using namespace std;
 
-static bool isSameResult(LPWSTR pCL)
+static void isSameResult(LPWSTR pCL, long line)
 {
 	int argc1 = 0;
 	LPWSTR* argv1 = NULL;
@@ -22,38 +22,52 @@ static bool isSameResult(LPWSTR pCL)
 	LPWSTR* argv2 = NULL;
 	argv2 = CommandLineToArgvW(pCL, &argc2);
 
+	wstringstream ws;
+	ws << L"p=" << pCL << L"\nline=" << line;
 
-	if (argc1 != argc2)
-		return false;
+	EXPECT_EQ(argc1, argc2) << ws.str();
 
-	for (int i = 0; i < argc1; ++i)
+	for (int i = 0; i < argc2; ++i)
 	{
-		if (wcscmp(argv1[i], argv2[i]) != 0)
-			return false;
+		LPWSTR CCommandLineString_ = argv1[i];
+		LPWSTR ShellCommnadLine = argv2[i];
+		EXPECT_STREQ(CCommandLineString_, ShellCommnadLine) << ws.str();
 	}
 
 	CCommandLineString::freeCommandLineArg(argv1);
 	LocalFree(argv2);
-	return true;
 }
+
 TEST(CommandLineString, SameWithOtherMethods)
 {
 	LPWSTR pC1;
 	pC1 = L"aaa.exe \"aaa bbb\"";
-	EXPECT_TRUE(isSameResult(pC1));
+	isSameResult(pC1, __LINE__);
 
 	pC1 = L"a";
-	EXPECT_TRUE(isSameResult(pC1));
+	isSameResult(pC1, __LINE__);
 
 	pC1 = L"";
-	EXPECT_TRUE(isSameResult(pC1));
+	isSameResult(pC1, __LINE__);
 
-	pC1 = L"aaa.exe \"\"\"aaa bbb ccc\"\"\"";
-	//isSameResult(pC1); // not same but i am right.
+	pC1 = L"a \"\"bb\"\"\"";
+	isSameResult(pC1, __LINE__);
+
+	// a ""bb"""""
+	pC1 = L"a \"\"bb\"\"\"\"\"";
+	// not equal but crt is same as mine
+	// isSameResult(pC1, __LINE__);
 }
 TEST(CommandLineString, subStringBasic)
 {
 	LPWSTR pC1;
+
+	{
+		pC1 = L"abc";
+		CCommandLineString c(pC1);
+		EXPECT_EQ(c.getCount(), 1);
+		EXPECT_STREQ(c.getArg(0).c_str(), pC1);
+	}
 
 	{
 		pC1 = L"aaa.exe file1.txt \"space file.txt\"";
@@ -61,13 +75,6 @@ TEST(CommandLineString, subStringBasic)
 		EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe file1.txt \"space file.txt\"");
 		EXPECT_STREQ(cls.subString(1).c_str(), L"file1.txt \"space file.txt\"");
 		EXPECT_STREQ(cls.subString(2).c_str(), L"\"space file.txt\"");
-	}
-	
-	{
-		pC1 = L"aaa";
-		CCommandLineString c(pC1);
-		EXPECT_EQ(c.getCount(), 1);
-		EXPECT_STREQ(c.getArg(0).c_str(), pC1);
 	}
 
 	{
@@ -89,14 +96,14 @@ TEST(CommandLineString, subStringBasic)
 		pC1 = L"aa\"b b\"";
 		CCommandLineString c(pC1);
 		EXPECT_EQ(c.getCount(), 1);
-		EXPECT_STREQ(c.getArg(0).c_str(), pC1);
+		EXPECT_STREQ(c.getArg(0).c_str(), L"aab b");
 	}
 
 	{
 		pC1 = L"aa\"b b\" ccc";
 		CCommandLineString c(pC1);
 		EXPECT_EQ(c.getCount(), 2);
-		EXPECT_STREQ(c.getArg(0).c_str(), L"aa\"b b\"");
+		EXPECT_STREQ(c.getArg(0).c_str(), L"aab b");
 		EXPECT_STREQ(c.getArg(1).c_str(), L"ccc");
 	}
 }
@@ -104,16 +111,50 @@ TEST(CommandLineString, subStringBasic)
 TEST(CommandLineString, subStringComplex)
 {
 	LPWSTR pC1;
+	{
+		pC1 = L"aaa.exe \"aaa bbb\" aa fff feee aaa\"bbb\" ";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe \"aaa bbb\" aa fff feee aaa\"bbb\" ");
+		EXPECT_STREQ(cls.subString(1).c_str(), L"\"aaa bbb\" aa fff feee aaa\"bbb\" ");
+		EXPECT_STREQ(cls.subString(2).c_str(), L"aa fff feee aaa\"bbb\" ");
+		EXPECT_STREQ(cls.subString(3).c_str(), L"fff feee aaa\"bbb\" ");
+		EXPECT_STREQ(cls.subString(4).c_str(), L"feee aaa\"bbb\" ");
+		EXPECT_STREQ(cls.subString(5).c_str(), L"aaa\"bbb\" ");
+		EXPECT_STREQ(cls.subString(6).c_str(), L"");
+	}
 
-	pC1 = L"aaa.exe \"aaa bbb\" aa fff feee aaa\"bbb\" ";
-	CCommandLineString cls(pC1);
-	EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe \"aaa bbb\" aa fff feee aaa\"bbb\" ");
-	EXPECT_STREQ(cls.subString(1).c_str(), L"\"aaa bbb\" aa fff feee aaa\"bbb\" "); 
-	EXPECT_STREQ(cls.subString(2).c_str(), L"aa fff feee aaa\"bbb\" ");
-	EXPECT_STREQ(cls.subString(3).c_str(), L"fff feee aaa\"bbb\" ");
-	EXPECT_STREQ(cls.subString(4).c_str(), L"feee aaa\"bbb\" ");
-	EXPECT_STREQ(cls.subString(5).c_str(), L"aaa\"bbb\" ");
-	EXPECT_STREQ(cls.subString(6).c_str(), L"");
+	{
+		pC1 = L"\"\"\"a\"\"\"";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), pC1);
+		EXPECT_STREQ(cls.getArg(0).c_str(), L"\"a\"");
+	}
+	{
+		pC1 = L"\"\"\"a b\"\"\"";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), pC1);
+		EXPECT_STREQ(cls.getArg(0).c_str(), L"\"a b\"");
+	}
+	{
+		pC1 = L"aaa.exe \"\"\"aaa bbb ccc\"\"\"";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe \"\"\"aaa bbb ccc\"\"\"");
+		EXPECT_STREQ(cls.subString(1).c_str(), L"\"\"\"aaa bbb ccc\"\"\"");
+		EXPECT_STREQ(cls.getArg(1).c_str(), L"\"aaa bbb ccc\"");
+	}
+	{
+		pC1 = L"aaa.exe hello\"to the  entire\"world";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), L"aaa.exe hello\"to the  entire\"world");
+		EXPECT_STREQ(cls.subString(1).c_str(), L"hello\"to the  entire\"world");
+		EXPECT_STREQ(cls.getArg(1).c_str(), L"helloto the  entireworld");
+	}
+	{
+		// "T ""Hi!"""
+		pC1 = L"\"T \"\"Hi!\"\"\"";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.getArg(0).c_str(), L"T \"Hi!\"");
+	}
 }
 
 TEST(CommandLineString, subStringRemove)
@@ -184,13 +225,13 @@ TEST(CommandLineString, DQinsideDQ)
 {
 	LPWSTR pC1;
 	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\\"\"";
-	EXPECT_TRUE(isSameResult(pC1));
+	isSameResult(pC1, __LINE__);
 
 	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\\"";
-	EXPECT_TRUE(isSameResult(pC1));
+	isSameResult(pC1, __LINE__);
 
 	pC1 = L"aaa.exe \"-DCR_CLANG_REVISION=\\\"336424-1\\";
-	EXPECT_TRUE(isSameResult(pC1));
+	isSameResult(pC1, __LINE__);
 }
 
 TEST(CommandLineString, GoogleTypeCommandLineParts)
@@ -203,7 +244,7 @@ TEST(CommandLineString, GoogleTypeCommandLineParts)
 		EXPECT_EQ(cmd.getCount(), 4);
 		EXPECT_STREQ(cmd.toString().c_str(), pC1);
 
-		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=\"C:\\aaa bbb ccc\\aaa.log\"");
+		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=C:\\aaa bbb ccc\\aaa.log");
 		EXPECT_STREQ(cmd.getArg(2).c_str(), L"--enable-log");
 		EXPECT_STREQ(cmd.getArg(3).c_str(), L"--some-thing=100");
 	}
@@ -214,17 +255,22 @@ TEST(CommandLineString, GoogleTypeCommandLineParts)
 		EXPECT_EQ(cmd.getCount(), 5);
 		EXPECT_STREQ(cmd.toString().c_str(), pC1);
 
-		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=\"C:\\aaa bbb ccc\\aaa.log\"");
+		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=C:\\aaa bbb ccc\\aaa.log");
 		EXPECT_STREQ(cmd.getArg(2).c_str(), L"--limit-render-process=5");
 		EXPECT_STREQ(cmd.getArg(3).c_str(), L"--enable-log");
 		EXPECT_STREQ(cmd.getArg(4).c_str(), L"--some-thing=100");
 
 		cmd.remove(2);
-		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=\"C:\\aaa bbb ccc\\aaa.log\"");
+		EXPECT_STREQ(cmd.getArg(1).c_str(), L"--log-file=C:\\aaa bbb ccc\\aaa.log");
 		EXPECT_STREQ(cmd.getArg(2).c_str(), L"--enable-log");
 		EXPECT_STREQ(cmd.getArg(3).c_str(), L"--some-thing=100");
 
 		EXPECT_STREQ(cmd.toString().c_str(),
 			L"\"C:\\aaa bbb\\fff.exe\" --log-file=\"C:\\aaa bbb ccc\\aaa.log\" --enable-log --some-thing=100");
 	}
+}
+
+TEST(CommandLineString, MultiByte)
+{
+	// TODO: test with shiftjs multibyte
 }

@@ -41,187 +41,6 @@
 
 namespace Ambiesoft {
 
-	static inline bool myIsSpace(char c)
-	{
-		return isspace(c) != 0;
-	}
-	static inline bool myIsSpace(wchar_t c)
-	{
-		return iswspace(c) != 0;
-	}
-	
-	static inline bool myContainSpace(const std::string& s)
-	{
-		for (size_t i = 0; i < s.size(); ++i)
-		{
-			if (myIsSpace(s[i]))
-				return true;
-		}
-		return false;
-	}
-	static inline bool myContainSpace(const std::wstring& s)
-	{
-		for (size_t i = 0; i < s.size(); ++i)
-		{
-			if (myIsSpace(s[i]))
-				return true;
-		}
-		return false;
-	}
-
-	static inline bool myIsDQ(char c)
-	{
-		return c == '"';
-	}
-	static inline bool myIsDQ(wchar_t c)
-	{
-		return c == L'"';
-	}
-
-	template<class T>
-	static inline bool myContainDQ(const T& s)
-	{
-		for (size_t i = 0; i < s.size(); ++i)
-		{
-			if (myIsDQ(s[i]))
-				return true;
-		}
-		return false;
-	}
-	static inline std::string myEncloseDQ(const std::string& s)
-	{
-		return "\"" + s + "\"";
-	}
-	static inline std::wstring myEncloseDQ(const std::wstring& s)
-	{
-		return L"\"" + s + L"\"";
-	}
-
-	static inline std::string myAddSpace(const std::string& s)
-	{
-		return s + " ";
-	}
-	static inline std::wstring myAddSpace(const std::wstring& s)
-	{
-		return s + L" ";
-	}
-
-	template<class T>
-	static inline T myAddDQIfNeccesary(const T& s)
-	{
-		if (myContainDQ(s))
-			return s;
-		if (!myContainSpace(s))
-			return s;
-
-		return myEncloseDQ(s);
-	}
-
-	static inline const char* skipWS(const char* p)
-	{
-			while (*p && isspace(*p))
-				++p;
-			return p;
-	}
-	static inline const wchar_t* skipWS(const wchar_t* p) 
-	{
-		while (*p && iswspace(*p))
-			++p;
-		return p;
-	}
-
-	static inline void clearS(std::string& s)
-	{
-		s="";
-	}
-	static inline void clearS(std::wstring& s)
-	{
-		s=L"";
-	}
-
-
-	static inline const char* nextP(const char* p)
-	{
-		// not assume double null
-		if (*p == 0)
-			return p;
-#ifdef _WIN32
-		return CharNextA(p);
-#else
-        return p+1;
-#endif
-	}
-	static inline const wchar_t* nextP(const wchar_t* p)
-	{
-		// not assume double null
-		if (*p == 0)
-			return p;
-
-		++p;
-		return p;
-	}
-
-	static inline bool isDQ(char c)
-	{
-		return c == '"';
-	}
-	static inline bool isDQ(wchar_t c)
-	{
-		return c == L'"';
-	}
-
-	static inline bool 	isEsc(char c)
-	{
-		return c == '\\';
-	}
-	static inline bool 	isEsc(wchar_t c)
-	{
-		return c == L'\\';
-	}
-
-
-	static inline void GetModuleFileNameT(char* p)
-    {
-        GetModuleFileNameA(NULL,p,MAX_PATH);
-    }
-	static inline void GetModuleFileNameT(wchar_t* p)
-	{
-		GetModuleFileNameW(NULL,p,MAX_PATH);
-	}
-
-	static inline bool isLead(char c)
-	{
-#ifdef _WIN32
-		return !!IsDBCSLeadByte(c);
-#else
-        (void)c;
-        return false;
-#endif
-	}
-    static inline bool isLead(wchar_t c)
-	{
-        (void)c;
-		return false;
-	}
-
-	static inline char* GetCommandLineT(char *)
-    {
-        return GetCommandLineA();
-    }
-	static inline wchar_t* GetCommandLineT(wchar_t*)
-    {
-        return GetCommandLineW();
-    }
-
-	//static inline bool myStrEqual(const char* left, const char* right)
-	//{
-	//	return strcmp(left, right) == 0;
-	//}
-	//static inline bool myStrEqual(const wchar_t* left, const wchar_t* right)
-	//{
-	//	return wcscmp(left, right) == 0;
-	//}
-
 
 	template<class E>
 	class CCommandLineStringBase
@@ -238,31 +57,228 @@ namespace Ambiesoft {
 		std::vector<std::basic_string<E> > args_;
 		Ambiesoft::stdosd::Cbool dirty_; // = false;
 
-		void init(const E* pCommandLine)
+		static bool myIsSpace(char c)
 		{
-			size_t clLen = myTr::length(pCommandLine);
-			p_ = new E[clLen+1];
-			myTr::copy((E*)p_, pCommandLine, clLen+1);
+			return isspace(c) != 0;
+		}
+		static bool myIsSpace(wchar_t c)
+		{
+			return iswspace(c) != 0;
+		}
 
-			if (!pCommandLine || !*pCommandLine)
-				return;
+		template<class T>
+		static bool myContainSpace(const T& s)
+		{
+			for (size_t i = 0; i < s.size(); ++i)
+			{
+				if (myIsSpace(s[i]))
+					return true;
+			}
+			return false;
+		}
 
-			const E* p = skipWS(pCommandLine);
-			if (!*p)
-				return;
+		template<class T>
+		static bool myContainDQ(const T& s)
+		{
+			for (size_t i = 0; i < s.size(); ++i)
+			{
+				if (myIsDQ(s[i]))
+					return true;
+			}
+			return false;
+		}
+		static std::string myEncloseDQ(const std::string& s)
+		{
+			return "\"" + s + "\"";
+		}
+		static std::wstring myEncloseDQ(const std::wstring& s)
+		{
+			return L"\"" + s + L"\"";
+		}
 
+		static std::string myAddSpace(const std::string& s)
+		{
+			return s + " ";
+		}
+		static std::wstring myAddSpace(const std::wstring& s)
+		{
+			return s + L" ";
+		}
+
+		template<class T>
+		static T myAddDQIfNeccesary(const T& s)
+		{
+			if (myContainDQ(s))
+				return s;
+
+			if (!myContainSpace(s))
+				return s;
+
+			return myEncloseDQ(s);
+		}
+
+		template<class T>
+		static T myAddDQIfNeccesaryWithConsideringEqual(const T& s)
+		{
+			if (myContainDQ(s))
+				return s;
+
+			{
+				T prevEq;
+				T afterEq;
+				const typename T::value_type* p = s.c_str();
+				for (; *p; ++p)
+				{
+					if (myIsSpace(*p))
+						break;
+					prevEq += *p;
+					if (myIsLead(*p))
+					{
+						++p;
+						prevEq += *p;
+					}
+
+					if (myIsEqual(*p))
+					{
+						afterEq = p + 1;
+						break;
+					}
+				}
+				if (!afterEq.empty())
+				{
+					return prevEq + myAddDQIfNeccesary(afterEq);
+				}
+			}
+			if (!myContainSpace(s))
+				return s;
+
+			return myEncloseDQ(s);
+		}
+
+		template<typename T>
+		static const T* mySkipWS(const T* p)
+		{
+			while (*p && myIsSpace(*p))
+				++p;
+			return p;
+		}
+
+		template<typename T>
+		static void myClearS(T& s)
+		{
+			s = T();
+		}
+
+
+		static const char* myNextP(const char* p)
+		{
+			// not assume double null
+			if (*p == 0)
+				return p;
+#ifdef _WIN32
+			return CharNextA(p);
+#else
+			return p + 1;
+#endif
+		}
+		static const wchar_t* myNextP(const wchar_t* p)
+		{
+			// not assume double null
+			if (*p == 0)
+				return p;
+
+			++p;
+			return p;
+		}
+
+		static bool myIsDQ(char c)
+		{
+			return c == '"';
+		}
+		static bool myIsDQ(wchar_t c)
+		{
+			return c == L'"';
+		}
+
+		static bool myIsEqual(char c)
+		{
+			return c == '=';
+		}
+		static bool myIsEqual(wchar_t c)
+		{
+			return c == L'=';
+		}
+
+		static bool myIsESC(char c)
+		{
+			return c == '\\';
+		}
+		static bool myIsESC(wchar_t c)
+		{
+			return c == L'\\';
+		}
+
+
+		static void GetModuleFileNameT(char* p)
+		{
+			GetModuleFileNameA(NULL, p, MAX_PATH);
+		}
+		static void GetModuleFileNameT(wchar_t* p)
+		{
+			GetModuleFileNameW(NULL, p, MAX_PATH);
+		}
+
+		static bool myIsLead(char c)
+		{
+#ifdef _WIN32
+			return !!IsDBCSLeadByte(c);
+#else
+			(void)c;
+			return false;
+#endif
+		}
+		static bool myIsLead(wchar_t c)
+		{
+			(void)c;
+			return false;
+		}
+
+
+		static void myAddChar(std::string& now, const char*& p)
+		{
+			now += *p;
+			if (myIsLead(*p))
+			{
+				++p;
+				now += *p;
+			}
+		}
+		static void myAddChar(std::wstring& now, const wchar_t*& p)
+		{
+			now += *p;
+		}
+
+		static char* GetCommandLineT(char*)
+		{
+			return GetCommandLineA();
+		}
+		static wchar_t* GetCommandLineT(wchar_t*)
+		{
+			return GetCommandLineW();
+		}
+
+		void parseV1_obsolete(const E* p, const E* pCommandLine)
+		{
 			bool inOuterDQ = false;
 			bool inInnerDQ = false;
 			bool inString = false;
 
-            // E c = 0;
 			const E* pStart = p;
-
 			std::basic_string<E> now;
 
 			// "aa aa" : inDQ and inString
 			// aaa"bbb" : !inDQ and inString
-			for (; *p; p=nextP(p))
+			for (; *p; p = myNextP(p))
 			{
 				if (!inOuterDQ)
 				{
@@ -272,22 +288,21 @@ namespace Ambiesoft {
 						{
 							// add everything
 							now += *p;
-							if (isLead(*p))
+							if (myIsLead(*p))
 								now += *(p + 1);
 							continue;
 						}
 						else
 						{
 							// separator
-
 							if (!now.empty())
 							{
 								offsets_.push_back(pStart - pCommandLine);
 								args_.push_back(now);
 							}
-							clearS(now);
+							myClearS(now);
 
-							pStart = p;// = skipWS(p);
+							pStart = p;// = mySkipWS(p);
 							inString = false;
 							inInnerDQ = false;
 							continue;
@@ -298,20 +313,21 @@ namespace Ambiesoft {
 						// not in OuterDQ, not WS (=normal char)
 						if (inString)
 						{
-							if (isDQ(*p))
+							if (myIsDQ(*p))
 							{
 								inInnerDQ = !inInnerDQ;
+								continue;
 							}
 							// add everything
 							now += *p;
-							if (isLead(*p))
+							if (myIsLead(*p))
 								now += *(p + 1);
 							continue;
 						}
 						else
 						{
 							inString = true;
-							if (isDQ(*p))
+							if (myIsDQ(*p))
 							{
 								if (inInnerDQ)
 								{
@@ -330,7 +346,7 @@ namespace Ambiesoft {
 							{
 								// not in DQ, not WS, not DQ
 								now += *p;
-								if (isLead(*p))
+								if (myIsLead(*p))
 									now += *(p + 1);
 								continue;
 							}
@@ -341,15 +357,15 @@ namespace Ambiesoft {
 				{
 					// inDQ
 
-					bool isEscDQ = isEsc(*p) && isDQ(*(p + 1));
+					bool isEscDQ = myIsESC(*p) && myIsDQ(*(p + 1));
 					if (isEscDQ)
 					{
-						p = nextP(p);
+						p = myNextP(p);
 					}
 
-					if (isDQ(*p) && !isEscDQ)
+					if (myIsDQ(*p) && !isEscDQ)
 					{
-						if (isDQ(*(p + 1)))
+						if (myIsDQ(*(p + 1)))
 						{
 							// inDQ, continuous DQ
 							now += (*p);
@@ -364,7 +380,7 @@ namespace Ambiesoft {
 								offsets_.push_back(pStart - pCommandLine);
 								args_.push_back(now);
 							}
-							clearS(now);
+							myClearS(now);
 							inOuterDQ = false;
 							inString = false;
 							continue;
@@ -374,8 +390,8 @@ namespace Ambiesoft {
 					{
 						// inDQ, not DQ
 						now += *p;
-						if(isLead(*p))
-							now+=*(p+1);
+						if (myIsLead(*p))
+							now += *(p + 1);
 						continue;
 					}
 				}
@@ -387,8 +403,100 @@ namespace Ambiesoft {
 				offsets_.push_back(pStart - pCommandLine);
 				args_.push_back(now);
 			}
-			//assert(p_ == pOOO);
-			//free(p_);
+		}
+		void parseV2(const E* p, const E* pCommandLine)
+		{
+			E prev = 0;
+			E next = 0;
+			bool inDQGroup = false;
+			const E* afterClosedp = nullptr;
+			const E* pStart = p;
+			std::basic_string<E> now;
+			for (; *p; prev = *p, p = myNextP(p), next = *myNextP(p))
+			{
+				if (!inDQGroup)
+				{
+					if (myIsDQ(*p))
+					{
+						// DQ not in DQ
+						if (myIsSpace(prev) || prev == 0)
+						{
+							inDQGroup = true;
+							continue;
+						}
+						else
+						{
+							if (myIsDQ(prev) && (!afterClosedp || myNextP(afterClosedp) != p))
+							{
+								// after closer
+								now += prev;
+								afterClosedp = p;
+								inDQGroup = true;
+								continue;
+							}
+							inDQGroup = true;
+							continue;
+						}
+					}
+					else if (myIsSpace(*p))
+					{
+						// SPACE not in DQ
+						if (!now.empty())
+						{
+							args_.push_back(now);
+							offsets_.push_back(pStart - pCommandLine);
+							myClearS(now);
+						}
+						pStart = p;
+						continue;
+					}
+					else
+					{
+						// not DQ not SPACE in NDQ
+						myAddChar(now, p);
+						continue;
+					}
+					assert(false);
+				}
+				else
+				{
+					// in DQGroup
+					if (myIsESC(*p) && myIsDQ(next))
+					{
+						now += next;
+						p++;
+						continue;
+					}
+					if (myIsDQ(*p))
+					{
+						inDQGroup = false;
+						continue;
+					}
+					myAddChar(now, p);
+					continue;
+				}
+			} // for(p)
+
+			if (!now.empty())
+			{
+				offsets_.push_back(pStart - pCommandLine);
+				args_.push_back(now);
+			}
+		}
+		void init(const E* pCommandLine)
+		{
+			size_t clLen = myTr::length(pCommandLine);
+			p_ = new E[clLen+1];
+			myTr::copy((E*)p_, pCommandLine, clLen+1);
+
+			if (!pCommandLine || !*pCommandLine)
+				return;
+
+			const E* p = mySkipWS(pCommandLine);
+			if (!*p)
+				return;
+
+			parseV2(p, pCommandLine);
 		}
 		
 
@@ -418,7 +526,7 @@ namespace Ambiesoft {
 			for (int i = 0; i < argc; ++i)
 			{
 				// args_.push_back(argv[i]);
-				if (myContainSpace(argv[i]))
+				if (myContainSpace<std::basic_string<E>>(argv[i]))
 					s += myEncloseDQ(argv[i]);
 				else
 					s += argv[i];
@@ -486,7 +594,7 @@ namespace Ambiesoft {
 				myS ret;
 				for (size_t i =0; i<args_.size();++i)
 				{
-					ret += myAddDQIfNeccesary(args_[i]);
+					ret += myAddDQIfNeccesaryWithConsideringEqual(args_[i]);
 					if ((i + 1) != args_.size())
 						ret = myAddSpace(ret);
 				}
@@ -500,7 +608,7 @@ namespace Ambiesoft {
 				size_t ofs = offsets_[index];
 				std::basic_string<E> ret(&p_[ofs]);
 				const E* pTrimming = ret.c_str();
-				ret = skipWS(pTrimming);
+				ret = mySkipWS(pTrimming);
 				return ret;
 			}
 		}
@@ -552,7 +660,7 @@ namespace Ambiesoft {
 					continue;
 				if (myContainSpace(t))
 				{
-					if (!isDQ(t[0]))
+					if (!myIsDQ(t[0]))
 					{
 						t = myEncloseDQ(t);
 					}
