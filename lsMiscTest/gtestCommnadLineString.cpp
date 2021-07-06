@@ -50,7 +50,13 @@ TEST(CommandLineString, SameWithOtherMethods)
 	pC1 = L"";
 	isSameResult(pC1, __LINE__);
 
-	pC1 = L"a \"\"bb\"\"\"";
+	pC1 = L"\"";
+	isSameResult(pC1, __LINE__);
+	
+	pC1 = L"\"\"";
+	isSameResult(pC1, __LINE__);
+	
+	pC1 = L"\"\" a";
 	isSameResult(pC1, __LINE__);
 
 	// a ""bb"""""
@@ -123,6 +129,22 @@ TEST(CommandLineString, subStringComplex)
 		EXPECT_STREQ(cls.subString(6).c_str(), L"");
 	}
 
+	{
+		pC1 = L"\"\"\"";
+		CCommandLineString cls(pC1);
+		EXPECT_STREQ(cls.subString(0).c_str(), pC1);
+		EXPECT_EQ(cls.getCount(), 1);
+		EXPECT_STREQ(cls.getArg(0).c_str(), L"\"");
+	}
+	{
+		// a ""bb"""
+		pC1 = L"a \"\"bb\"\"\"";
+		CCommandLineString cls(pC1);
+		EXPECT_EQ(cls.getCount(), 2);
+		EXPECT_STREQ(cls.subString(0).c_str(), pC1);
+		EXPECT_STREQ(cls.getArg(0).c_str(), L"a");
+		EXPECT_STREQ(cls.getArg(1).c_str(), L"bb\"");
+	}
 	{
 		pC1 = L"\"\"\"a\"\"\"";
 		CCommandLineString cls(pC1);

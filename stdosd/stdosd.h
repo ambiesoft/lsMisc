@@ -1606,6 +1606,14 @@ namespace Ambiesoft {
 			return text.substr(1, text.size() - 1 - 1);
 		}
 
+		inline bool stdIsSpace(char c)
+		{
+			return isspace(c) != 0;
+		}
+		inline bool stdIsSpace(wchar_t c)
+		{
+			return iswspace(c) != 0;
+		}
 	}
 }
 

@@ -33,6 +33,7 @@
 
 // #include "os_traits.h"
 #include "stdosd/CBool.h"
+#include "stdosd/stdosd.h"
 
 #ifndef _countof
 #define _countof(t) (sizeof(t)/sizeof(t[0]))
@@ -45,11 +46,11 @@ namespace Ambiesoft {
 	template<class E>
 	class CCommandLineStringBase
 	{
-                typedef CCommandLineStringBase<E> CommandLineStringType;
+		typedef CCommandLineStringBase<E> CommandLineStringType;
 		typedef std::basic_string<E> myS;
-                typedef std::vector<std::basic_string<E> > myVS;
-                typedef typename std::vector<std::basic_string<E> >::iterator myVSIterator;
-                typedef std::char_traits<E> myTr;
+		typedef std::vector<std::basic_string<E> > myVS;
+		typedef typename std::vector<std::basic_string<E> >::iterator myVSIterator;
+		typedef std::char_traits<E> myTr;
 
 		const E* p_;
 		std::vector<size_t> offsets_;
@@ -57,21 +58,14 @@ namespace Ambiesoft {
 		std::vector<std::basic_string<E> > args_;
 		Ambiesoft::stdosd::Cbool dirty_; // = false;
 
-		static bool myIsSpace(char c)
-		{
-			return isspace(c) != 0;
-		}
-		static bool myIsSpace(wchar_t c)
-		{
-			return iswspace(c) != 0;
-		}
+
 
 		template<class T>
 		static bool myContainSpace(const T& s)
 		{
 			for (size_t i = 0; i < s.size(); ++i)
 			{
-				if (myIsSpace(s[i]))
+				if (stdosd::stdIsSpace(s[i]))
 					return true;
 			}
 			return false;
@@ -129,7 +123,7 @@ namespace Ambiesoft {
 				const typename T::value_type* p = s.c_str();
 				for (; *p; ++p)
 				{
-					if (myIsSpace(*p))
+					if (stdosd::stdIsSpace(*p))
 						break;
 					prevEq += *p;
 					if (myIsLead(*p))
@@ -158,7 +152,7 @@ namespace Ambiesoft {
 		template<typename T>
 		static const T* mySkipWS(const T* p)
 		{
-			while (*p && myIsSpace(*p))
+			while (*p && stdosd::stdIsSpace(*p))
 				++p;
 			return p;
 		}
@@ -267,143 +261,7 @@ namespace Ambiesoft {
 			return GetCommandLineW();
 		}
 
-		void parseV1_obsolete(const E* p, const E* pCommandLine)
-		{
-			bool inOuterDQ = false;
-			bool inInnerDQ = false;
-			bool inString = false;
 
-			const E* pStart = p;
-			std::basic_string<E> now;
-
-			// "aa aa" : inDQ and inString
-			// aaa"bbb" : !inDQ and inString
-			for (; *p; p = myNextP(p))
-			{
-				if (!inOuterDQ)
-				{
-					if (myIsSpace(*p))
-					{
-						if (inInnerDQ)
-						{
-							// add everything
-							now += *p;
-							if (myIsLead(*p))
-								now += *(p + 1);
-							continue;
-						}
-						else
-						{
-							// separator
-							if (!now.empty())
-							{
-								offsets_.push_back(pStart - pCommandLine);
-								args_.push_back(now);
-							}
-							myClearS(now);
-
-							pStart = p;// = mySkipWS(p);
-							inString = false;
-							inInnerDQ = false;
-							continue;
-						}
-					}
-					else
-					{
-						// not in OuterDQ, not WS (=normal char)
-						if (inString)
-						{
-							if (myIsDQ(*p))
-							{
-								inInnerDQ = !inInnerDQ;
-								continue;
-							}
-							// add everything
-							now += *p;
-							if (myIsLead(*p))
-								now += *(p + 1);
-							continue;
-						}
-						else
-						{
-							inString = true;
-							if (myIsDQ(*p))
-							{
-								if (inInnerDQ)
-								{
-									inInnerDQ = false;
-									continue;
-								}
-								else
-								{
-									// not in OuterDQ, OuterDQ starts
-									inOuterDQ = true;
-									continue;
-								}
-
-							}
-							else
-							{
-								// not in DQ, not WS, not DQ
-								now += *p;
-								if (myIsLead(*p))
-									now += *(p + 1);
-								continue;
-							}
-						}
-					}
-				}
-				else
-				{
-					// inDQ
-
-					bool isEscDQ = myIsESC(*p) && myIsDQ(*(p + 1));
-					if (isEscDQ)
-					{
-						p = myNextP(p);
-					}
-
-					if (myIsDQ(*p) && !isEscDQ)
-					{
-						if (myIsDQ(*(p + 1)))
-						{
-							// inDQ, continuous DQ
-							now += (*p);
-							p++;
-							continue;
-						}
-						else
-						{
-							// inDQ, not CDQ, DQ ends
-							if (!now.empty())
-							{
-								offsets_.push_back(pStart - pCommandLine);
-								args_.push_back(now);
-							}
-							myClearS(now);
-							inOuterDQ = false;
-							inString = false;
-							continue;
-						}
-					}
-					else
-					{
-						// inDQ, not DQ
-						now += *p;
-						if (myIsLead(*p))
-							now += *(p + 1);
-						continue;
-					}
-				}
-				// all condition must end with continue.
-				assert(false);
-			}
-			if (!now.empty())
-			{
-				offsets_.push_back(pStart - pCommandLine);
-				args_.push_back(now);
-			}
-		}
 		void parseV2(const E* p, const E* pCommandLine)
 		{
 			E prev = 0;
@@ -411,6 +269,7 @@ namespace Ambiesoft {
 			bool inDQGroup = false;
 			const E* afterClosedp = nullptr;
 			const E* pStart = p;
+			const E* pLastPushed = nullptr;
 			std::basic_string<E> now;
 			for (; *p; prev = *p, p = myNextP(p), next = *myNextP(p))
 			{
@@ -419,7 +278,7 @@ namespace Ambiesoft {
 					if (myIsDQ(*p))
 					{
 						// DQ not in DQ
-						if (myIsSpace(prev) || prev == 0)
+						if (stdosd::stdIsSpace(prev) || prev == 0)
 						{
 							inDQGroup = true;
 							continue;
@@ -438,13 +297,14 @@ namespace Ambiesoft {
 							continue;
 						}
 					}
-					else if (myIsSpace(*p))
+					else if (stdosd::stdIsSpace(*p))
 					{
 						// SPACE not in DQ
 						if (!now.empty())
 						{
 							args_.push_back(now);
 							offsets_.push_back(pStart - pCommandLine);
+							pLastPushed = pStart;
 							myClearS(now);
 						}
 						pStart = p;
@@ -469,6 +329,13 @@ namespace Ambiesoft {
 					}
 					if (myIsDQ(*p))
 					{
+						if (now.empty() && (stdosd::stdIsSpace(next) || next == 0))
+						{
+							offsets_.push_back(pStart - pCommandLine);
+							args_.push_back(now);
+							pLastPushed = pStart;
+							myClearS(now);
+						}
 						inDQGroup = false;
 						continue;
 					}
@@ -481,6 +348,14 @@ namespace Ambiesoft {
 			{
 				offsets_.push_back(pStart - pCommandLine);
 				args_.push_back(now);
+			}
+			else if (inDQGroup)
+			{
+				if (pStart != pLastPushed)
+				{
+					offsets_.push_back(pStart - pCommandLine);
+					args_.push_back(now);
+				}
 			}
 		}
 		void init(const E* pCommandLine)
@@ -627,12 +502,10 @@ namespace Ambiesoft {
 			for (myVSIterator it = me.args_.begin();
 				it != me.args_.end(); ++it)
 			{
-				if (it->empty())
-					continue;
+				//if (it->empty())
+				//	continue;
 
 				*ppRet = (E*)LocalAlloc(0, (it->size() + 1) * sizeof(E));
-				// wcscpy_s(*ppRet, LocalSize(*ppRet)/sizeof(E), it->c_str());
-				// _tcscpy(*ppRet, it->c_str());
 				memcpy(*ppRet, it->c_str(), (it->size()+1)*sizeof(E));
 				++ppRet;
 				++i;
