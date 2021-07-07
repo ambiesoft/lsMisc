@@ -184,12 +184,18 @@ void shownai()
 
 	std::set<wstring>::iterator it;
 	wstring message;
+	wstring suggestion;
 	for ( it = nai.begin() ; it != nai.end() ; ++it )
 	{
 		if(it->empty())
 			continue;
 		message += *it;
 		message += L"\r\n";
+
+		suggestion += L"\"";
+		suggestion += *it;
+		suggestion += L"\"=\"\"";
+		suggestion += L"\r\n";
 	}
 
 	if (!message.empty())
@@ -197,6 +203,10 @@ void shownai()
 		message = L"---------------------NOTI18N-------" + strModule + L">>>>>>>>>>>>\r\n" + message;
 		message += L"---------------------NOTI18N-------" + strModule + L"<<<<<<<<<<<<\r\n";
 		OutputDebugStringW(message.c_str());
+		
+		OutputDebugStringW(L"---------------------NOTI18N-------" L"Define following item in the lang file\r\n");
+		OutputDebugStringW(suggestion.c_str());
+		OutputDebugStringW(L"---------------------NOTI18N-------" L"\r\n");
 	}
 
 

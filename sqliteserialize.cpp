@@ -22,7 +22,12 @@
 //SUCH DAMAGE.
 
 #pragma warning(disable :4786)
-#include "stdafx.h"
+#ifndef PCH_INCLUDE_FILE
+// Define PCH_INCLUDE_FILE outside of the code
+#define PCH_INCLUDE_FILE "StdAfx.h"
+#endif
+#include PCH_INCLUDE_FILE
+
 #include <cassert>
 #include <string>
 #include <memory>

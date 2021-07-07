@@ -21,9 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-// Must comment out to define NOMINMAX
-// #include "stdafx.h"
-
 #if !defined(NOMINMAX)
 #define NOMINMAX
 #endif

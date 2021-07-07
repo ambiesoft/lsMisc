@@ -25,7 +25,6 @@
 //
 
 
-// #include "stdafx.h"
 #include <Windows.h>
 #include <process.h>
 #include <tchar.h>

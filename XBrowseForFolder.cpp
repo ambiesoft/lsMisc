@@ -21,7 +21,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // if you don't want to use MFC, comment out the following line:
-#include "stdafx.h"
+#ifndef PCH_INCLUDE_FILE
+// Define PCH_INCLUDE_FILE outside of the code
+#define PCH_INCLUDE_FILE "StdAfx.h"
+#endif
+#include PCH_INCLUDE_FILE
 
 #ifndef __AFX_H__
 #include <windows.h>

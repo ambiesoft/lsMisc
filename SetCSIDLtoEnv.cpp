@@ -22,7 +22,6 @@
 //SUCH DAMAGE.
 
 
-// #include "stdafx.h"
 #include <afx.h>
 
 #ifndef _SHLOBJ_H_

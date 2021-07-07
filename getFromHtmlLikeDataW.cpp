@@ -21,7 +21,12 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include "stdafx.h"
+#ifndef PCH_INCLUDE_FILE
+// Define PCH_INCLUDE_FILE outside of the code
+#define PCH_INCLUDE_FILE "StdAfx.h"
+#endif
+#include PCH_INCLUDE_FILE
+
 #pragma warning(disable:4786)
 #include <windows.h>
 #include <map>

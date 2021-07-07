@@ -1,7 +1,12 @@
 
 
 
-#include "stdafx.h"
+#ifndef PCH_INCLUDE_FILE
+// Define PCH_INCLUDE_FILE outside of the code
+#define PCH_INCLUDE_FILE "StdAfx.h"
+#endif
+#include PCH_INCLUDE_FILE
+
 
 
 // https://msdn.microsoft.com/en-us/library/aa382380%28VS.85%29.aspx
