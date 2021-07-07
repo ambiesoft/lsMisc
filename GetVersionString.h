@@ -1,6 +1,9 @@
 #pragma once
 
 #include <windows.h>
+
+#include <string>
+
 namespace Ambiesoft {
 	//
 	//	Get the specified file-version information string from a file

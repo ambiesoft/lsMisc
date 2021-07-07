@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include PCH_INCLUDE_FILE
 
 #include <string>
 #include <memory>
