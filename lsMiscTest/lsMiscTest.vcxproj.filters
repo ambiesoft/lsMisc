@@ -252,9 +252,6 @@
     <ClCompile Include="..\RevealFolder.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="testExpandPath.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\ExpandPath.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -425,6 +422,9 @@
     </ClCompile>
     <ClCompile Include="..\TrayIcon.cpp">
       <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestExpandPath.cpp">
+      <Filter>GTest Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

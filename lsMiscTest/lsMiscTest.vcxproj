@@ -103,7 +103,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -137,7 +137,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -167,7 +167,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -201,7 +201,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -380,6 +380,7 @@
     <ClCompile Include="..\WritePrivateProfileWString.cpp" />
     <ClCompile Include="..\XBrowseForFolder.cpp" />
     <ClCompile Include="gtestCHandle.cpp" />
+    <ClCompile Include="gtestExpandPath.cpp" />
     <ClCompile Include="gtestFindTopWindowFromPID.cpp" />
     <ClCompile Include="gtestGetAppVersion.cpp" />
     <ClCompile Include="gtestI18NBeta.cpp" />
@@ -440,7 +441,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="testExpandPath.cpp" />
     <ClCompile Include="gtestFormatSizeof.cpp" />
     <ClCompile Include="gtestGetVersionString.cpp" />
     <ClCompile Include="gtestHira2Kata.cpp" />

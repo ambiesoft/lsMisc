@@ -45,7 +45,7 @@
 #include <cstdarg>
 #include <functional>
 #include <locale>
-
+#include <fstream>
 
 #include <cassert>
 #include <string>

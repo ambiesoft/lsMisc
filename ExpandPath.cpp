@@ -36,15 +36,11 @@
 #include <vector>
 #include <sstream>
 
-
-
 #include "stdosd/stdosd.h"
-#include "stdwin32/stdwin32.h"
 
 #include "ExpandPath.h"
 
 using namespace std;
-using namespace Ambiesoft::stdwin32;
 using namespace Ambiesoft::stdosd;
 
 namespace Ambiesoft{
@@ -161,7 +157,6 @@ namespace Ambiesoft{
 						ExpandDirectory(comp, true, results);
 						return true;
 					}
-
 				}
 				else
 				{
@@ -198,7 +193,6 @@ namespace Ambiesoft{
 		}
 		return true;
 	}
-
 
 	static bool IsNoAsta(const wstring& path)
 	{

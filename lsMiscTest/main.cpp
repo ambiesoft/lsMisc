@@ -81,7 +81,6 @@ void mysandbox()
 
 void testStlMutex();
 void testOpenedFiles();
-void testExpandPath();
 
 struct CBeforeMain
 {
@@ -113,7 +112,6 @@ int main(int argc, char* argv[])
 	int gret = RUN_ALL_TESTS();
 
 	
-	//testExpandPath();
 	//testOpenedFiles();
 	//testStlMutex();
 

@@ -1486,9 +1486,21 @@ namespace Ambiesoft {
 			return _wstat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
 		}
 
-
+#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
+		//C++17 specific stuff here
+		inline bool stdDirectoryExists(std::string_view folder)
+		{
+			struct stat buffer;
+			return stat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
+		}
+		inline bool stdDirectoryExists(std::wstring_view folder)
+		{
+			struct _stat  buffer;
+			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
+		}
+#else
 		template<typename C>
-		inline bool stdDirectoryExists(const	C* folder)
+		inline bool stdDirectoryExists(const C* folder)
 		{
 			static_assert(false);
 		}
@@ -1504,7 +1516,7 @@ namespace Ambiesoft {
 			struct _stat  buffer;
 			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
 		}
-
+#endif
 
 		template<typename C>
 		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
