@@ -227,6 +227,34 @@ static string getLongString()
 	return ret;
 }
 
+TEST(stdosd, FormatCompileError)
+{
+	const wstring cw(L"cw");
+	const string ca("ca");
+#define COMPILETEST true
+#ifdef COMPILETEST
+	  // stdFormat("%s", L"a");
+	  // stdFormat(L"%s", "a");
+	  // stdFormat("%s", string("a"));
+	  // stdFormat("%s", ca);
+	  // stdFormat(L"%s", ca.c_str());
+	  // stdFormat(L"%s", wstring(L"a"));
+	  // stdFormat(L"%s", cw);
+	  // stdFormat("%s", cw.c_str());
+#endif
+#undef COMPILETEST
+
+	stdFormat("%s", "a");
+	stdFormat(L"%s", L"a");
+	stdFormat("%s", ca.c_str());
+	stdFormat(L"%s", cw.c_str());
+
+	stdFormat("%d", L'a');
+	stdFormat(L"%d", L'a');
+	stdFormat("%d", 'a');
+	stdFormat(L"%d", 'a');
+}
+
 TEST(stdosd, FormatA)
 {
 	string s;

@@ -682,14 +682,56 @@ namespace Ambiesoft {
 			}
 			return strRet;
 		}
+
+		// check argument of stdFormat is not std::string or std::wstring
+		static void stdFormatTestForNotString() {}
+		template<typename T, typename... ARGS>
+		static void stdFormatTestForNotString(T firstArg, ARGS... args)
+		{
+			static_assert(!std::is_same_v<T, std::string>, "argument must not std::string");
+			static_assert(!std::is_same_v<T, std::wstring>, "argument must not std::wstring");
+			stdFormatTestForNotString(args...);
+		}
+
+		static void stdFormatTestForNotWChar() {}
+		template<typename T, typename... ARGS>
+		static void stdFormatTestForNotWChar(T firstArg, ARGS... args)
+		{
+			using NoConstT = typename std::add_pointer<std::remove_cv<std::remove_pointer<T>::type>::type>::type;
+			static_assert(
+				std::is_same_v<std::remove_cv_t<T>, wchar_t> ||
+				!std::is_same_v<NoConstT, wchar_t*>,
+				"argument must not wchar_t*");
+			static_assert(!std::is_pointer_v<std::remove_cv_t<std::remove_pointer_t<T>>>, "argument must not pointer of pointer");
+			stdFormatTestForNotWChar(args...);
+		}
+
+		static void stdFormatTestForNotChar() {}
+		template<typename T, typename... ARGS>
+		static void stdFormatTestForNotChar(T firstArg, ARGS... args)
+		{
+			using NoConstT = typename std::add_pointer<std::remove_cv<std::remove_pointer<T>::type>::type>::type;
+			static_assert(
+				std::is_same_v<std::remove_cv_t<T>, char> ||
+				!std::is_same_v<NoConstT, char*>,
+				"argument must not char*");
+			static_assert(!std::is_pointer_v<std::remove_cv_t<std::remove_pointer_t<T>>>, "argument must not pointer of pointer");
+			stdFormatTestForNotChar(args...);
+		}
+
+
 		template<typename... ARGS>
 		inline std::string stdFormat(const std::string& fmt, ARGS... args)
 		{
+			stdFormatTestForNotString(args...);
+			stdFormatTestForNotWChar(args...);
 			return stdFormatHelper(fmt.c_str(), fmt.size(), args...);
 		}
 		template<typename... ARGS>
 		inline std::wstring stdFormat(const std::wstring& fmt, ARGS... args)
 		{
+			stdFormatTestForNotString(args...);
+			stdFormatTestForNotChar(args...);
 			return stdFormatHelper(fmt.c_str(), fmt.size(), args...);
 		}
 #endif // __cplusplus_cli
