@@ -978,19 +978,24 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_strlwr_s(pc, size + 1);
 #else
-            for ( ; *pc; ++pc) *pc = tolower(*pc)
-                    ;
+            for ( ; *pc; ++pc) *pc =
+                    tolower(*pc);
 #endif
 			return pc;
 		}
-#ifdef _WIN32
+
 		template<>
 		inline wchar_t* stdStringLower(wchar_t* pwc, size_t size)
 		{
+#ifdef _WIN32
 			_wcslwr_s(pwc, size + 1);
+#else
+            for ( ; *pwc; ++pwc)
+                *pwc = towlower(*pwc);
+#endif
 			return pwc;
 		}
-#endif
+
 		template<class C>
 		inline std::basic_string<C> stdStringLower(const std::basic_string<C>& str)
 		{
@@ -1009,19 +1014,24 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_strupr_s(pc, size + 1);
 #else
-            for ( ; *pc; ++pc) *pc = toupper(*pc)
-                    ;
+            for ( ; *pc; ++pc)
+                *pc = toupper(*pc);
 #endif
 			return pc;
 		}
-#ifdef _WIN32
+
 		template<>
 		inline wchar_t* stdStringUpper(wchar_t* pwc, size_t size)
 		{
+#ifdef _WIN32
 			_wcsupr_s(pwc, size + 1);
+#else
+            for ( ; *pwc; ++pwc)
+                *pwc = towupper(*pwc);
+#endif
 			return pwc;
 		}
-#endif
+
 		template<class C>
 		inline std::basic_string<C> stdStringUpper(const std::basic_string<C>& str)
 		{

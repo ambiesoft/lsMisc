@@ -376,9 +376,6 @@ namespace Ambiesoft {
 
         HFILEITERATOR stdCreateFileIterator(const std::string& directory)
         {
-            //wstring directoryW = toWstring(directory);
-            //directoryW.erase(directoryW.find_last_not_of(L"/\\")+1);
-            //directoryW += L"\\*";
 			std::string d(directory);
 			d.erase(d.find_last_not_of("/\\")+1);
 			d += "\\*";
@@ -394,14 +391,6 @@ namespace Ambiesoft {
 
             return new CFileIteratorInternal(hFF, &wfd);
         }
-
-//        bool stdHasFileNext(HFILEITERATOR hFileIterator)
-//        {
-//            if(!hFileIterator)
-//                return false;
-//            CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
-//            return pIterator->hasNext();
-//        }
 
         bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi)
         {

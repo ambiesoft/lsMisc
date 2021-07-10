@@ -456,6 +456,7 @@ bool FileExists(const std::string &Filename)
 
 TEST(stdosd, resolveLinkTest)
 {
+#ifdef _WIN32
 	if (FileExists("C:\\LegacyPrograms\\T\\aaa.rtf"))
 	{
 		EXPECT_TRUE(L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf" ==
@@ -471,6 +472,7 @@ TEST(stdosd, resolveLinkTest)
 		EXPECT_TRUE(L"\\\\Thexp\\Share\\T\\aaa.pdf" ==
 			resolveLink(L"\\\\Thexp\\Share\\T\\aaa.pdf"));
 	}
+#endif
 }
 
 TEST(stdosd, GetParentDirectoryText)
@@ -966,27 +968,30 @@ TEST(stdosd, stdUniqueVector)
 
 TEST(stdosd, stdIsSamePath)
 {
-	EXPECT_TRUE(stdIsSamePath(nullptr, nullptr));
-	EXPECT_TRUE(stdIsSamePath(L"", L""));
-	EXPECT_TRUE(stdIsSamePath(nullptr, L""));
-	EXPECT_TRUE(stdIsSamePath(L"", nullptr));
+#ifdef _WIN32
+    EXPECT_TRUE(stdIsSamePath(L"", L""));
+    EXPECT_TRUE(stdIsSamePath(nullptr, L""));
+    EXPECT_TRUE(stdIsSamePath(L"", nullptr));
+    EXPECT_FALSE(stdIsSamePath(L"2", nullptr));
+    EXPECT_FALSE(stdIsSamePath(L"abcz", L"abc"));
+    EXPECT_TRUE(stdIsSamePath(L"abc", L"abc/"));
+    EXPECT_TRUE(stdIsSamePath(L"abc\\", L"abc"));
 
-	EXPECT_FALSE(stdIsSamePath(nullptr, L"1"));
-	EXPECT_FALSE(stdIsSamePath(L"2", nullptr));
+    EXPECT_TRUE(stdIsSamePath(L"./abc", L"abc"));
+    EXPECT_TRUE(stdIsSamePath(L"./abc", L"././abc"));
+    EXPECT_TRUE(stdIsSamePath(L"./abc", L"././abc/xyz/.."));
 
-	EXPECT_TRUE(stdIsSamePath(L"abc", L"abc"));
-	EXPECT_FALSE(stdIsSamePath(L"abcz", L"abc"));
+    EXPECT_FALSE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"Y:\\aaa\\bbb\\ccc"));
+    EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc"));
+    EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc\\ddd\\..\\"));
+    EXPECT_FALSE(stdIsSamePath(nullptr, L"1"));
 
-	EXPECT_TRUE(stdIsSamePath(L"abc", L"abc/"));
-	EXPECT_TRUE(stdIsSamePath(L"abc\\", L"abc"));
 
-	EXPECT_TRUE(stdIsSamePath(L"./abc", L"abc"));
-	EXPECT_TRUE(stdIsSamePath(L"./abc", L"././abc"));
-	EXPECT_TRUE(stdIsSamePath(L"./abc", L"././abc/xyz/.."));
+    EXPECT_TRUE(stdIsSamePath(L"abc", L"abc"));
+#else
+    EXPECT_TRUE(stdIsSamePath(nullptr, nullptr));
+#endif
 
-	EXPECT_FALSE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"Y:\\aaa\\bbb\\ccc"));
-	EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc"));
-	EXPECT_TRUE(stdIsSamePath(L"X:\\aaa\\bbb\\ccc", L"X:\\aaa\\bbb\\ccc\\ddd\\..\\"));
 }
 
 TEST(stdosd, stdToCRLFString)
