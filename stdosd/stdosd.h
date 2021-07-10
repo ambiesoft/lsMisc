@@ -870,14 +870,14 @@ namespace Ambiesoft {
 			);
 		}
 
-
+#ifdef _WIN32
 		std::wstring stdGetFullPathName(const wchar_t* p);
 		inline std::wstring stdGetFullPathName(const std::wstring& s)
 		{
 			return stdGetFullPathName(s.c_str());
 		}
 		std::wstring resolveLink(const std::wstring& fullstring);
-
+#endif
 
 		template<typename C>
 		inline bool stdIsDQNecessary(const C* fullString, size_t size = static_cast<size_t>(-1))
