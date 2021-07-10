@@ -334,8 +334,8 @@ TEST(stdosd, int64)
 		EXPECT_STREQ(s.c_str(), "0");
 	}
 	{
-		string s = stdFormat("%" PRId64, numeric_limits<INT64>::max());
-		INT64 u = std::numeric_limits<INT64>::max();
+        string s = stdFormat("%" PRId64, numeric_limits<__int64_t>::max());
+        __int64_t u = std::numeric_limits<__int64_t>::max();
 		EXPECT_STREQ(s.c_str(), to_string(u).c_str());
 	}
 }
@@ -632,11 +632,14 @@ TEST(stdosd, DoubleQuote)
 	}
 }
 
+#ifndef _countof
+#define _countof(A) (sizeof(A)/sizeof(A[0]))
+#endif
 TEST(stdosd, stdStringLowerTest)
 {
 	{
 		char szT[] = "abc";
-		EXPECT_STREQ(stdStringLower(szT, _countof(szT) - 1), szT);
+        EXPECT_STREQ(stdStringLower(szT, _countof(szT) - 1), szT);
 
 		char szT1[] = "ABC";
 		EXPECT_STREQ(stdStringLower(szT1, _countof(szT) - 1), "abc");
@@ -912,6 +915,16 @@ TEST(stdosd, stdJoinStrings)
 
 }
 
+#ifndef MAX_PATH
+#define MAX_PATH 260
+#endif
+
+#ifndef _WIN32
+static void GetSystemDirectoryA(char* p, int count)
+{
+    strcpy(p, "/somesystem");
+}
+#endif
 TEST(stdosd, stdGetFullPathExecutable)
 {
 	{
@@ -921,6 +934,7 @@ TEST(stdosd, stdGetFullPathExecutable)
 		string fullnote2 = stdCombinePath(szT, "notepad.exe");
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
+#ifdef _WIN32
 	{
 		wstring fullnote1 = stdGetFullPathExecutable(L"notepad.exe");
 		wchar_t szT[MAX_PATH];
@@ -928,6 +942,7 @@ TEST(stdosd, stdGetFullPathExecutable)
 		wstring fullnote2 = stdCombinePath(szT, L"notepad.exe");
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
+#endif
 }
 
 TEST(stdosd, stdUniqueVector)

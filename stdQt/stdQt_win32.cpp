@@ -423,4 +423,17 @@ QString MakeUniquablePath(const QString& path)
 {
     return ToAsciiLower(QFileInfo(path).absoluteFilePath());
 }
+
+QString ToAsciiLower(const QString& s)
+{
+    std::wstring w = s.toStdWString();
+
+    transform(
+      w.begin(), w.end(),
+      w.begin(),
+      towlower);
+
+    return QString::fromStdWString(w);
+}
+
 }

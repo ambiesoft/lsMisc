@@ -175,5 +175,9 @@ QString MakeUniquablePath(const QString& path)
 {
     return QFileInfo(path).absoluteFilePath();
 }
-
+QString ToAsciiLower(const QString& s)
+{
+    // TODO: is usascii?
+    return s.toLower();
+}
 } // namespace

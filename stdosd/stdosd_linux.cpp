@@ -56,10 +56,10 @@ namespace Ambiesoft {
 				return std::wstring();
 			}
 		}
-		std::wstring stdGetFullPathName(const std::wstring& ws)
-		{
-			return stdGetFullPathName(ws.c_str());
-		}
+//		std::wstring stdGetFullPathName(const std::wstring& ws)
+//		{
+//			return stdGetFullPathName(ws.c_str());
+//		}
 		std::wstring resolveLink(const std::wstring& instring)
 		{
 			// not implemented

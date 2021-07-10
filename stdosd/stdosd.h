@@ -30,6 +30,7 @@
 #include <functional>
 #include <set>
 
+#include <cassert>
 #include <cstdio>
 #include <cstdarg>
 #include <cstdlib>
@@ -37,7 +38,11 @@
 #include <wctype.h>
 
 #ifdef _WIN32
-#include <Windows.h>
+    #include <Windows.h>
+#else
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #include <unistd.h>
 #endif
 
 #include "stdosd_literal.h"
@@ -688,8 +693,8 @@ namespace Ambiesoft {
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotString(T firstArg, ARGS... args)
 		{
-			static_assert(!std::is_same_v<T, std::string>, "argument must not std::string");
-			static_assert(!std::is_same_v<T, std::wstring>, "argument must not std::wstring");
+            static_assert(!std::is_same<T, std::string>::value, "argument must not std::string");
+            static_assert(!std::is_same<T, std::wstring>::value, "argument must not std::wstring");
 			stdFormatTestForNotString(args...);
 		}
 
@@ -697,25 +702,27 @@ namespace Ambiesoft {
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotWChar(T firstArg, ARGS... args)
 		{
-			using NoConstT = typename std::add_pointer<std::remove_cv<std::remove_pointer<T>::type>::type>::type;
-			static_assert(
-				std::is_same_v<std::remove_cv_t<T>, wchar_t> ||
-				!std::is_same_v<NoConstT, wchar_t*>,
-				"argument must not wchar_t*");
-			static_assert(!std::is_pointer_v<std::remove_cv_t<std::remove_pointer_t<T>>>, "argument must not pointer of pointer");
-			stdFormatTestForNotWChar(args...);
+            using NoConstT = typename std::add_pointer<typename std::remove_cv<typename std::remove_pointer<T>::type>::type>::type;
+            static_assert(
+                std::is_same<std::remove_cv_t<T>, wchar_t>::value ||
+                !std::is_same<NoConstT, wchar_t*>::value,
+                "argument must not wchar_t*");
+            static_assert(!std::is_pointer<typename std::remove_cv<typename std::remove_pointer<T>::type>::type>::value,
+                        "argument must not pointer of pointer");
+            stdFormatTestForNotWChar(args...);
 		}
 
 		static void stdFormatTestForNotChar() {}
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotChar(T firstArg, ARGS... args)
 		{
-			using NoConstT = typename std::add_pointer<std::remove_cv<std::remove_pointer<T>::type>::type>::type;
+            using NoConstT = typename std::add_pointer<typename std::remove_cv<typename std::remove_pointer<T>::type>::type>::type;
 			static_assert(
-				std::is_same_v<std::remove_cv_t<T>, char> ||
-				!std::is_same_v<NoConstT, char*>,
+                std::is_same<std::remove_cv_t<T>, char>::value ||
+                !std::is_same<NoConstT, char*>::value,
 				"argument must not char*");
-			static_assert(!std::is_pointer_v<std::remove_cv_t<std::remove_pointer_t<T>>>, "argument must not pointer of pointer");
+            static_assert(!std::is_pointer<typename std::remove_cv<typename std::remove_pointer<T>::type>::type>::value,
+                        "argument must not pointer of pointer");
 			stdFormatTestForNotChar(args...);
 		}
 
@@ -946,28 +953,44 @@ namespace Ambiesoft {
 
 		inline void stdCopyString(char* pDst, size_t size, const char* pSrc)
 		{
+#ifdef _WIN32
 			strcpy_s(pDst, size, pSrc);
+#else
+            std::strcpy(pDst, pSrc);
+#endif
 		}
+
 		inline void stdCopyString(wchar_t* pDst, size_t size, const wchar_t* pSrc)
 		{
+#ifdef _WIN32
 			wcscpy_s(pDst, size, pSrc);
+#else
+            wcscpy(pDst, pSrc);
+#endif
 		}
+
 
 		template<typename C>
 		inline C* stdStringLower(C* pD1, size_t size);
 		template<>
 		inline char* stdStringLower(char* pc, size_t size)
 		{
+#ifdef _WIN32
 			_strlwr_s(pc, size + 1);
+#else
+            for ( ; *pc; ++pc) *pc = tolower(*pc)
+                    ;
+#endif
 			return pc;
 		}
+#ifdef _WIN32
 		template<>
 		inline wchar_t* stdStringLower(wchar_t* pwc, size_t size)
 		{
 			_wcslwr_s(pwc, size + 1);
 			return pwc;
 		}
-		
+#endif
 		template<class C>
 		inline std::basic_string<C> stdStringLower(const std::basic_string<C>& str)
 		{
@@ -983,16 +1006,22 @@ namespace Ambiesoft {
 		template<>
 		inline char* stdStringUpper(char* pc, size_t size)
 		{
+#ifdef _WIN32
 			_strupr_s(pc, size + 1);
+#else
+            for ( ; *pc; ++pc) *pc = toupper(*pc)
+                    ;
+#endif
 			return pc;
 		}
+#ifdef _WIN32
 		template<>
 		inline wchar_t* stdStringUpper(wchar_t* pwc, size_t size)
 		{
 			_wcsupr_s(pwc, size + 1);
 			return pwc;
 		}
-
+#endif
 		template<class C>
 		inline std::basic_string<C> stdStringUpper(const std::basic_string<C>& str)
 		{
@@ -1124,6 +1153,8 @@ namespace Ambiesoft {
 #if defined(_WIN32)
 		typedef HWND HWINDOWHANDLE;
 #endif
+
+#if defined(_WIN32)
 		template<typename C>
 		inline bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
 		{
@@ -1144,23 +1175,29 @@ namespace Ambiesoft {
 			stdCopyString(ret, count, p);
 			return ret;
 		}
-
+#endif
 		template<typename C>
 		inline int stdStrCmp(const C* p1, const C* p2, bool ignorecase = false)
 		{
-			static_assert(false);
+            assert(false);
 		}
 		template<>
 		inline int stdStrCmp(const char* p1, const char* p2, bool ignorecase)
 		{
+#ifdef _WIN32
 			return ignorecase ? _stricmp(p1, p2) : strcmp(p1, p2);
+#else
+            return ignorecase ? strcasecmp(p1, p2) : strcmp(p1, p2);
+#endif
 		}
+#ifdef _WIN32
 		template<>
 		inline int stdStrCmp(const wchar_t* p1, const wchar_t* p2, bool ignorecase)
 		{
 			return ignorecase ? _wcsicmp(p1, p2) : wcscmp(p1, p2);
-		}
 
+		}
+#endif
 		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size);
 		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size);
 
@@ -1476,6 +1513,7 @@ namespace Ambiesoft {
 			return ret;
 		}
 
+#ifdef _WIN32
 		inline errno_t stdDupEnv(char** ppValue, size_t* pLen, const char* varname)
 		{
 			return _dupenv_s(ppValue, pLen, varname);
@@ -1501,6 +1539,13 @@ namespace Ambiesoft {
 			free(pValue);
 			return ret;
 		}
+#else
+        inline std::string stdGetenv(const char* varname)
+        {
+            return secure_getenv(varname);
+        }
+#endif
+
 
 		inline bool stdFileExists(unsigned short mode)
 		{
@@ -1513,7 +1558,7 @@ namespace Ambiesoft {
 		template<typename C>
 		inline bool stdFileExists(const	C* file)
 		{
-			static_assert(false);
+            assert(false);
 		}
 		template<>
 		inline bool stdFileExists(const char* file)
@@ -1521,12 +1566,14 @@ namespace Ambiesoft {
 			struct stat buffer;
 			return stat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
 		}
+#ifdef _WIN32
 		template<>
 		inline bool stdFileExists(const wchar_t* file)
 		{
 			struct _stat  buffer;
 			return _wstat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
 		}
+#endif
 
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 		//C++17 specific stuff here
@@ -1544,7 +1591,7 @@ namespace Ambiesoft {
 		template<typename C>
 		inline bool stdDirectoryExists(const C* folder)
 		{
-			static_assert(false);
+            assert(false);
 		}
 		template<>
 		inline bool stdDirectoryExists(const char* folder)
@@ -1552,6 +1599,7 @@ namespace Ambiesoft {
 			struct stat buffer;
 			return stat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
 		}
+#ifdef _WIN32
 		template<>
 		inline bool stdDirectoryExists(const wchar_t* folder)
 		{
@@ -1559,6 +1607,7 @@ namespace Ambiesoft {
 			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
 		}
 #endif
+#endif // C++17
 
 		template<typename C>
 		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
