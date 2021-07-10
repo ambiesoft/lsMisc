@@ -27,7 +27,8 @@ HEADERS += \
     ../stdQt/stdQt.h \
     ../stdosd/OpParser.h \
     ../stdosd/PathUtil.h \
-    ../stdosd/stdosd.h
+    ../stdosd/stdosd.h \
+    ../stdosd/stdosd_literal.h
 
 win32 {
     message( "win32 sources and libs" )

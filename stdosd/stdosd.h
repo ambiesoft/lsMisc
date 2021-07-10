@@ -976,8 +976,8 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_strlwr_s(pc, size + 1);
 #else
-            for ( ; *pc; ++pc) *pc =
-                    tolower(*pc);
+            for ( char* p = pc; *p; ++p)
+                *p = tolower(*p);
 #endif
 			return pc;
 		}
@@ -988,8 +988,8 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_wcslwr_s(pwc, size + 1);
 #else
-            for ( ; *pwc; ++pwc)
-                *pwc = towlower(*pwc);
+            for ( wchar_t* pw = pwc ; *pw; ++pw)
+                *pw = towlower(*pw);
 #endif
 			return pwc;
 		}
@@ -1012,8 +1012,8 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_strupr_s(pc, size + 1);
 #else
-            for ( ; *pc; ++pc)
-                *pc = toupper(*pc);
+            for ( char* p = pc; *p; ++p)
+                *p = toupper(*p);
 #endif
 			return pc;
 		}
@@ -1024,8 +1024,8 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_wcsupr_s(pwc, size + 1);
 #else
-            for ( ; *pwc; ++pwc)
-                *pwc = towupper(*pwc);
+            for ( wchar_t* pw = pwc; *pw; ++pw)
+                *pw = towupper(*pw);
 #endif
 			return pwc;
 		}
@@ -1640,7 +1640,7 @@ namespace Ambiesoft {
 		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
 		{
 			std::basic_string<C> envpath = stdGetenv(stdLiterals<C>::PATH());
-			std::vector<std::basic_string<C>> vPaths = stdSplitString(envpath, stdLiterals<C>::semicolonString());
+            std::vector<std::basic_string<C>> vPaths = stdSplitString(envpath, stdLiterals<C>::envPathSeparators());
 			for (auto&& onepath : vPaths)
 			{
 				std::basic_string<C> full = stdCombinePath(onepath, path);

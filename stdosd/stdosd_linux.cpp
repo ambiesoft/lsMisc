@@ -25,7 +25,7 @@
 // #include "StdAfx.h"
 #include <regex>
 #include <cassert>
-
+#include <dirent.h>
 #include "stdosd.h"
 
 namespace Ambiesoft {
@@ -88,10 +88,47 @@ namespace Ambiesoft {
         size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* pBuf, size_t len)
         {
             // https://stackoverflow.com/a/198099
-            int bytes = std::min((size_t)readlink("/proc/self/exe", pBuf, len), len - 1);
-            if(bytes >= 0)
-                pBuf[bytes] = '\0';
-            return bytes;
+            size_t bytesWritten = (size_t)readlink("/proc/self/exe", pBuf, len);
+            if((size_t)-1 == bytesWritten)
+                return 0;
+            pBuf[bytesWritten] = '\0';
+            return bytesWritten;
+        }
+
+        HFILEITERATOR stdCreateFileIterator(const std::string& directory)
+        {
+            return (HFILEITERATOR)opendir(directory.c_str());
+        }
+        bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
+        {
+            if(hFileIterator==nullptr)
+                return false;
+            DIR* dir = (DIR*)hFileIterator;
+            unique_ptr<struct dirent64> dirEnt(new struct dirent64);
+            struct dirent64* pResult = nullptr;
+            if(0 != readdir64_r(dir, dirEnt.get(), &pResult) || pResult==nullptr)
+            {
+                return false;
+            }
+
+            const bool isDir = (pResult->d_type & DT_DIR) != 0;
+            off_t size=0;
+            if(!isDir)
+            {
+                struct stat64 st;
+                st.st_size = 0;
+                stat64(pResult->d_name, &st);
+                size = st.st_size;
+            }
+
+            fi->setAll(isDir,
+                       pResult->d_name,
+                       size);
+            return true;
+        }
+        bool stdCloseFileIterator(HFILEITERATOR hFileIterator)
+        {
+            return 0==closedir((DIR*)hFileIterator);
         }
 	}
 }

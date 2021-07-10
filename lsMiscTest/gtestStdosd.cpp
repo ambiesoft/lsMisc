@@ -278,7 +278,7 @@ TEST(stdosd, FormatW)
     EXPECT_STREQ(s.c_str(), L"---100---");
 
 	wstring ss = L"abc";
-	s = stdFormat(L"%s", ss.c_str());
+    s = stdFormat(L"%ls", ss.c_str());
 	EXPECT_STREQ(s.c_str(), ss.c_str());
 }
 
@@ -477,6 +477,7 @@ TEST(stdosd, resolveLinkTest)
 
 TEST(stdosd, GetParentDirectoryText)
 {
+#ifdef _WIN32
 	EXPECT_TRUE(
 		stdGetParentDirectory(
 			L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf"
@@ -488,6 +489,23 @@ TEST(stdosd, GetParentDirectoryText)
 			L"Z:\\From\\LegacyPrograms\\T\\aaa.rtf", true
 		) ==
 			L"Z:\\From\\LegacyPrograms\\T\\");
+    EXPECT_TRUE(
+        stdGetParentDirectory(
+            L"Z:\\From\\LegacyPrograms\\T\\"
+        ) ==
+            L"Z:\\From\\LegacyPrograms");
+#else
+    EXPECT_TRUE(
+        stdGetParentDirectory(
+            L"/From/LegacyPrograms/T/"
+        ) ==
+            L"/From/LegacyPrograms");
+    EXPECT_TRUE(
+        stdGetParentDirectory(
+            L"/From/LegacyPrograms/T"
+        ) ==
+            L"/From/LegacyPrograms");
+#endif
 
 	EXPECT_TRUE(
 		stdGetParentDirectory(
@@ -501,11 +519,7 @@ TEST(stdosd, GetParentDirectoryText)
 		) ==
 			L"");
 
-	EXPECT_TRUE(
-		stdGetParentDirectory(
-			L"Z:\\From\\LegacyPrograms\\T\\"
-		) ==
-			L"Z:\\From\\LegacyPrograms");
+
 
 }
 
@@ -525,15 +539,19 @@ TEST(stdosd, IsFullPathTest)
 
 TEST(stdosd, CombinePathTest)
 {
+#if _WIN32
 	EXPECT_TRUE(
 		stdCombinePath(
 			L"Z:\\From\\LegacyPrograms\\T\\", L"aaa.txt"
 		) ==
 			L"Z:\\From\\LegacyPrograms\\T\\aaa.txt");
-#if _WIN32
+
+
 	EXPECT_STREQ(stdCombinePath(L"aaa", L"bbb").c_str(), L"aaa\\bbb");
 	EXPECT_STREQ(stdCombinePath(L"z:\\aaa", L"bbb").c_str(), L"z:\\aaa\\bbb");
 #else
+    EXPECT_STREQ(stdCombinePath(L"/aaa/bbb/ccc", L"ddd").c_str(), L"/aaa/bbb/ccc/ddd");
+    EXPECT_STREQ(stdCombinePath(L"/aaa/bbb/ccc", L"/ddd").c_str(), L"/ddd");
     EXPECT_STREQ(stdCombinePath(L"aaa", L"bbb").c_str(), L"aaa/bbb");
     EXPECT_STREQ(stdCombinePath(L"z:\\aaa", L"bbb").c_str(), L"z:\\aaa/bbb");
 #endif
@@ -673,11 +691,16 @@ TEST(stdosd, stdStringLowerTest)
 
 TEST(stdosd, stdFileIteratorTest)
 {
-	{
-		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
-		EXPECT_NE(hI, nullptr);
-		EXPECT_TRUE(stdCloseFileIterator(hI));
-	}
+    {
+        HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
+        EXPECT_NE(hI, nullptr);
+        EXPECT_TRUE(stdCloseFileIterator(hI));
+    }
+    {
+        HFILEITERATOR hI = stdCreateFileIterator("nonexistantttttttttttttttttttttttttttttttttt");
+        EXPECT_EQ(hI, nullptr);
+        EXPECT_FALSE(stdCloseFileIterator(hI));
+    }
 
 	{
 		{
@@ -962,6 +985,7 @@ static void GetSystemDirectoryA(char* p, int count)
 #endif
 TEST(stdosd, stdGetFullPathExecutable)
 {
+#ifdef _WIN32
 	{
 		string fullnote1 = stdGetFullPathExecutable("notepad.exe");
 		char szT[MAX_PATH];
@@ -969,7 +993,7 @@ TEST(stdosd, stdGetFullPathExecutable)
 		string fullnote2 = stdCombinePath(szT, "notepad.exe");
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
-#ifdef _WIN32
+
 	{
 		wstring fullnote1 = stdGetFullPathExecutable(L"notepad.exe");
 		wchar_t szT[MAX_PATH];
@@ -977,6 +1001,11 @@ TEST(stdosd, stdGetFullPathExecutable)
 		wstring fullnote2 = stdCombinePath(szT, L"notepad.exe");
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
+#else
+    {
+        string fullls = stdGetFullPathExecutable("ls");
+        EXPECT_TRUE(stdIsFullPath(fullls));
+    }
 #endif
 }
 

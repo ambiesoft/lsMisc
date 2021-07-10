@@ -12,9 +12,12 @@ using namespace std;
 
 TEST(StdQt, NormalizeDir)
 {
+#ifdef _WIN32
     EXPECT_QSTREQ( normalizeDir("C:\\T"), "C:/T/");
     EXPECT_QSTREQ( normalizeDir("C:\\T\\"), "C:/T/");
     EXPECT_QSTREQ( normalizeDir("\\\\aaa\\bbb"), "//aaa/bbb/");
     EXPECT_QSTREQ( normalizeDir("\\\\aaa\\bbb\\"), "//aaa/bbb/");
     EXPECT_QSTREQ( normalizeDir("\\\\aaa\\bbb/"), "//aaa/bbb/");
+#endif
+    EXPECT_QSTREQ( normalizeDir("/aaa/bbb"), "/aaa/bbb/");
 }

@@ -65,13 +65,15 @@ namespace Ambiesoft {
 
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
-#define STDOSD_DEFAULTSEPARATOR "\\"
-#define STDOSD_PATHSEPARATORS "/\\"
-#define STDOSD_NEWLINE "\r\n"
+    #define STDOSD_DEFAULTSEPARATOR "\\"
+    #define STDOSD_PATHSEPARATORS "/\\"
+    #define STDOSD_NEWLINE "\r\n"
+    #define STDOSD_ENVPATHSEPARATORS ";"
 #else
-#define STDOSD_DEFAULTSEPARATOR "/"
-#define STDOSD_PATHSEPARATORS "/"
-#define STDOSD_NEWLINE "\n"
+    #define STDOSD_DEFAULTSEPARATOR "/"
+    #define STDOSD_PATHSEPARATORS "/"
+    #define STDOSD_NEWLINE "\n"
+    #define STDOSD_ENVPATHSEPARATORS ":"
 #endif
 
         template<typename C>
@@ -167,8 +169,9 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_CHAR(NVerticalBar,		'|');					\
 																			\
 			STDOSD_DEFINE_STRINGFUNCTION(defaultSeparator, STDOSD_DEFAULTSEPARATOR);	\
-			STDOSD_DEFINE_STRINGFUNCTION(pathSeparators, STDOSD_PATHSEPARATORS);		\
-			STDOSD_DEFINE_STRINGFUNCTION(nulString, "");								\
+            STDOSD_DEFINE_STRINGFUNCTION(pathSeparators, STDOSD_PATHSEPARATORS);		\
+            STDOSD_DEFINE_STRINGFUNCTION(envPathSeparators, STDOSD_ENVPATHSEPARATORS);	\
+            STDOSD_DEFINE_STRINGFUNCTION(nulString, "");								\
 			STDOSD_DEFINE_STRINGFUNCTION(spaceString, " ");								\
 			STDOSD_DEFINE_STRINGFUNCTION(semicolonString, ";");							\
 			STDOSD_DEFINE_STRINGFUNCTION(num0String, "0");								\
