@@ -1128,8 +1128,9 @@ namespace Ambiesoft {
 
 		typedef void* HMODULEINSTANCE;
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size);
+#if defined(_WIN32)
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
-
+#endif
 		template<typename C = wchar_t>
 		inline std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
 		{
@@ -1149,6 +1150,7 @@ namespace Ambiesoft {
 			free((void*)p);
 			return ret;
 		}
+
 
 #if defined(_WIN32)
 		typedef HWND HWINDOWHANDLE;

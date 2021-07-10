@@ -1011,17 +1011,35 @@ TEST(stdosd, stdRemoveDoubleQuote)
 	EXPECT_EQ(stdRemoveDoubleQuote(string("\"abc\"")), string("abc"));
 }
 
+
 TEST(stdosd, stdFileExists)
 {
-	wstring thisFile = stdGetModuleFileName();
-	EXPECT_TRUE(stdFileExists(thisFile.c_str()));
-	EXPECT_FALSE(stdDirectoryExists(thisFile.c_str()));
+#ifdef _WIN32
+    {
+        wstring thisFile = stdGetModuleFileName();
+        EXPECT_TRUE(stdFileExists(thisFile.c_str()));
+        EXPECT_FALSE(stdDirectoryExists(thisFile.c_str()));
 
-	wstring thisFolder = stdGetParentDirectory(thisFile);
-	EXPECT_FALSE(stdFileExists(thisFolder.c_str()));
-	EXPECT_TRUE(stdDirectoryExists(thisFolder.c_str()));
+        wstring thisFolder = stdGetParentDirectory(thisFile);
+        EXPECT_FALSE(stdFileExists(thisFolder.c_str()));
+        EXPECT_TRUE(stdDirectoryExists(thisFolder.c_str()));
 
-	wstring nonExistantFile = thisFile + L"fwjolkaj3vaRR";
-	EXPECT_FALSE(stdFileExists(nonExistantFile.c_str()));
-	EXPECT_FALSE(stdDirectoryExists(nonExistantFile.c_str()));
+        wstring nonExistantFile = thisFile + L"fwjolkaj3vaRR";
+        EXPECT_FALSE(stdFileExists(nonExistantFile.c_str()));
+        EXPECT_FALSE(stdDirectoryExists(nonExistantFile.c_str()));
+    }
+#endif
+    {
+        string thisFile = stdGetModuleFileName<char>();
+        EXPECT_TRUE(stdFileExists(thisFile.c_str()));
+        EXPECT_FALSE(stdDirectoryExists(thisFile.c_str()));
+
+        string thisFolder = stdGetParentDirectory(thisFile);
+        EXPECT_FALSE(stdFileExists(thisFolder.c_str()));
+        EXPECT_TRUE(stdDirectoryExists(thisFolder.c_str()));
+
+        string nonExistantFile = thisFile + "fwjolkaj3vaRR";
+        EXPECT_FALSE(stdFileExists(nonExistantFile.c_str()));
+        EXPECT_FALSE(stdDirectoryExists(nonExistantFile.c_str()));
+    }
 }

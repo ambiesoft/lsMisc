@@ -85,6 +85,13 @@ namespace Ambiesoft {
 		{
 			return true;
 		}
-
+        size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* pBuf, size_t len)
+        {
+            // https://stackoverflow.com/a/198099
+            int bytes = std::min((size_t)readlink("/proc/self/exe", pBuf, len), len - 1);
+            if(bytes >= 0)
+                pBuf[bytes] = '\0';
+            return bytes;
+        }
 	}
 }
