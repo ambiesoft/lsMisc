@@ -334,6 +334,9 @@ TEST(stdosd, int64)
 		EXPECT_STREQ(s.c_str(), "0");
 	}
 	{
+#ifdef _WIN32
+		using __int64_t = int64_t;
+#endif
         string s = stdFormat("%" PRId64, numeric_limits<__int64_t>::max());
         __int64_t u = std::numeric_limits<__int64_t>::max();
 		EXPECT_STREQ(s.c_str(), to_string(u).c_str());
