@@ -126,7 +126,7 @@ TEST_P(GoodEvenTest, DoesBlah)
 	EXPECT_TRUE(IsEven(v));
 }
 
-INSTANTIATE_TEST_CASE_P(EvenNumber,
+INSTANTIATE_TEST_SUITE_P(EvenNumber,
 	GoodEvenTest,
 	::testing::Values(0, 2, 4, 6, 8));
 
@@ -144,7 +144,7 @@ TEST_P(GoodOddTest, DoesBlah)
 	EXPECT_FALSE(IsEven(v));
 }
 
-INSTANTIATE_TEST_CASE_P(OddNumber,
+INSTANTIATE_TEST_SUITE_P(OddNumber,
 	GoodOddTest,
 	::testing::Values(1, 3, 5, 7, 9));
 
