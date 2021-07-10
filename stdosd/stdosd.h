@@ -100,28 +100,26 @@ namespace Ambiesoft {
 
 
         typedef void* HFILEITERATOR;
+		template<typename C>
         class FileInfo
         {
             unsigned long long size_ = 0;
-            std::string name_;
-            std::string path_;
+            std::basic_string<C> name_;
+			std::basic_string<C> path_;
             bool isDir_ = false;
         public:
             unsigned long long size() const {
                 return size_;
             }
-            std::string name() const {
+			std::basic_string<C> name() const {
                 return name_;
             }
-//            std::string path() const {
-//                return path_;
-//            }
             bool isDirectory() const {
                 return isDir_;
             }
 
             void setAll(bool isDir,
-                        const std::string& name,
+                        const std::basic_string<C>& name,
                         const unsigned long long& size)
             {
                 isDir_ = isDir;
@@ -1054,8 +1052,25 @@ namespace Ambiesoft {
 
 
         HFILEITERATOR stdCreateFileIterator(const std::string& directory);
-        bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo* fi);
-        bool stdCloseFileIterator(HFILEITERATOR hFileIterator);
+#ifdef _WIN32
+		HFILEITERATOR stdCreateFileIterator(const std::wstring& directory);
+#endif
+		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi);
+#ifdef _WIN32
+		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi);
+#endif
+		template<typename C>
+		inline bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo<C>* fi)
+		{
+			if (!hFileIterator)
+				return false;
+
+			if (!stdFileNextImpl(hFileIterator, fi))
+				return false;
+
+			return true;
+		}
+		bool stdCloseFileIterator(HFILEITERATOR hFileIterator);
 
 
 

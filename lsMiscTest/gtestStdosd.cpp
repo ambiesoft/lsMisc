@@ -680,31 +680,61 @@ TEST(stdosd, stdFileIteratorTest)
 	}
 
 	{
-		HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
-		EXPECT_NE(hI, nullptr);
-
-		bool found = false;
-		string targetName = stdGetFileName(stdGetModuleFileName<char>());
-		FileInfo fi;
-		while (stdFileNext(hI, &fi))
 		{
-			if (fi.name() == targetName)
+			HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
+			EXPECT_NE(hI, nullptr);
+
+			bool found = false;
+			string targetName = stdGetFileName(stdGetModuleFileName<char>());
+			FileInfo<char> fi;
+			while (stdFileNext(hI, &fi))
 			{
-				found = true;
-				break;
+				if (fi.name() == targetName)
+				{
+					found = true;
+				}
 			}
+			EXPECT_TRUE(found);
+			EXPECT_TRUE(stdCloseFileIterator(hI));
 		}
-		EXPECT_TRUE(found);
-		EXPECT_TRUE(stdCloseFileIterator(hI));
-	}
 
-	{
-		EXPECT_FALSE(stdCloseFileIterator(nullptr));
-	}
+		{
+			EXPECT_FALSE(stdCloseFileIterator(nullptr));
+		}
 
-	{
-		EXPECT_DEATH(stdCloseFileIterator((HFILEITERATOR)1), "");
+		{
+			EXPECT_DEATH(stdCloseFileIterator((HFILEITERATOR)1), "");
+		}
 	}
+#ifdef _WIN32
+	{
+		{
+			HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName()));
+			EXPECT_NE(hI, nullptr);
+
+			bool found = false;
+			wstring targetName = stdGetFileName(stdGetModuleFileName());
+			FileInfo<wchar_t> fi;
+			while (stdFileNext(hI, &fi))
+			{
+				if (fi.name() == targetName)
+				{
+					found = true;
+				}
+			}
+			EXPECT_TRUE(found);
+			EXPECT_TRUE(stdCloseFileIterator(hI));
+		}
+
+		{
+			EXPECT_FALSE(stdCloseFileIterator(nullptr));
+		}
+
+		{
+			EXPECT_DEATH(stdCloseFileIterator((HFILEITERATOR)1), "");
+		}
+	}
+#endif
 }
 
 TEST(stdosd, stdTrimStartTest)
