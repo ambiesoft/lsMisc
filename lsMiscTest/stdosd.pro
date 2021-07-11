@@ -47,11 +47,11 @@ win32 {
 
     win32-g++ {
 		message( "win32-g++ libs" )
-        LIBS += -lOle32 -lShlwapi -luuid
+        LIBS += -lUser32 -lOle32 -lShlwapi -luuid
     }
     win32-msvc* {
 		message( "win32-msvc* libs" )
-        LIBS += Ole32.lib Shlwapi.lib uuid.lib shell32.lib
+        LIBS += User32.lib Ole32.lib Shlwapi.lib uuid.lib shell32.lib
     }
 }
 linux-g++ {

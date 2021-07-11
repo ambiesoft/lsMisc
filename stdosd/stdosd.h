@@ -352,19 +352,19 @@ namespace Ambiesoft {
 			stdGetFileNameWitoutExtension(const C* pPath)
 		{
 			if (!pPath)
-				return std::basic_string<C, std::char_traits<C>, std::allocator<C>>();
+                return std::basic_string<C>();
 
 			const C* pFilename = stdGetFileName(pPath);
 			if (!pFilename)
-				return std::basic_string<C, std::char_traits<C>, std::allocator<C>>();
+                return std::basic_string<C>();
 
 			const C* pExt = getRChar(pFilename, stdLiterals<C>::period);
 			if (!pExt)
 				return pFilename;
 
-			std::basic_string<C, std::char_traits<C>, std::allocator<C>> ret;
-            int len = (int)(pExt - pFilename);
-            ret.assign(pFilename, static_cast<size_t>(len));
+            std::basic_string<C> ret;
+            size_t len = (pExt - pFilename);
+            ret.assign(pFilename, len);
 			return ret;
 		}
 		inline std::string stdGetFileNameWitoutExtension(const std::string& w)

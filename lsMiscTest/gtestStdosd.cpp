@@ -1120,4 +1120,5 @@ TEST(stdosd, stdGetProgramName)
 {
     basic_string<SYSTEM_CHAR_TYPE> prog = stdGetProgramName();
     EXPECT_FALSE(prog.empty());
+
 }
