@@ -341,7 +341,6 @@
     </ClCompile>
     <ClCompile Include="..\sqliteserialize.cpp" />
     <ClCompile Include="..\StartProcess.cpp" />
-    <ClCompile Include="..\stdosd\I18NBeta.cpp" />
     <ClCompile Include="..\stdosd\PathUtil_win.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -383,7 +382,6 @@
     <ClCompile Include="gtestExpandPath.cpp" />
     <ClCompile Include="gtestFindTopWindowFromPID.cpp" />
     <ClCompile Include="gtestGetAppVersion.cpp" />
-    <ClCompile Include="gtestI18NBeta.cpp" />
     <ClCompile Include="gtestISqlPrivateProfile.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
     <ClCompile Include="gtestRunCommandGetResult.cpp" />
@@ -566,7 +564,6 @@
     <ClInclude Include="..\StartProcess.h" />
     <ClInclude Include="..\stdosd\CBool.h" />
     <ClInclude Include="..\stdosd\CNativeValue.h" />
-    <ClInclude Include="..\stdosd\I18NBeta.h" />
     <ClInclude Include="..\stdosd\OpParser.h" />
     <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />

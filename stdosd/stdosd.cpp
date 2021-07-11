@@ -155,5 +155,10 @@ namespace Ambiesoft {
 			const std::basic_string<wchar_t>& input,
 			const std::basic_regex<wchar_t>& regex,
 			std::function< std::basic_string<wchar_t>(const std::match_results<std::basic_string<wchar_t>::const_iterator>& match) > format);
+
+		std::basic_string<SYSTEM_CHAR_TYPE> stdGetProgramName()
+		{
+			return stdGetFileNameWitoutExtension(stdGetModuleFileName<SYSTEM_CHAR_TYPE>());
+		}
 	}
 }

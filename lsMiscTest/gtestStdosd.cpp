@@ -1113,6 +1113,6 @@ TEST(stdosd, stdFileExists)
 }
 TEST(stdosd, stdGetCurrentDirectory)
 {
-    string curdir = stdGetCurrentDirectory();
+    basic_string<SYSTEM_CHAR_TYPE> curdir = stdGetCurrentDirectory<SYSTEM_CHAR_TYPE>();
     EXPECT_FALSE(curdir.empty());
 }

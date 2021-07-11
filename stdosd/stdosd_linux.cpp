@@ -70,19 +70,15 @@ namespace Ambiesoft {
 		template<typename C>
 		std::basic_string<C> stdGetComputerName()
 		{
-            static_assert(sizeof(C)==0);
-		}
-        template<> std::basic_string<char> stdGetComputerName()
-        {
             unique_ptr<char[]> p;
-            size_t size=16;
-            while(true)
+            size_t size = 16;
+            while (true)
             {
-                if(size > 4096)
+                if (size > 4096)
                     return std::basic_string<char>();
                 p.reset(new char[size]);
                 int ret = gethostname(p.get(), size);
-                switch(ret)
+                switch (ret)
                 {
                 case 0:
                     return p.get();
@@ -98,12 +94,10 @@ namespace Ambiesoft {
             }
             assert(false);
             return std::basic_string<char>();
-        }
-//        template<> std::basic_string<wchar_t> stdGetComputerName()
-//        {
-//            // TODO: change to static_assert
-//            assert(sizeof(wchar_t)==0);
-//        }
+
+		}
+        template std::basic_string<char> stdGetComputerName();
+//      template std::basic_string<wchar_t> stdGetComputerName();
 
 
         template<typename C>

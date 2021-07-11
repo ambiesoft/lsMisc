@@ -36,6 +36,8 @@
 #include <process.h>
 
 #include "RunCommandGetResult.h"
+#include "UTF16toUTF8.h"
+
 #include "DebugNew.h"
 
 using namespace std;
@@ -329,15 +331,6 @@ namespace Ambiesoft {
 		return retInfo;
 	}
 
-	static wstring toWstring(const char* pIN)
-	{
-		if (!pIN || pIN[0] == 0)
-			return wstring();
-
-		std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-		return converter.from_bytes(pIN);
-	}
-
 	RunProcessInfo RunCommandGetResultCallBack(
 		LPCSTR pExe,
 		LPCSTR pArg,
@@ -351,8 +344,8 @@ namespace Ambiesoft {
 		void* pErrUserData)
 	{
 		return RunCommandGetResultCallBack(
-			toWstring(pExe).c_str(),
-			toWstring(pArg).c_str(),
+			toStdWstringFromUtf8(pExe).c_str(),
+			toStdWstringFromUtf8(pArg).c_str(),
 			pIRetCommand,
 			pdwLastError,
 			fnBeforeCreateProcess,
@@ -419,8 +412,8 @@ namespace Ambiesoft {
 		std::string* pStrErrCommand)
 	{
 		return RunCommandGetResult(
-			toWstring(pExe).c_str(),
-			toWstring(pArg).c_str(),
+			toStdWstringFromUtf8(pExe).c_str(),
+			toStdWstringFromUtf8(pArg).c_str(),
 			pIRetCommand,
 			pdwLastError,
 			pStrOutCommand,

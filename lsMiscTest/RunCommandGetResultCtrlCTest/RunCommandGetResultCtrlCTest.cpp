@@ -75,6 +75,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		assert(output.find(argPost) == std::string::npos);
 	}
 
-	MessageBox(nullptr, L"OK", 0, MB_ICONINFORMATION);
+	MessageBox(nullptr, L"OK", stdGetProgramName().c_str(), MB_ICONINFORMATION | MB_OK);
 	return 0;
 }

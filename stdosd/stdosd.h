@@ -1166,7 +1166,7 @@ namespace Ambiesoft {
 #if defined(_WIN32)
 		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
 #endif
-		template<typename C = wchar_t>
+		template<typename C = SYSTEM_CHAR_TYPE>
 		inline std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
 		{
 			C* p = nullptr;
@@ -1202,21 +1202,21 @@ namespace Ambiesoft {
 		bool stdGetWindowText(HWINDOWHANDLE hWindow, std::wstring* result);
 		bool stdSetWindowText(HWINDOWHANDLE hWindow, const std::wstring& text);
 
-		template<typename C>
-		inline C* stdStrDup(const C* p)
-		{
-			if (!p)
-				return nullptr;
-			size_t count = getCharLength(p) + 1;
-			C* ret = new C[count];
-			stdCopyString(ret, count, p);
-			return ret;
-		}
+		//template<typename C>
+		//inline C* stdStrDup(const C* p)
+		//{
+		//	if (!p)
+		//		return nullptr;
+		//	size_t count = getCharLength(p) + 1;
+		//	C* ret = new C[count];
+		//	stdCopyString(ret, count, p);
+		//	return ret;
+		//}
 #endif
 		template<typename C>
 		inline int stdStrCmp(const C* p1, const C* p2, bool ignorecase = false)
 		{
-            assert(false);
+			static_assert(sizeof(C) == 0);
 		}
 		template<>
 		inline int stdStrCmp(const char* p1, const char* p2, bool ignorecase)
@@ -1265,8 +1265,8 @@ namespace Ambiesoft {
 
 		template<typename C = wchar_t>
 		std::basic_string<C> stdGetComputerName();
-        template<> std::basic_string<char> stdGetComputerName();
-        template<> std::basic_string<wchar_t> stdGetComputerName();
+        extern template std::basic_string<char> stdGetComputerName();
+        extern template std::basic_string<wchar_t> stdGetComputerName();
 
 		template<typename S>
 		inline S stdXmlEncode(const S& s)
@@ -1454,7 +1454,7 @@ namespace Ambiesoft {
 		template<typename C>
 		inline bool stdFileExists(const	C* file)
 		{
-            assert(false);
+			static_assert(sizeof(C) == 0);
 		}
 		template<>
 		inline bool stdFileExists(const char* file)
@@ -1471,23 +1471,10 @@ namespace Ambiesoft {
 		}
 #endif
 
-#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
-		//C++17 specific stuff here
-		inline bool stdDirectoryExists(std::string_view folder)
-		{
-			struct stat buffer;
-			return stat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
-		}
-		inline bool stdDirectoryExists(std::wstring_view folder)
-		{
-			struct _stat  buffer;
-			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
-		}
-#else
 		template<typename C>
 		inline bool stdDirectoryExists(const C* folder)
 		{
-            assert(false);
+            static_assert(sizeof(C)==0);
 		}
 		template<>
 		inline bool stdDirectoryExists(const char* folder)
@@ -1503,7 +1490,7 @@ namespace Ambiesoft {
 			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
 		}
 #endif
-#endif // C++17
+
 
 		template<typename C>
 		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
@@ -1613,6 +1600,8 @@ namespace Ambiesoft {
 		{
 			return iswspace(c) != 0;
 		}
+
+		std::basic_string<SYSTEM_CHAR_TYPE> stdGetProgramName();
 	}
 }
 

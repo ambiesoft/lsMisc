@@ -35,6 +35,9 @@
     <ClInclude Include="..\..\RunCommandGetResult.h">
       <Filter>Header Files\lsMisc</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\UTF16toUTF8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -57,6 +60,9 @@
     </ClCompile>
     <ClCompile Include="..\..\stdosd\stdosd_win.cpp">
       <Filter>Source Files\lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\UTF16toUTF8.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
