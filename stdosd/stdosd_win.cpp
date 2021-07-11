@@ -461,14 +461,14 @@ namespace Ambiesoft {
 			return ExpandEnvironmentStringsW(pIN, p, (DWORD)size);
 		}
 
-		bool GetComputerNameT(char* p, size_t* pnLength)
+		static bool GetComputerNameT(char* p, size_t* pnLength)
 		{
 			DWORD dw = (DWORD)*pnLength;
 			bool ret = !!GetComputerNameA(p, &dw);
 			*pnLength = dw;
 			return ret;
 		}
-		bool GetComputerNameT(wchar_t* p, size_t* pnLength)
+		static bool GetComputerNameT(wchar_t* p, size_t* pnLength)
 		{
 			DWORD dw = (DWORD)*pnLength;
 			bool ret = !!GetComputerNameW(p, &dw);
@@ -476,7 +476,8 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-		bool stdGetComputerNameImpl(char* p, size_t size, size_t& outsize)
+		template<typename C>
+		bool stdGetComputerNameImpl(C* p, size_t size, size_t& outsize)
 		{
 			if (!GetComputerNameT(p, &size))
 			{
@@ -486,16 +487,31 @@ namespace Ambiesoft {
 			outsize = size;
 			return true;
 		}
-		bool stdGetComputerNameImpl(wchar_t* p, size_t size, size_t& outsize)
+
+		template<typename C>
+		std::basic_string<C> stdGetComputerName()
 		{
-			if (!GetComputerNameT(p, &size))
+			C* p = nullptr;
+			size_t size = 16;
+			for (;;)
 			{
-				if (GetLastError() != ERROR_BUFFER_OVERFLOW)
-					return false;
+				p = (C*)realloc(p, size * sizeof(C));
+				size_t outsize;
+				if (!stdGetComputerNameImpl(p, size, outsize))
+					return std::basic_string<C>();
+				if (size > outsize)
+					break;
+
+				// Make double the size of required memory
+				size *= 2;
 			}
-			outsize = size;
-			return true;
+
+			std::basic_string<C> ret = p;
+			free((void*)p);
+			return ret;
 		}
+		template std::basic_string<char> stdGetComputerName();
+		template std::basic_string<wchar_t> stdGetComputerName();
 
 
 		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)

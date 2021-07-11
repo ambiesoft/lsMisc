@@ -969,7 +969,10 @@ namespace Ambiesoft {
 
 
 		template<typename C>
-		inline C* stdStringLower(C* pD1, size_t size);
+		inline C* stdStringLower(C* pD1, size_t size)
+		{
+			static_assert(sizeof(C)==0);
+		}
 		template<>
 		inline char* stdStringLower(char* pc, size_t size)
 		{
@@ -1005,7 +1008,10 @@ namespace Ambiesoft {
 
 
 		template<typename C>
-		inline C* stdStringUpper(C* pD1, size_t size);
+		inline C* stdStringUpper(C* pD1, size_t size)
+		{
+			static_assert(sizeof(C) == 0);
+		}
 		template<>
 		inline char* stdStringUpper(char* pc, size_t size)
 		{
@@ -1253,38 +1259,10 @@ namespace Ambiesoft {
 			return stdExpandEnvironmentStrings(str.c_str());
 		}
 
-
-
-		bool GetComputerNameT(char* p, size_t* pnLength);
-		bool GetComputerNameT(wchar_t* p, size_t* pnLength);
-
-		
-		bool stdGetComputerNameImpl(char* p, size_t size, size_t& outsize);
-		bool stdGetComputerNameImpl(wchar_t* p, size_t size, size_t& outsize);
-
 		template<typename C = wchar_t>
-		inline std::basic_string<C> stdGetComputerName()
-		{
-			C* p = nullptr;
-			size_t size = 16;
-			for (;;)
-			{
-				p = (C*)realloc(p, size * sizeof(C));
-				size_t outsize;
-				if (!stdGetComputerNameImpl(p, size, outsize))
-					return std::basic_string<C>();
-				if (size > outsize)
-					break;
-
-				// Make double the size of required memory
-				size *= 2;
-			}
-
-			std::basic_string<C> ret = p;
-			free((void*)p);
-			return ret;
-		}
-
+		std::basic_string<C> stdGetComputerName();
+		extern template std::basic_string<char> stdGetComputerName();
+		extern template std::basic_string<wchar_t> stdGetComputerName();
 
 		template<typename S>
 		inline S stdXmlEncode(const S& s)
@@ -1342,121 +1320,25 @@ namespace Ambiesoft {
 		}
 
 
-
 		template<typename C = wchar_t>
-		inline std::basic_string<C> stdRegexReplace(
+		std::basic_string<C> stdRegexReplace(
 			const std::basic_string<C>& input,
 			const std::basic_regex<C>& regex,
-			// std::function<std::string(std::smatch const& match)> format)
-			// std::function< std::basic_string<C>(std::smatch const& match) > format)
-			// std::function< std::basic_string<C>(std::match_results<std::string::const_iterator> const& match) > format)
-            std::function< std::basic_string<C>(const std::match_results<typename std::basic_string<C>::const_iterator> & match) > format)
-		{
-			using S = std::basic_string<C>;
-			using OSS = std::basic_ostringstream<C, std::char_traits<C>, std::allocator<C> >;
-            using SREGEX_ITERATOR = std::regex_iterator<typename S::const_iterator>;
-
-			OSS output;
-			SREGEX_ITERATOR begin(input.begin(), input.end(), regex), end;
-            typename SREGEX_ITERATOR::difference_type lastPos = 0;
-
-			for (; begin != end; begin++)
-			{
-				output << begin->prefix() << format(*begin);
-				lastPos = begin->position() + begin->length();
-			}
-			output << input.substr(lastPos);
-			return output.str();
-		}
+			std::function< std::basic_string<C>(const std::match_results<typename std::basic_string<C>::const_iterator>& match) > format);
+		extern template std::basic_string<char> stdRegexReplace<char>(
+			const std::basic_string<char>& input,
+			const std::basic_regex<char>& regex,
+			std::function< std::basic_string<char>(const std::match_results<std::basic_string<char>::const_iterator>& match) > format);
+		extern template std::basic_string<wchar_t> stdRegexReplace<wchar_t>(
+			const std::basic_string<wchar_t>& input,
+			const std::basic_regex<wchar_t>& regex,
+			std::function< std::basic_string<wchar_t>(const std::match_results<std::basic_string<wchar_t>::const_iterator>& match) > format);
 
 
 		template<class T>
-		void stdGetRandomString(T* s, const size_t len) {
-			static const T alphanum[] = {
-				stdLiterals<T>::N0,
-				stdLiterals<T>::N1,
-				stdLiterals<T>::N2,
-				stdLiterals<T>::N3,
-				stdLiterals<T>::N4,
-				stdLiterals<T>::N5,
-				stdLiterals<T>::N6,
-				stdLiterals<T>::N7,
-				stdLiterals<T>::N8,
-				stdLiterals<T>::N9,
-				stdLiterals<T>::NA,
-				stdLiterals<T>::NB,
-				stdLiterals<T>::NC,
-				stdLiterals<T>::ND,
-				stdLiterals<T>::NE,
-				stdLiterals<T>::NF,
-				stdLiterals<T>::NG,
-				stdLiterals<T>::NH,
-				stdLiterals<T>::NI,
-				stdLiterals<T>::NJ,
-				stdLiterals<T>::NK,
-				stdLiterals<T>::NL,
-				stdLiterals<T>::NM,
-				stdLiterals<T>::NN,
-				stdLiterals<T>::NO,
-				stdLiterals<T>::NP,
-				stdLiterals<T>::NQ,
-				stdLiterals<T>::NR,
-				stdLiterals<T>::NS,
-				stdLiterals<T>::NT,
-				stdLiterals<T>::NU,
-				stdLiterals<T>::NV,
-				stdLiterals<T>::NW,
-				stdLiterals<T>::NX,
-				stdLiterals<T>::NY,
-				stdLiterals<T>::NZ,
-				stdLiterals<T>::Na,
-				stdLiterals<T>::Nb,
-				stdLiterals<T>::Nc,
-				stdLiterals<T>::Nd,
-				stdLiterals<T>::Ne,
-				stdLiterals<T>::Nf,
-				stdLiterals<T>::Ng,
-				stdLiterals<T>::Nh,
-				stdLiterals<T>::Ni,
-				stdLiterals<T>::Nj,
-				stdLiterals<T>::Nk,
-				stdLiterals<T>::Nl,
-				stdLiterals<T>::Nm,
-				stdLiterals<T>::Nn,
-				stdLiterals<T>::No,
-				stdLiterals<T>::Np,
-				stdLiterals<T>::Nq,
-				stdLiterals<T>::Nr,
-				stdLiterals<T>::Ns,
-				stdLiterals<T>::Nt,
-				stdLiterals<T>::Nu,
-				stdLiterals<T>::Nv,
-				stdLiterals<T>::Nw,
-				stdLiterals<T>::Nx,
-				stdLiterals<T>::Ny,
-				stdLiterals<T>::Nz,
-			};
-
-			// for debug
-			//const char p[] = "0123456789"
-			//	"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-			//	"abcdefghijklmnopqrstuvwxyz";
-			//for (size_t i = 0; i < (sizeof(p) - 1); ++i) {
-			//	assert(alphanum[i] == p[i]);
-			//}
-
-			if (len == 0)
-				return;
-			static bool initSeed = []() {
-				std::srand((unsigned)std::time(nullptr));
-				return true;
-			}();
-			size_t lenMinusOne = len - 1;
-			for (size_t i = 0; i < lenMinusOne; ++i) {
-				s[i] = alphanum[std::rand() % (_countof(alphanum))];
-			}
-			s[lenMinusOne] = 0;
-		}
+		void stdGetRandomString(T* s, const size_t len);
+		extern template void stdGetRandomString<char>(char* s, const size_t len);
+		extern template void stdGetRandomString<wchar_t>(wchar_t* s, const size_t len);
 
 
 		

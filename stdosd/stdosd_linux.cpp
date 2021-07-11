@@ -67,6 +67,14 @@ namespace Ambiesoft {
 			return std::wstring();
 		}
 
+		template<typename C>
+		std::basic_string<C> stdGetComputerName()
+		{
+			// not imp
+		}
+		template std::basic_string<char> stdGetComputerName();
+		template std::basic_string<wchar_t> stdGetComputerName();
+
 		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
 		{
 			// not implemented
