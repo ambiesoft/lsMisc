@@ -514,15 +514,35 @@ namespace Ambiesoft {
 		template std::basic_string<wchar_t> stdGetComputerName();
 
 
-		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
+        static size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
 		{
 			return GetCurrentDirectoryA((DWORD)size, p);
 		}
-		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
+        static size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
 		{
 			return GetCurrentDirectoryW((DWORD)size, p);
 		}
+        template<typename C>
+        inline std::basic_string<C> stdGetCurrentDirectory()
+        {
+            C* p = nullptr;
+            size_t size = 64;
+            for (;;)
+            {
+                p = (C*)realloc(p, size * sizeof(C));
+                if (stdGetCurrentDirectoryImpl(p, size) < size)
+                    break;
 
+                // Make double the size of required memory
+                size *= 2;
+            }
+
+            std::basic_string<C> ret = p;
+            free((void*)p);
+            return ret;
+        }
+        template std::basic_string<char> stdGetCurrentDirectory<char>();
+        template std::basic_string<wchar_t> stdGetCurrentDirectory<wchar_t>();
 
 		bool stdGetDesktopDirectoryImpl(wstring* path)
 		{

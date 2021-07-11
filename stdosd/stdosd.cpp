@@ -28,6 +28,9 @@
 #include <ostream>
 #include "stdosd.h"
 
+#ifndef _countof
+#define _countof(A) (sizeof(A)/sizeof(A[0]))
+#endif
 
 namespace Ambiesoft {
 	namespace stdosd {

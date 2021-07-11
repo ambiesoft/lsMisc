@@ -70,19 +70,65 @@ namespace Ambiesoft {
 		template<typename C>
 		std::basic_string<C> stdGetComputerName()
 		{
-			// not imp
+            static_assert(sizeof(C)==0);
 		}
-		template std::basic_string<char> stdGetComputerName();
-		template std::basic_string<wchar_t> stdGetComputerName();
+        template<> std::basic_string<char> stdGetComputerName()
+        {
+            unique_ptr<char[]> p;
+            size_t size=16;
+            while(true)
+            {
+                if(size > 4096)
+                    return std::basic_string<char>();
+                p.reset(new char[size]);
+                int ret = gethostname(p.get(), size);
+                switch(ret)
+                {
+                case 0:
+                    return p.get();
+                case -1:  // if buffer is not sufficient -1 is returned
+                case ENAMETOOLONG:
+                    size *= 2;
+                    continue;
+                default:
+                    return std::basic_string<char>();
+                }
+                assert(false);
+                break;
+            }
+            assert(false);
+            return std::basic_string<char>();
+        }
+//        template<> std::basic_string<wchar_t> stdGetComputerName()
+//        {
+//            // TODO: change to static_assert
+//            assert(sizeof(wchar_t)==0);
+//        }
 
-		size_t stdGetCurrentDirectoryImpl(char* p, size_t size)
-		{
-			// not implemented
-		}
-		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size)
-		{
-			// not implemented
-		}
+
+        template<typename C>
+        inline std::basic_string<C> stdGetCurrentDirectory()
+        {
+            unique_ptr<C[]> p;
+            size_t size = 64;
+            for (;;)
+            {
+                if(size > 4096)
+                    return std::basic_string<C>();
+                p.reset(new C[size * sizeof(C)]);
+                const C* pRet = getcwd(p.get(), size);
+                if(pRet==p.get())
+                    break;
+                if(pRet==nullptr && errno==ERANGE)
+                    size *= 2;
+                else
+                    return std::basic_string<C>();
+            }
+
+            return p.get();
+        }
+        template std::basic_string<char> stdGetCurrentDirectory<char>();
+        // template std::basic_string<wchar_t> stdGetCurrentDirectory<wchar_t>();
 
 		wstring StdGetDesktopDirectory()
 		{

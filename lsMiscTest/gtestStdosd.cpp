@@ -876,16 +876,20 @@ TEST(stdosd, stdExpandEnvironmentStringsTest)
 	wstring expect = L"111" + envval + L"222";
 	EXPECT_EQ(expect, stdExpandEnvironmentStrings(L"111%MYENV%222"));
 }
+#endif // _WIN32
+
 TEST(stdosd, stdGetComputerNameTest)
 {
+#ifdef _WIN32
 	wstring w = stdGetComputerName();
 	EXPECT_FALSE(w.empty());
+#endif
 
 	string a = stdGetComputerName<char>();
 	EXPECT_FALSE(a.empty());
 
 }
-#endif // _WIN32
+
 
 TEST(stdosd, stdXmlEncodeTest)
 {
@@ -1106,4 +1110,9 @@ TEST(stdosd, stdFileExists)
         EXPECT_FALSE(stdFileExists(nonExistantFile.c_str()));
         EXPECT_FALSE(stdDirectoryExists(nonExistantFile.c_str()));
     }
+}
+TEST(stdosd, stdGetCurrentDirectory)
+{
+    string curdir = stdGetCurrentDirectory();
+    EXPECT_FALSE(curdir.empty());
 }

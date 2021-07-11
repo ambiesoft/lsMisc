@@ -47,10 +47,6 @@
 
 #include "stdosd_literal.h"
 
-namespace Ambiesoft {
-	namespace stdosd {
-
-
 #define STDOSD_WCHARLITERAL_INNER(x) L ## x
 #define STDOSD_WCHARLITERAL(x) STDOSD_WCHARLITERAL_INNER(x)
 
@@ -77,6 +73,7 @@ namespace Ambiesoft {
 	//#ifndef NOMINMAX
 	//#error NOMINMAX must be defined
 	//#endif
+
 #endif // _WIN32 __GNUC__
 
 
@@ -98,7 +95,14 @@ namespace Ambiesoft {
 #define STDOSD_NEWLINE "\n"
 #endif
 
+namespace Ambiesoft {
+    namespace stdosd {
 
+#ifdef _WIN32
+        using SYSTEM_CHAR_TYPE = wchar_t;
+#else
+        using SYSTEM_CHAR_TYPE = char;
+#endif
         typedef void* HFILEITERATOR;
 		template<typename C>
         class FileInfo
@@ -1261,8 +1265,8 @@ namespace Ambiesoft {
 
 		template<typename C = wchar_t>
 		std::basic_string<C> stdGetComputerName();
-		extern template std::basic_string<char> stdGetComputerName();
-		extern template std::basic_string<wchar_t> stdGetComputerName();
+        template<> std::basic_string<char> stdGetComputerName();
+        template<> std::basic_string<wchar_t> stdGetComputerName();
 
 		template<typename S>
 		inline S stdXmlEncode(const S& s)
@@ -1285,27 +1289,10 @@ namespace Ambiesoft {
 			return stdXmlEncode(std::basic_string<C>(p));
 		}
 
-		size_t stdGetCurrentDirectoryImpl(char* p, size_t size);
-		size_t stdGetCurrentDirectoryImpl(wchar_t* p, size_t size);
-		template<typename C = wchar_t>
-		inline std::basic_string<C> stdGetCurrentDirectory()
-		{
-			C* p = nullptr;
-			size_t size = 64;
-			for (;;)
-			{
-				p = (C*)realloc(p, size * sizeof(C));
-				if (stdGetCurrentDirectoryImpl(p, size) < size)
-					break;
-
-				// Make double the size of required memory
-				size *= 2;
-			}
-
-			std::basic_string<C> ret = p;
-			free((void*)p);
-			return ret;
-		}
+        template<typename C = SYSTEM_CHAR_TYPE>
+        std::basic_string<C> stdGetCurrentDirectory();
+        extern template std::basic_string<char> stdGetCurrentDirectory<char>();
+        extern template std::basic_string<wchar_t> stdGetCurrentDirectory<wchar_t>();
 
 
 		bool stdGetDesktopDirectoryImpl(std::wstring* p);
