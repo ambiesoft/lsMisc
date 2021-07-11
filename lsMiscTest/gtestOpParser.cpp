@@ -775,7 +775,7 @@ struct MyPod
 	~MyPod() {
 		if (p_)
 			gAllocDAllocCounter--;
-		delete p_;
+        delete [] p_;
 	}
 
 	//MyPod(const MyPod& that) = delete;

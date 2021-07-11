@@ -1116,3 +1116,8 @@ TEST(stdosd, stdGetCurrentDirectory)
     basic_string<SYSTEM_CHAR_TYPE> curdir = stdGetCurrentDirectory<SYSTEM_CHAR_TYPE>();
     EXPECT_FALSE(curdir.empty());
 }
+TEST(stdosd, stdGetProgramName)
+{
+    basic_string<SYSTEM_CHAR_TYPE> prog = stdGetProgramName();
+    EXPECT_FALSE(prog.empty());
+}
