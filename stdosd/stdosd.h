@@ -39,7 +39,8 @@
 
 #ifdef _WIN32
     #include <Windows.h>
-#else
+#endif
+#if __GNUC__
     #include <sys/types.h>
     #include <sys/stat.h>
     #include <unistd.h>
@@ -1409,7 +1410,7 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-#ifdef _WIN32
+#if defined(_MSC_VER)
 		inline errno_t stdDupEnv(char** ppValue, size_t* pLen, const char* varname)
 		{
 			return _dupenv_s(ppValue, pLen, varname);
@@ -1435,6 +1436,11 @@ namespace Ambiesoft {
 			free(pValue);
 			return ret;
 		}
+#elif defined(__MINGW32__)
+        inline std::string stdGetenv(const char* varname)
+        {
+            return getenv(varname);
+        }
 #else
         inline std::string stdGetenv(const char* varname)
         {

@@ -329,6 +329,9 @@ TEST(stdosd, FormatABig)
 
 TEST(stdosd, int64)
 {
+#ifndef PRId64
+#define PRId64 "lld"
+#endif
 	{
 		string s = stdFormat("%" PRId64, 0LL);
 		EXPECT_STREQ(s.c_str(), "0");
@@ -989,7 +992,7 @@ static void GetSystemDirectoryA(char* p, int count)
 #endif
 TEST(stdosd, stdGetFullPathExecutable)
 {
-#ifdef _WIN32
+#if defined(_MSC_VER) || defined(__MINGW32__)
 	{
 		string fullnote1 = stdGetFullPathExecutable("notepad.exe");
 		char szT[MAX_PATH];
@@ -997,7 +1000,8 @@ TEST(stdosd, stdGetFullPathExecutable)
 		string fullnote2 = stdCombinePath(szT, "notepad.exe");
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
-
+#endif
+#if defined(_MSC_VER)
 	{
 		wstring fullnote1 = stdGetFullPathExecutable(L"notepad.exe");
 		wchar_t szT[MAX_PATH];
@@ -1005,7 +1009,8 @@ TEST(stdosd, stdGetFullPathExecutable)
 		wstring fullnote2 = stdCombinePath(szT, L"notepad.exe");
 		EXPECT_EQ(fullnote1, fullnote2);
 	}
-#else
+#endif
+#if defined(__GNUC__) && !defined(__MINGW32__)
     {
         string fullls = stdGetFullPathExecutable("ls");
         EXPECT_TRUE(stdIsFullPath(fullls));

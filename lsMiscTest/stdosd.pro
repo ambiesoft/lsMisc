@@ -46,11 +46,11 @@ win32 {
         ../GetLastErrorString.cpp
 
     win32-g++ {
-		message( "win32-g++ libs" )
-        LIBS += -lUser32 -lOle32 -lShlwapi -luuid
+        message( "win32-g++ libs" )
+        LIBS += -lKernel32 -lPsapi -lUser32 -lOle32 -lShlwapi -luuid
     }
     win32-msvc* {
-		message( "win32-msvc* libs" )
+        message( "win32-msvc* libs" )
         LIBS += User32.lib Ole32.lib Shlwapi.lib uuid.lib shell32.lib
     }
 }
