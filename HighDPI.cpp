@@ -269,8 +269,6 @@ namespace Ambiesoft {
 
 	int InitHighDPISupport(bool bThread)
 	{
-
-
 		prepareFunctions();
 
 		int ret = InitRet_NotAvailable;
