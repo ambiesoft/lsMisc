@@ -90,10 +90,12 @@
 #define STDOSD_DEFAULTSEPARATOR "\\"
 #define STDOSD_PATHSEPARATORS "/\\"
 #define STDOSD_NEWLINE "\r\n"
+#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
 #else
 #define STDOSD_DEFAULTSEPARATOR "/"
 #define STDOSD_PATHSEPARATORS "/"
 #define STDOSD_NEWLINE "\n"
+#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
 #endif
 
 namespace Ambiesoft {
@@ -104,6 +106,8 @@ namespace Ambiesoft {
 #else
         using SYSTEM_CHAR_TYPE = char;
 #endif
+        using osdstring = std::basic_string<SYSTEM_CHAR_TYPE>;
+
         typedef void* HFILEITERATOR;
 		template<typename C>
         class FileInfo
@@ -1449,7 +1453,7 @@ namespace Ambiesoft {
 #endif
 
 
-		inline bool stdFileExists(unsigned short mode)
+        inline bool stdFileExistsFromMode(unsigned short mode)
 		{
 			if ((S_IFREG & mode) == 0)
 				return false;
@@ -1466,14 +1470,14 @@ namespace Ambiesoft {
 		inline bool stdFileExists(const char* file)
 		{
 			struct stat buffer;
-			return stat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
+            return stat(file, &buffer) == 0 && stdFileExistsFromMode(buffer.st_mode);
 		}
 #ifdef _WIN32
 		template<>
 		inline bool stdFileExists(const wchar_t* file)
 		{
 			struct _stat  buffer;
-			return _wstat(file, &buffer) == 0 && stdFileExists(buffer.st_mode);
+            return _wstat(file, &buffer) == 0 && stdFileExistsFromMode(buffer.st_mode);
 		}
 #endif
 
