@@ -21,10 +21,10 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 // if you don't want to use MFC, comment out the following line:
-#ifndef PCH_INCLUDE_FILE
-// Define PCH_INCLUDE_FILE outside of the code
-#define PCH_INCLUDE_FILE "StdAfx.h"
-#endif
+
+
+
+
 
 
 #ifndef __AFX_H__
