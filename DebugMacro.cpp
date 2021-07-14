@@ -24,7 +24,7 @@
 // Define PCH_INCLUDE_FILE outside of the code
 #define PCH_INCLUDE_FILE "StdAfx.h"
 #endif
-#include PCH_INCLUDE_FILE
+
 
 
 #ifdef _DEBUG

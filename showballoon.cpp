@@ -25,7 +25,7 @@
 // Define PCH_INCLUDE_FILE outside of the code
 #define PCH_INCLUDE_FILE "StdAfx.h"
 #endif
-#include PCH_INCLUDE_FILE
+
 
 
 #define WIN32_LEAN_AND_MEAN		// Windows
