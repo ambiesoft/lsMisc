@@ -32,14 +32,14 @@ namespace Ambiesoft {
 	
 	ref class CCurDirSaver
 	{
-		String^ prev_;
+		System::String^ prev_;
 	public:
-		CCurDirSaver(String^ dirToSet) {
-			prev_ = Environment::CurrentDirectory;
-			Environment::CurrentDirectory = dirToSet;
+		CCurDirSaver(System::String^ dirToSet) {
+			prev_ = System::Environment::CurrentDirectory;
+			System::Environment::CurrentDirectory = dirToSet;
 		}
 		~CCurDirSaver() {
-			Environment::CurrentDirectory = prev_;
+			System::Environment::CurrentDirectory = prev_;
 		}
 	};
 }
