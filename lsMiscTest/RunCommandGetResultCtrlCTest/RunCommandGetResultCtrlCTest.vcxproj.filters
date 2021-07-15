@@ -62,7 +62,7 @@
       <Filter>Source Files\lsMisc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\UTF16toUTF8.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\lsMisc</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

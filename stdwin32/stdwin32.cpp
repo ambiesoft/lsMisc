@@ -418,52 +418,52 @@ namespace Ambiesoft {
 		//}
 
 
-		std::string stdItoA(int i) {
-			// return string_formatA("%d", i);
-			char szT[64]; szT[0] = 0;
-#if _MSC_VER > 1310
-			if (0 != _itoa_s(i, szT, 10))
-				return "";
-			return szT;
-#else
-			return _itoa(i, szT, 10);
-#endif
-		}
-		std::wstring stdItoW(int i) {
-			// return string_formatW(L"%d", i);
-			wchar_t szT[64]; szT[0] = 0;
-#if _MSC_VER > 1310
-			if (0 != _itow_s(i, szT, 10))
-				return L"";
-			return szT;
-#else
-			return _itow(i, szT, 10);
-#endif
-		}
-
-
-		std::string stdItoA64(__int64 i) {
-			// return string_formatA("%I64d", i);
-			char szT[64]; szT[0] = 0;
-#if _MSC_VER > 1310
-			if (0 != _i64toa_s(i, szT, _countof(szT), 10))
-				return "";
-			return szT;
-#else
-			return _i64toa(i, szT, 10);
-#endif
-		}
-		std::wstring stdItoW64(__int64 i) {
-			// return string_formatW(L"%I64d", i);
-			wchar_t szT[64]; szT[0] = 0;
-#if _MSC_VER > 1310
-			if (0 != _i64tow_s(i, szT, _countof(szT), 10))
-				return L"";
-			return szT;
-#else
-			return _i64tow(i, szT, 10);
-#endif
-		}
+//		std::string stdItoA(int i) {
+//			// return string_formatA("%d", i);
+//			char szT[64]; szT[0] = 0;
+//#if _MSC_VER > 1310
+//			if (0 != _itoa_s(i, szT, 10))
+//				return "";
+//			return szT;
+//#else
+//			return _itoa(i, szT, 10);
+//#endif
+//		}
+//		std::wstring stdItoW(int i) {
+//			// return string_formatW(L"%d", i);
+//			wchar_t szT[64]; szT[0] = 0;
+//#if _MSC_VER > 1310
+//			if (0 != _itow_s(i, szT, 10))
+//				return L"";
+//			return szT;
+//#else
+//			return _itow(i, szT, 10);
+//#endif
+//		}
+//
+//
+//		std::string stdItoA64(__int64 i) {
+//			// return string_formatA("%I64d", i);
+//			char szT[64]; szT[0] = 0;
+//#if _MSC_VER > 1310
+//			if (0 != _i64toa_s(i, szT, _countof(szT), 10))
+//				return "";
+//			return szT;
+//#else
+//			return _i64toa(i, szT, 10);
+//#endif
+//		}
+//		std::wstring stdItoW64(__int64 i) {
+//			// return string_formatW(L"%I64d", i);
+//			wchar_t szT[64]; szT[0] = 0;
+//#if _MSC_VER > 1310
+//			if (0 != _i64tow_s(i, szT, _countof(szT), 10))
+//				return L"";
+//			return szT;
+//#else
+//			return _i64tow(i, szT, 10);
+//#endif
+//		}
 
 
 		std::string stdExpandEnvironmentStringsA(LPCSTR pStr)

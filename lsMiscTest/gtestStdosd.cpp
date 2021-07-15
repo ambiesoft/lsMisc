@@ -1125,5 +1125,23 @@ TEST(stdosd, stdGetProgramName)
 {
     basic_string<SYSTEM_CHAR_TYPE> prog = stdGetProgramName();
     EXPECT_FALSE(prog.empty());
+}
 
+TEST(stdosd, stdToString)
+{
+#ifdef _WIN32
+	EXPECT_STREQ(L"1", stdToString(1).c_str());
+#else
+	EXPECT_STREQ("1", stdToString(1).c_str());
+#endif
+
+	EXPECT_STREQ("0", stdToString<char>(0).c_str());
+	EXPECT_STREQ("-1", stdToString<char>(-1).c_str());
+	EXPECT_STREQ(L"0", stdToString<wchar_t>(0).c_str());
+	EXPECT_STREQ(L"-1", stdToString<wchar_t>(-1).c_str());
+
+	EXPECT_STREQ("true", stdToString<char>(true).c_str());
+	EXPECT_STREQ("false", stdToString<char>(!true).c_str());
+	EXPECT_STREQ(L"true", stdToString<wchar_t>(true).c_str());
+	EXPECT_STREQ(L"false", stdToString<wchar_t>(!true).c_str());
 }

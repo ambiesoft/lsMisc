@@ -1612,6 +1612,51 @@ namespace Ambiesoft {
 		}
 
 		std::basic_string<SYSTEM_CHAR_TYPE> stdGetProgramName();
+
+
+		template<typename C, typename T>
+		struct class_stdToString
+		{
+			static_assert(sizeof(T) == 0, "char or wchar_t");
+		};
+		template<typename T>
+		struct class_stdToString<char, T>
+		{
+			static std::basic_string<char> call(const T& t)
+			{
+				return std::to_string(t);
+			}
+		};
+		template<>
+		struct class_stdToString<char, bool>
+		{
+			static std::basic_string<char> call(const bool& t)
+			{
+				return t ? "true" : "false";
+			}
+		};
+		template<typename T>
+		struct class_stdToString<wchar_t, T>
+		{
+			static std::basic_string<wchar_t> call(const T& t)
+			{
+				return std::to_wstring(t);
+			}
+		};
+		template<>
+		struct class_stdToString<wchar_t, bool>
+		{
+			static std::basic_string<wchar_t> call(const bool& t)
+			{
+				return t ? L"true" : L"false";
+			}
+		};
+
+		template<typename C = SYSTEM_CHAR_TYPE, typename T>
+		std::basic_string<C> stdToString(const T& t)
+		{
+			return class_stdToString<C, T>::call(t);
+		}
 	}
 }
 
