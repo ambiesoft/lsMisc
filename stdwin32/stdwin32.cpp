@@ -342,16 +342,16 @@ namespace Ambiesoft {
 
 
 
-		std::wstring stdGetCurrentDirectory()
-		{
-			DWORD len = GetCurrentDirectory(0, NULL);
-			WCHAR* p = new WCHAR[len];
-			p[0] = 0;
-			GetCurrentDirectoryW(len, p);
-			std::wstring ret(p);
-			delete[] p;
-			return ret;
-		}
+		//std::wstring stdGetCurrentDirectory()
+		//{
+		//	DWORD len = GetCurrentDirectory(0, NULL);
+		//	WCHAR* p = new WCHAR[len];
+		//	p[0] = 0;
+		//	GetCurrentDirectoryW(len, p);
+		//	std::wstring ret(p);
+		//	delete[] p;
+		//	return ret;
+		//}
 
 
 		//bool hasEndingA(std::string const &fullString, std::string const &ending) {
@@ -700,103 +700,103 @@ namespace Ambiesoft {
 
 
 
-		std::string stdToString(const wchar_t * pIN)
-		{
-			if (pIN == NULL || pIN[0] == 0)
-				return std::string();
+		//std::string stdToString(const wchar_t * pIN)
+		//{
+		//	if (pIN == NULL || pIN[0] == 0)
+		//		return std::string();
 
-			int cbSize = (int)wcslen(pIN) + 1;
-			int nReqSize = WideCharToMultiByte(CP_ACP,
-				0,
-				pIN,
-				cbSize,
-				NULL,
-				0,
-				NULL,
-				NULL);
+		//	int cbSize = (int)wcslen(pIN) + 1;
+		//	int nReqSize = WideCharToMultiByte(CP_ACP,
+		//		0,
+		//		pIN,
+		//		cbSize,
+		//		NULL,
+		//		0,
+		//		NULL,
+		//		NULL);
 
-			if (nReqSize == 0)
-				return NULL;
+		//	if (nReqSize == 0)
+		//		return NULL;
 
-			char* pOut = (char*)malloc(nReqSize);
-			int nRet = WideCharToMultiByte(CP_ACP,
-				0,
-				pIN,
-				cbSize,
-				pOut,
-				nReqSize,
-				NULL,
-				NULL);
+		//	char* pOut = (char*)malloc(nReqSize);
+		//	int nRet = WideCharToMultiByte(CP_ACP,
+		//		0,
+		//		pIN,
+		//		cbSize,
+		//		pOut,
+		//		nReqSize,
+		//		NULL,
+		//		NULL);
 
-			if (nRet == 0 || nRet != nReqSize)
-			{
-				free(pOut);
-				return NULL;
-			}
+		//	if (nRet == 0 || nRet != nReqSize)
+		//	{
+		//		free(pOut);
+		//		return NULL;
+		//	}
 
-			std::string ret(pOut);
-			free(pOut);
-			return ret;
-		}
-		std::string stdToString(const std::wstring& ws)
-		{
-			return stdToString(ws.c_str());
-		}
+		//	std::string ret(pOut);
+		//	free(pOut);
+		//	return ret;
+		//}
+		//std::string stdToString(const std::wstring& ws)
+		//{
+		//	return stdToString(ws.c_str());
+		//}
 
 
-		static std::wstring toWstringCommon(const UINT codepage, const char* pStr)
-		{
-			if (pStr == NULL || pStr[0] == 0)
-				return std::wstring();
+		//static std::wstring toWstringCommon(const UINT codepage, const char* pStr)
+		//{
+		//	if (pStr == NULL || pStr[0] == 0)
+		//		return std::wstring();
 
-			size_t cbLen = strlen(pStr) + 1;
-			int nReqSize = MultiByteToWideChar(
-				codepage,
-				0,
-				(const char*)pStr,
-				(int)cbLen,
-				NULL,
-				0);
+		//	size_t cbLen = strlen(pStr) + 1;
+		//	int nReqSize = MultiByteToWideChar(
+		//		codepage,
+		//		0,
+		//		(const char*)pStr,
+		//		(int)cbLen,
+		//		NULL,
+		//		0);
 
-			if (nReqSize == 0)
-				return NULL;
+		//	if (nReqSize == 0)
+		//		return NULL;
 
-			LPWSTR pOut = (LPWSTR)malloc(nReqSize * sizeof(WCHAR));
-			int nRet = MultiByteToWideChar(
-				codepage,
-				0,
-				(const char*)pStr,
-				(int)cbLen,
-				pOut,
-				nReqSize);
+		//	LPWSTR pOut = (LPWSTR)malloc(nReqSize * sizeof(WCHAR));
+		//	int nRet = MultiByteToWideChar(
+		//		codepage,
+		//		0,
+		//		(const char*)pStr,
+		//		(int)cbLen,
+		//		pOut,
+		//		nReqSize);
 
-			if (nRet == 0 || nRet != nReqSize)
-			{
-				free(pOut);
-				return NULL;
-			}
+		//	if (nRet == 0 || nRet != nReqSize)
+		//	{
+		//		free(pOut);
+		//		return NULL;
+		//	}
 
-			std::wstring ret = pOut;
-			free(pOut);
-			return ret;
-		}
-		std::wstring stdToWstring(const char* pStr)
-		{
-			return toWstringCommon(CP_ACP, pStr);
-		}
-		std::wstring stdToWstring(const std::string& s)
-		{
-			return stdToWstring(s.c_str());
-		}
+		//	std::wstring ret = pOut;
+		//	free(pOut);
+		//	return ret;
+		//}
+		//std::wstring stdToWstring(const char* pStr)
+		//{
+		//	return toWstringCommon(CP_ACP, pStr);
+		//}
+		//std::wstring stdToWstring(const std::string& s)
+		//{
+		//	return stdToWstring(s.c_str());
+		//}
 
-		std::wstring utf8ToWstring(const char* pStr)
-		{
-			return toWstringCommon(CP_UTF8, pStr);
-		}
-		std::wstring utf8ToWstring(const std::string& s)
-		{
-			return utf8ToWstring(s.c_str());
-		}
+		//std::wstring utf8ToWstring(const char* pStr)
+		//{
+		//	return toWstringCommon(CP_UTF8, pStr);
+		//}
+		//std::wstring utf8ToWstring(const std::string& s)
+		//{
+		//	return utf8ToWstring(s.c_str());
+		//}
 
 
 

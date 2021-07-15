@@ -145,7 +145,7 @@ namespace Ambiesoft {
 
 
 
-		std::wstring stdGetCurrentDirectory();
+		// std::wstring stdGetCurrentDirectory();
 
 
 
@@ -240,14 +240,14 @@ namespace Ambiesoft {
 #endif // __cplusplus_cli
 
 
-		std::string stdToString(const wchar_t * pIN);
-		std::string stdToString(const std::wstring& ws);
+		//std::string stdToString(const wchar_t * pIN);
+		//std::string stdToString(const std::wstring& ws);
 
-		std::wstring stdToWstring(const char* pStr);
-		std::wstring stdToWstring(const std::string& s);
+		//std::wstring stdToWstring(const char* pStr);
+		//std::wstring stdToWstring(const std::string& s);
 
-		std::wstring utf8ToWstring(const char* pStr);
-		std::wstring utf8ToWstring(const std::string& s);
+		//std::wstring utf8ToWstring(const char* pStr);
+		//std::wstring utf8ToWstring(const std::string& s);
 
 		//std::vector<std::wstring> stdSplitString(const std::wstring& str,
 		//	const std::wstring& delimiter);
