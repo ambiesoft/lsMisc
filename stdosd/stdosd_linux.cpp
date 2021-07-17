@@ -129,10 +129,6 @@ namespace Ambiesoft {
 			return L"";
 		}
 
-		bool stdIsFileSystemCaseSensitive()
-		{
-			return true;
-		}
         size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* pBuf, size_t len)
         {
             // https://stackoverflow.com/a/198099

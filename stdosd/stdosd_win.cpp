@@ -561,12 +561,7 @@ namespace Ambiesoft {
 			return true;
 		}
 
-		bool stdIsFileSystemCaseSensitive()
-		{
-			return false;
-		}
-
-		bool stdGetWindowText(HWND hWindow, std::string* result)
+		bool stdGetWindowText(HWND, std::string*)
 		{
 			assert(false);
 			return false;

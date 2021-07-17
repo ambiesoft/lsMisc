@@ -91,11 +91,13 @@
 #define STDOSD_PATHSEPARATORS "/\\"
 #define STDOSD_NEWLINE "\r\n"
 #define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
+#define STDOSD_IS_CASESENSITIVE false
 #else
 #define STDOSD_DEFAULTSEPARATOR "/"
 #define STDOSD_PATHSEPARATORS "/"
 #define STDOSD_NEWLINE "\n"
 #define STDOSD_SYSTEM_CHAR_LITERAL(s) s
+#define STDOSD_IS_CASESENSITIVE true
 #endif
 
 namespace Ambiesoft {
@@ -1539,7 +1541,10 @@ namespace Ambiesoft {
 			return vRet;
 		}
 
-		bool stdIsFileSystemCaseSensitive();
+		inline bool stdIsFileSystemCaseSensitive()
+		{
+			return STDOSD_IS_CASESENSITIVE;
+		}
 
 		template<typename C>
 		inline bool stdIsSamePath(const C* path1, const C* path2)
@@ -1567,7 +1572,7 @@ namespace Ambiesoft {
 		{
 			return stdIsSamePath(n2, p1);
 		}
-		inline bool stdIsSamePath(const std::nullptr_t* n1, const std::nullptr_t* n2)
+		inline bool stdIsSamePath(const std::nullptr_t*, const std::nullptr_t*)
 		{
 			return true;
 		}
