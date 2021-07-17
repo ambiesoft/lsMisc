@@ -6,3 +6,4 @@
 [submodule "lsMiscTest/gtest-parallel"]
 	path = lsMiscTest/gtest-parallel
 	url = https://github.com/google/gtest-parallel.git
+	ignore = dirty
