@@ -24,7 +24,7 @@
 
 
 #include <windows.h>
-
+#include <CommCtrl.h>
 #include "GetHotkeyString.h"
 
 using namespace std;
@@ -258,15 +258,11 @@ wstring GetHotkeyStringW(WORD wKey)
 	if(wKey==0)
 		return ret;
 
-	if(HIBYTE(wKey) & MOD_CONTROL)
+	if(HIBYTE(wKey) & HOTKEYF_CONTROL)
 		ret += L"Ctrl+";
-	if(HIBYTE(wKey) & MOD_SHIFT)
+	if(HIBYTE(wKey) & HOTKEYF_SHIFT)
 		ret += L"Shift+";
-//	if(HIBYTE(wKey) & MOD_NOREPEAT)
-//		ret += L"NoRepeat+";
-	//if(HIBYTE(wKey) & MOD_WIN)
-	//	ret += L"Win+";
-	if(HIBYTE(wKey) & MOD_ALT)
+	if(HIBYTE(wKey) & HOTKEYF_ALT)
 		ret += L"Alt+";
 
     return ret + GetVKString(LOBYTE(wKey));
