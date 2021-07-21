@@ -30,7 +30,11 @@
 #include <cassert>
 #include <map>
 #include <set>
+
+#include <tchar.h>
+
 #include "EnableTextTripleClickSelectAll.h"
+
 
 #include "DebugNew.h"
 
