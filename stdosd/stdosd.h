@@ -1065,12 +1065,50 @@ namespace Ambiesoft {
 
 
 
+		struct FILEITERATEMODE
+		{
+			enum Type {
+				SKIP_NONE = 0x0,
+				SKIP_DOT = 0x1,
+				SKIP_DOTDOT = 0x2,
+			};
+		private:
+			using U = typename std::underlying_type<Type>::type;
+		public:
+			constexpr FILEITERATEMODE(const U val) noexcept
+				: val_(static_cast<Type>(val))
+			{ }
+			constexpr operator U() const { return val_; }
+			Type val_;
+		};
+		struct GETFILESEMODE
+		{
+			enum Type {
+				FILE = 0x1,
+				DIRECTORY = 0x2,
+				FILE_AND_DIRECTORY = 0x3,
+			};
+		private:
+			using U = typename std::underlying_type<Type>::type;
+		public:
+			constexpr GETFILESEMODE(const U val) noexcept
+				: val_(static_cast<Type>(val))
+			{ }
+			constexpr operator U() const { return val_; }
+			Type val_;
+		};
 
-
-
-        HFILEITERATOR stdCreateFileIterator(const std::string& directory);
+        HFILEITERATOR stdCreateFileIterator(
+			const std::string& directory,
+			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
+			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
+			int depth = -1);
 #ifdef _WIN32
-		HFILEITERATOR stdCreateFileIterator(const std::wstring& directory);
+		HFILEITERATOR stdCreateFileIterator(
+			const std::wstring& directory,
+			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
+			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
+			int depth = -1);
 #endif
 		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi);
 #ifdef _WIN32
@@ -1701,6 +1739,56 @@ namespace Ambiesoft {
 		inline bool stdGetUnittedSize(const std::wstring& s, int* nSign, __int64* lResult, int* pUnit = nullptr)
 		{
 			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
+		}
+
+		inline std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> stdGetFiles(
+			const SYSTEM_CHAR_TYPE* pDirectory,
+			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
+			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
+			int depth = -1)
+		{
+			using V = std::vector<std::basic_string<SYSTEM_CHAR_TYPE>>;
+			V ret;
+			if (depth == 0)
+				return ret;
+			HFILEITERATOR hIt = stdCreateFileIterator(pDirectory, fim, gfm);
+			if (!hIt)
+				return ret;
+			FileInfo<SYSTEM_CHAR_TYPE> fi;
+			--depth;
+			while (stdFileNext(hIt, &fi))
+			{
+				if (fi.isDirectory())
+				{
+					ret.push_back(fi.name());
+					if (depth != 0)
+					{
+						if (fi.name() != stdLiterals<SYSTEM_CHAR_TYPE>::dotString() &&
+							fi.name() != stdLiterals<SYSTEM_CHAR_TYPE>::dotdotString())
+						{
+							V v = stdGetFiles(fi.name().c_str(), fim, gfm, depth);
+							ret.insert(ret.end(), v.begin(), v.end());
+						}
+					}
+				}
+				else
+				{
+					ret.push_back(fi.name());
+				}
+			}
+			return ret;
+		}
+		inline bool stdDirectoryEmpty(const SYSTEM_CHAR_TYPE* pStr)
+		{
+			if (pStr == nullptr || pStr[0] == 0)
+				return false;
+			if (stdFileExists(pStr))
+				return false;
+			if (!stdDirectoryExists(pStr))
+				return true;
+			
+			std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> ret = stdGetFiles(pStr, FILEITERATEMODE::SKIP_NONE, GETFILESEMODE::FILE_AND_DIRECTORY, 1);
+			return ret.size() == 2;
 		}
 	}
 }

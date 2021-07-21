@@ -176,6 +176,8 @@ namespace Ambiesoft {
             STDOSD_DEFINE_STRINGFUNCTION(nulString, "");								\
 			STDOSD_DEFINE_STRINGFUNCTION(spaceString, " ");								\
 			STDOSD_DEFINE_STRINGFUNCTION(semicolonString, ";");							\
+			STDOSD_DEFINE_STRINGFUNCTION(dotString, ".");								\
+			STDOSD_DEFINE_STRINGFUNCTION(dotdotString, "..");							\
 			STDOSD_DEFINE_STRINGFUNCTION(num0String, "0");								\
 			STDOSD_DEFINE_STRINGFUNCTION(offString, "off");								\
 			STDOSD_DEFINE_STRINGFUNCTION(falseString, "false");							\

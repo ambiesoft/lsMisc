@@ -295,9 +295,31 @@ namespace Ambiesoft {
         {
             HANDLE hFF_ = INVALID_HANDLE_VALUE;
             WIN32_FIND_DATAW* pFindData_ = nullptr;
-            public:
-            CFileIteratorInternal(HANDLE h, const WIN32_FIND_DATAW* wfd) :
-                hFF_(h)
+			FILEITERATEMODE fim_;
+			GETFILESEMODE gfm_;
+			bool loopStarted_ = false;
+		private:
+			static bool isDot(LPCWSTR pStr) {
+				return (pStr[0] == L'.' && pStr[1] == 0);
+			}
+			static bool isDotDot(LPCWSTR pStr) {
+				return (pStr[0] == L'.' && pStr[1] == L'.' && pStr[2] == 0);
+			}
+			static bool isDir(WIN32_FIND_DATAW* pFD) {
+				return pFD->dwFileAttributes != 0xFFFFFFFF &&
+					(pFD->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0;
+			}
+			static bool isFile(WIN32_FIND_DATAW* pFD) {
+				return pFD->dwFileAttributes != 0xFFFFFFFF &&
+					(pFD->dwFileAttributes & FILE_ATTRIBUTE_NORMAL) != 0;
+			}
+
+		public:
+            CFileIteratorInternal(HANDLE h, 
+				const WIN32_FIND_DATAW* wfd, 
+				FILEITERATEMODE fim,
+				GETFILESEMODE gfm) :
+                hFF_(h), fim_(fim), gfm_(gfm)
             {
                 if(wfd)
                 {
@@ -330,29 +352,44 @@ namespace Ambiesoft {
             {
                 if(!valid())
                     return false;
+				if (!loopStarted_)
+				{
+					loopStarted_ = true;
+					return true;
+				}
+                
+				for (;;)
+				{
+					if (!FindNextFileW(hFF_, pFindData_))
+					{
+						Close();
+						return false;
+					}
 
-                bool nexted=false;
-                while( (pFindData_->cFileName[0]==L'.' && pFindData_->cFileName[1]==0) ||
-                        (pFindData_->cFileName[0]==L'.' && pFindData_->cFileName[1]==L'.' &&  pFindData_->cFileName[2]==0) )
-                {
-                    if(!FindNextFileW(hFF_, pFindData_))
-                    {
-                        Close();
-                        return false;
-                    }
-                    nexted=true;
-                }
+					if ((fim_ & FILEITERATEMODE::SKIP_DOT) != 0 &&
+						isDot(pFindData_->cFileName))
+					{
+						continue;
+					}
+					if ((fim_ & FILEITERATEMODE::SKIP_DOTDOT) != 0 &&
+						isDotDot(pFindData_->cFileName))
+					{
+						continue;
+					}
 
-                if(!nexted)
-                {
-                    if(!FindNextFileW(hFF_, pFindData_))
-                    {
-                        Close();
-                        return false;
-                    }
-                }
+					if ((gfm_ & GETFILESEMODE::DIRECTORY) == 0 &&
+						isDir(pFindData_))
+					{
+						continue;
+					}
+					if ((gfm_ & GETFILESEMODE::FILE) == 0 &&
+						isFile(pFindData_))
+					{
+						continue;
+					}
 
-                return true;
+					return true;
+				}
             }
 			std::string name() const {
 				std::string ret;
@@ -377,7 +414,11 @@ namespace Ambiesoft {
             }
         };
 
-        HFILEITERATOR stdCreateFileIterator(const std::string& directory)
+        HFILEITERATOR stdCreateFileIterator(
+			const std::string& directory,
+			FILEITERATEMODE fim, 
+			GETFILESEMODE gfm,
+			int depth)
         {
 			std::string d(directory);
 			d.erase(d.find_last_not_of("/\\")+1);
@@ -391,9 +432,13 @@ namespace Ambiesoft {
 				return nullptr;
 			}
 
-            return new CFileIteratorInternal(hFF, &wfd);
+            return new CFileIteratorInternal(hFF, &wfd, fim, gfm);
         }
-		HFILEITERATOR stdCreateFileIterator(const std::wstring& directory)
+		HFILEITERATOR stdCreateFileIterator(
+			const std::wstring& directory,
+			FILEITERATEMODE fim,
+			GETFILESEMODE gfm,
+			int depth)
 		{
 			std::wstring d(directory);
 			d.erase(d.find_last_not_of(L"/\\") + 1);
@@ -406,7 +451,7 @@ namespace Ambiesoft {
 				return nullptr;
 			}
 
-			return new CFileIteratorInternal(hFF, &wfd);
+			return new CFileIteratorInternal(hFF, &wfd, fim, gfm);
 		}
 		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
 		{
