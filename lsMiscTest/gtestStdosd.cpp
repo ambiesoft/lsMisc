@@ -1178,3 +1178,8 @@ TEST(stdosd, stdGetUnittedSize)
 	EXPECT_EQ(nSign, -1);
 	EXPECT_EQ(val, -100 * 1024);
 }
+
+TEST(stdosd, stdGetenv)
+{
+	EXPECT_TRUE(stdGetenv("PATH").size() != 0);
+}

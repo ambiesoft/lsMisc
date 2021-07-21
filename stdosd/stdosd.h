@@ -1437,7 +1437,8 @@ namespace Ambiesoft {
 				assert(pValue == nullptr);
 				return std::basic_string<C>();
 			}
-			assert(pValue != nullptr);
+			if (!pValue)
+				return std::basic_string<C>();
 			std::basic_string<C> ret{ pValue };
 			free(pValue);
 			return ret;
