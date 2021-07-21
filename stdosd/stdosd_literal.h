@@ -148,6 +148,8 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_CHAR(NY,'Y');										\
 			STDOSD_DEFINE_CHAR(NZ,'Z');										\
 																			\
+			STDOSD_DEFINE_CHAR(NPlus			,'+');						\
+			STDOSD_DEFINE_CHAR(NMinus			,'-');						\
 			STDOSD_DEFINE_CHAR(NAsterisk		,'*');						\
 			STDOSD_DEFINE_CHAR(NSlash			,'/');						\
 			STDOSD_DEFINE_CHAR(NBackSlash		,'\\');						\

@@ -1145,3 +1145,36 @@ TEST(stdosd, stdToString)
 	EXPECT_STREQ(L"true", stdToString<wchar_t>(true).c_str());
 	EXPECT_STREQ(L"false", stdToString<wchar_t>(!true).c_str());
 }
+
+TEST(stdosd, stdGetUnittedSize)
+{
+	int nSign = 0;
+	__int64 val = 0;
+	EXPECT_FALSE(stdGetUnittedSize((const char*)NULL, 0, &nSign, &val));
+	EXPECT_FALSE(stdGetUnittedSize("", 0, &nSign, &val));
+	EXPECT_FALSE(stdGetUnittedSize(L"", 0, &nSign, &val));
+
+	EXPECT_TRUE(stdGetUnittedSize("100", -1, &nSign, &val));
+	EXPECT_EQ(nSign, 0);
+	EXPECT_EQ(val, 100);
+
+	EXPECT_TRUE(stdGetUnittedSize("100k", -1, &nSign, &val));
+	EXPECT_EQ(nSign, 0);
+	EXPECT_EQ(val, 100 * 1000);
+
+	EXPECT_TRUE(stdGetUnittedSize("-100K", -1, &nSign, &val));
+	EXPECT_EQ(nSign, -1);
+	EXPECT_EQ(val, -100 * 1024);
+
+	EXPECT_TRUE(stdGetUnittedSize(L"-100K", -1, &nSign, &val));
+	EXPECT_EQ(nSign, -1);
+	EXPECT_EQ(val, -100 * 1024);
+
+	EXPECT_TRUE(stdGetUnittedSize(string("-100K"), &nSign, &val));
+	EXPECT_EQ(nSign, -1);
+	EXPECT_EQ(val, -100 * 1024);
+
+	EXPECT_TRUE(stdGetUnittedSize(wstring(L"-100K"), &nSign, &val));
+	EXPECT_EQ(nSign, -1);
+	EXPECT_EQ(val, -100 * 1024);
+}

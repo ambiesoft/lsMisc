@@ -515,54 +515,7 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-		bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit)
-		{
-			if (pStr == NULL || *pStr == 0)
-				return false;
 
-			wstring str(pStr);
-			WCHAR ch = *str.rbegin();
-			int unit = 1;
-			bool unitted = true;
-			switch (ch)
-			{
-			case L'k': unit = 1000; break;
-			case L'K': unit = 1024; break;
-			case L'm': unit = 1000 * 1000; break;
-			case L'M': unit = 1024 * 1024; break;
-			case L'g': unit = 1000 * 1000 * 1000; break;
-			case L'G': unit = 1024 * 1024 * 1024; break;
-			default:
-				unitted = false;
-				break;
-			}
-			if (unitted)
-				str = str.substr(0, str.size() - 1);
-
-
-			nSign = 0;
-			bool bsigned = true;
-			switch (str[0])
-			{
-			case L'+': nSign = 1; break;
-			case L'-': nSign = -1; break;
-			default:
-				bsigned = false;
-			}
-			if (bsigned)
-				str = str.substr(1, str.size());
-
-			if (pUnit)
-				*pUnit = unit;
-
-			__int64 r = _wtoi64(str.c_str());
-
-			lResult = r * unit;
-			if (nSign < 0)
-				lResult = -lResult;
-
-			return true;
-		}
 
 
 		//wstring stdSplitCommandLineW(int argc, int startargc, LPCWSTR* argv)

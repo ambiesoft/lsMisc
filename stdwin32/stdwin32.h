@@ -200,12 +200,12 @@ namespace Ambiesoft {
 
 
 
-		bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit = NULL);
-#ifdef UNICODE
-#define stdGetUnittedSize stdGetUnittedSizeW
-#else
-#define stdGetUnittedSize stdGetUnittedSizeA
-#endif
+//		bool stdGetUnittedSizeW(LPCWSTR pStr, int& nSign, __int64& lResult, int* pUnit = NULL);
+//#ifdef UNICODE
+//#define stdGetUnittedSize stdGetUnittedSizeW
+//#else
+//#define stdGetUnittedSize stdGetUnittedSizeA
+//#endif
 
 
 

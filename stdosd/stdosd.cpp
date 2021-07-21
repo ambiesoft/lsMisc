@@ -160,5 +160,64 @@ namespace Ambiesoft {
 		{
 			return stdGetFileNameWitoutExtension(stdGetModuleFileName<SYSTEM_CHAR_TYPE>());
 		}
+
+		template<typename C>
+		bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit)
+		{
+			if (pStr == NULL || *pStr == 0)
+				return false;
+			if (len == -1)
+				len = stdStringLength(pStr);
+			if (len == 0)
+				return false;
+
+			C lastchar = pStr[len - 1];
+			int unit = 1;
+			bool unitted = true;
+			switch (lastchar)
+			{
+			case stdLiterals<C>::Nk: unit = 1000; break;
+			case stdLiterals<C>::NK: unit = 1024; break;
+			case stdLiterals<C>::Nm: unit = 1000 * 1000; break;
+			case stdLiterals<C>::NM: unit = 1024 * 1024; break;
+			case stdLiterals<C>::Ng: unit = 1000 * 1000 * 1000; break;
+			case stdLiterals<C>::NG: unit = 1024 * 1024 * 1024; break;
+			default:
+				unitted = false;
+				break;
+			}
+
+			// need buffer, pStr may be system static
+			std::basic_string<C> str(pStr);
+			if (unitted)
+				str = str.substr(0, len - 1);
+
+			*nSign = 0;
+			bool bsigned = true;
+			switch (str[0])
+			{
+			case stdLiterals<C>::NPlus: *nSign = 1; break;
+			case stdLiterals<C>::NMinus: *nSign = -1; break;
+			default:
+				bsigned = false;
+			}
+			if (bsigned)
+				str = str.substr(1);
+
+			if (pUnit)
+				*pUnit = unit;
+
+			__int64 r = stdFromString<__int64, C>(str.c_str());
+
+			*lResult = r * unit;
+			if (*nSign < 0)
+				*lResult = -*lResult;
+
+			return true;
+		}
+
+		template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
+		template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
+
 	}
 }

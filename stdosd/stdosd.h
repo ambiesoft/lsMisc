@@ -157,10 +157,10 @@ namespace Ambiesoft {
 		inline bool isEmptyString(const C* str, size_t len) {
 			return (len == 0 || !str || str[0] == 0);
 		}
-		inline size_t getCharLength(const char* p) {
+		inline size_t stdStringLength(const char* p) {
 			return std::strlen(p);
 		}
-		inline size_t getCharLength(const wchar_t* p) {
+		inline size_t stdStringLength(const wchar_t* p) {
 			return wcslen(p);
 		}
 
@@ -224,7 +224,7 @@ namespace Ambiesoft {
 				return false;
 
             if (len == static_cast<size_t>(-1))
-				len = getCharLength(str);
+				len = stdStringLength(str);
 
 			for (size_t i = 0; i < len; ++i)
 			{
@@ -261,7 +261,7 @@ namespace Ambiesoft {
 				return false;
 
             if (len == static_cast<size_t>(-1))
-				len = getCharLength(str);
+				len = stdStringLength(str);
 
 			for (size_t i = 0; i < len; ++i)
 			{
@@ -770,9 +770,9 @@ namespace Ambiesoft {
 				return true;
 
             if (fullLen == static_cast<size_t>(-1))
-				fullLen = getCharLength(fullString);
+				fullLen = stdStringLength(fullString);
             if (endLen == static_cast<size_t>(-1))
-				endLen = getCharLength(ending);
+				endLen = stdStringLength(ending);
 
 			if (fullLen < endLen)
 				return false;
@@ -831,9 +831,9 @@ namespace Ambiesoft {
 				return true;
 
             if (fullLen == static_cast<size_t>(-1))
-				fullLen = getCharLength(fullString);
+				fullLen = stdStringLength(fullString);
             if (startLen == static_cast<size_t>(-1))
-				startLen = getCharLength(starting);
+				startLen = stdStringLength(starting);
 
 			if (fullLen < startLen)
 				return false;
@@ -892,7 +892,7 @@ namespace Ambiesoft {
 		inline bool stdIsDQNecessary(const C* fullString, size_t size = static_cast<size_t>(-1))
 		{
 			if (size == static_cast<size_t>(-1))
-				size = getCharLength(fullString);
+				size = stdStringLength(fullString);
 
 			if (size == 0)
 				return false;
@@ -926,7 +926,7 @@ namespace Ambiesoft {
         inline std::basic_string<C> stdAddDQIfNecessary(const C* fullString, size_t size = static_cast<size_t>(-1)) 
 		{
             if (size == static_cast<size_t>(-1))
-				size = getCharLength(fullString);
+				size = stdStringLength(fullString);
 
 			if (!stdIsDQNecessary(fullString, size))
 				return fullString;
@@ -1661,6 +1661,45 @@ namespace Ambiesoft {
 		std::basic_string<C> stdToString(const T& t)
 		{
 			return class_stdToString<C, T>::call(t);
+		}
+
+		template<typename R, typename C>
+		inline R stdFromString(const C* pStr)
+		{
+			static_assert(sizeof(C) == 0, "Must be full specialized");
+		}
+		template<>
+		inline int stdFromString<int, char>(const char* pStr)
+		{
+			return atoi(pStr);
+		}
+		template<>
+		inline int stdFromString<int, wchar_t>(const wchar_t* pStr)
+		{
+			return _wtoi(pStr);
+		}
+		template<>
+		inline __int64 stdFromString<__int64, char>(const char* pStr)
+		{
+			return _atoi64(pStr);
+		}
+		template<>
+		inline __int64 stdFromString<__int64, wchar_t>(const wchar_t* pStr)
+		{
+			return _wtoi64(pStr);
+		}
+
+		template<typename C>
+		bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit = nullptr);
+		extern template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
+		extern template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
+		inline bool stdGetUnittedSize(const std::string& s, int* nSign, __int64* lResult, int* pUnit = nullptr)
+		{
+			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
+		}
+		inline bool stdGetUnittedSize(const std::wstring& s, int* nSign, __int64* lResult, int* pUnit = nullptr)
+		{
+			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
 		}
 	}
 }
