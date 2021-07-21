@@ -53,11 +53,7 @@ static BOOL mySetEnvironmentVariable(LPCWSTR pPrefix, LPCWSTR pSuffix, LPCWSTR p
 	if(pSuffix)
 		w1 += pSuffix;
 
-	TRACE(w1.c_str());
-	TRACE(L"=");
-	TRACE(p2);
-	TRACE(L"\r\n");
-
+	TRACE(L"%s=%s\r\n", w1.c_str(), p2);
 
 	BOOL bRet = SetEnvironmentVariable(w1.c_str(),p2);
 	if(bRet && pResult)
@@ -105,7 +101,6 @@ void SetCSIDLtoEnvW(LPCWSTR pPrefix, LPCWSTR pSuffix, std::vector<wstring>* pRes
 	SETENVSPFOLDER(	pPrefix,	COMMON_DESKTOPDIRECTORY	,pSuffix	,pResult	);
 	SETENVSPFOLDER(	pPrefix,	APPDATA	,pSuffix	,pResult	);
 	SETENVSPFOLDER(	pPrefix,	PRINTHOOD	,pSuffix	,pResult	);
-	SETENVSPFOLDER(	pPrefix,	LOCAL_APPDATA	,pSuffix	,pResult	);
 	SETENVSPFOLDER(	pPrefix,	LOCAL_APPDATA	,pSuffix	,pResult	);
 	SETENVSPFOLDER(	pPrefix,	ALTSTARTUP	,pSuffix	,pResult	);
 	SETENVSPFOLDER(	pPrefix,	COMMON_ALTSTARTUP	,pSuffix	,pResult	);
