@@ -4,6 +4,10 @@
 // #include "stdafx.h"
 
 #include <memory>
+#ifdef _WIN32
+#include <Windows.h>
+#include <mbctype.h>
+#endif
 #include "../DebugNew.h"
 #include "gtest/gtest.h"
 
@@ -98,6 +102,16 @@ struct CBeforeMain
 
 int main(int argc, char* argv[])
 {
+#ifdef _WIN32
+	//CHAR szLocaleData[1024] = {};
+	//GetLocaleInfoA(LOCALE_USER_DEFAULT, LOCALE_SNAME, szLocaleData, _countof(szLocaleData));
+	//std::setlocale(LC_ALL, szLocaleData);
+	//std::locale loc(".ACP");
+	//std::locale::global(loc);
+	
+	// setlocale(LC_ALL, ".ACP");
+	//_setmbcp(GetACP());
+#endif
 	mysandbox();
 
 #ifdef _DEBUG

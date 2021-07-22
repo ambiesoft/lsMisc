@@ -1110,9 +1110,11 @@ namespace Ambiesoft {
 			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
 			int depth = -1);
 #endif
-		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi);
+		namespace detail {
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi);
 #ifdef _WIN32
-		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi);
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi);
+		}
 #endif
 		template<typename C>
 		inline bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo<C>* fi)
@@ -1120,7 +1122,7 @@ namespace Ambiesoft {
 			if (!hFileIterator)
 				return false;
 
-			if (!stdFileNextImpl(hFileIterator, fi))
+			if (!detail::stdFileNextImpl(hFileIterator, fi))
 				return false;
 
 			return true;
@@ -1207,10 +1209,12 @@ namespace Ambiesoft {
 
 
 		typedef void* HMODULEINSTANCE;
-		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size);
+		namespace detail {
+			size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size);
 #if defined(_WIN32)
-		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
+			size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size);
 #endif
+		}
 		template<typename C = SYSTEM_CHAR_TYPE>
 		inline std::basic_string<C> stdGetModuleFileName(HMODULEINSTANCE hInst = NULL)
 		{
@@ -1219,7 +1223,7 @@ namespace Ambiesoft {
 			for (;;)
 			{
 				p = (C*)realloc(p, size * sizeof(C));
-				if (stdGetModuleFileNameImpl(hInst, p, size) < size)
+				if (detail::stdGetModuleFileNameImpl(hInst, p, size) < size)
 					break;
 
 				// Make double the size of required memory
@@ -1280,9 +1284,10 @@ namespace Ambiesoft {
 
 		}
 #endif
-		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size);
-		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size);
-
+		namespace detail {
+			size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size);
+			size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size);
+		}
 		template<typename C = wchar_t>
 		inline std::basic_string<C> stdExpandEnvironmentStrings(const C* pIN)
 		{
@@ -1291,7 +1296,7 @@ namespace Ambiesoft {
 			for (;;)
 			{
 				p = (C*)realloc(p, size * sizeof(C));
-				if (stdExpandEnvironmentStringsImpl(pIN, p, size) < size)
+				if (detail::stdExpandEnvironmentStringsImpl(pIN, p, size) < size)
 					break;
 
 				// Make double the size of required memory
@@ -1340,13 +1345,15 @@ namespace Ambiesoft {
         extern template std::basic_string<wchar_t> stdGetCurrentDirectory<wchar_t>();
 
 
-		bool stdGetDesktopDirectoryImpl(std::wstring* p);
-		bool stdGetDesktopDirectoryImpl(std::string* p);
+		namespace detail {
+			bool stdGetDesktopDirectoryImpl(std::wstring* p);
+			bool stdGetDesktopDirectoryImpl(std::string* p);
+		}
 		template<typename C = wchar_t>
 		inline std::basic_string<C> stdGetDesktopDirectory()
 		{
 			std::basic_string<C> path;
-			if (!stdGetDesktopDirectoryImpl(&path))
+			if (!detail::stdGetDesktopDirectoryImpl(&path))
 				return L"";
 			return path;
 		}

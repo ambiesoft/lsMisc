@@ -206,10 +206,10 @@ namespace Ambiesoft {
 		}
 
 
-		static unsigned short* utf8toutf16(const LPBYTE pIN, size_t cbLen)
+		static unsigned short* toutf16(UINT cp,const LPBYTE pIN, size_t cbLen)
 		{
 			int nReqSize = MultiByteToWideChar(
-				CP_UTF8,
+				cp,
 				0,
 				(const char*)pIN,
 				(int)cbLen,
@@ -222,7 +222,7 @@ namespace Ambiesoft {
 			// unsigned short* pOut = (unsigned short*)malloc(nReqSize * sizeof(unsigned short));
 			unsigned short* pOut = new unsigned short[nReqSize+1];
 			int nRet = MultiByteToWideChar(
-				CP_UTF8,
+				cp,
 				0,
 				(const char*)pIN,
 				(int)cbLen,
@@ -253,10 +253,15 @@ namespace Ambiesoft {
 		//	return p;
 		//}
 
-		static unsigned short* toWstring2(const string& str)
+		static unsigned short* toWstringFromUtf8(const string& str)
 		{
-			return (unsigned short*)utf8toutf16((const LPBYTE)str.c_str(), str.size());
+			return (unsigned short*)toutf16(CP_UTF8, (const LPBYTE)str.c_str(), str.size());
 		}
+		static unsigned short* toWstringFromAnsi(const string& str)
+		{
+			return (unsigned short*)toutf16(CP_ACP, (const LPBYTE)str.c_str(), str.size());
+		}
+		
 		static string toString(const unsigned short* p)
 		{
 			int nReqSize = WideCharToMultiByte(
@@ -424,7 +429,7 @@ namespace Ambiesoft {
 			d.erase(d.find_last_not_of("/\\")+1);
 			d += "\\*";
 
-			unique_ptr<unsigned short[]> pW(toWstring2(d));
+			unique_ptr<unsigned short[]> pW(toWstringFromAnsi(d));
             WIN32_FIND_DATAW wfd;
             HANDLE hFF = FindFirstFileW((LPCWSTR)pW.get(), &wfd);
 			if (hFF == INVALID_HANDLE_VALUE)
@@ -453,29 +458,31 @@ namespace Ambiesoft {
 
 			return new CFileIteratorInternal(hFF, &wfd, fim, gfm);
 		}
-		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
-		{
-			CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
-			if (!pIterator->next())
-				return false;
+		namespace detail {
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
+			{
+				CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
+				if (!pIterator->next())
+					return false;
 
-			fi->setAll(pIterator->isDir(),
-				pIterator->name(),
-				pIterator->size());
+				fi->setAll(pIterator->isDir(),
+					pIterator->name(),
+					pIterator->size());
 
-			return true;
-		}
-		bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi)
-		{
-			CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
-			if (!pIterator->next())
-				return false;
+				return true;
+			}
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi)
+			{
+				CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
+				if (!pIterator->next())
+					return false;
 
-			fi->setAll(pIterator->isDir(),
-				pIterator->wname(),
-				pIterator->size());
+				fi->setAll(pIterator->isDir(),
+					pIterator->wname(),
+					pIterator->size());
 
-			return true;
+				return true;
+			}
 		}
         bool stdCloseFileIterator(HFILEITERATOR hFileIterator)
         {
@@ -487,25 +494,25 @@ namespace Ambiesoft {
             return true;
         }
 
-		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size)
-		{
-			return GetModuleFileNameA((HINSTANCE)hInst, p, (DWORD)size);
-		}
-		size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size)
-		{
-			return GetModuleFileNameW((HINSTANCE)hInst, p, (DWORD)size);
-		}
+		namespace detail {
+			size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size)
+			{
+				return GetModuleFileNameA((HINSTANCE)hInst, p, (DWORD)size);
+			}
+			size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, wchar_t* p, size_t size)
+			{
+				return GetModuleFileNameW((HINSTANCE)hInst, p, (DWORD)size);
+			}
 
-
-		size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size)
-		{
-			return ExpandEnvironmentStringsA(pIN, p, (DWORD)size);
+			size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size)
+			{
+				return ExpandEnvironmentStringsA(pIN, p, (DWORD)size);
+			}
+			size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size)
+			{
+				return ExpandEnvironmentStringsW(pIN, p, (DWORD)size);
+			}
 		}
-		size_t stdExpandEnvironmentStringsImpl(const wchar_t* pIN, wchar_t* p, size_t size)
-		{
-			return ExpandEnvironmentStringsW(pIN, p, (DWORD)size);
-		}
-
 		static bool GetComputerNameT(char* p, size_t* pnLength)
 		{
 			DWORD dw = (DWORD)*pnLength;
@@ -589,21 +596,23 @@ namespace Ambiesoft {
         template std::basic_string<char> stdGetCurrentDirectory<char>();
         template std::basic_string<wchar_t> stdGetCurrentDirectory<wchar_t>();
 
-		bool stdGetDesktopDirectoryImpl(wstring* path)
-		{
-			wchar_t t[MAX_PATH];
-			if(FAILED(SHGetFolderPathW(NULL, CSIDL_DESKTOP, NULL, 0, t)))
-				return false;
-			*path = t;
-			return true;
-		}
-		bool stdGetDesktopDirectoryImpl(string* path)
-		{
-			char t[MAX_PATH];
-			if (FAILED(SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, t)))
-				return false;
-			*path = t;
-			return true;
+		namespace detail {
+			bool stdGetDesktopDirectoryImpl(wstring* path)
+			{
+				wchar_t t[MAX_PATH];
+				if (FAILED(SHGetFolderPathW(NULL, CSIDL_DESKTOP, NULL, 0, t)))
+					return false;
+				*path = t;
+				return true;
+			}
+			bool stdGetDesktopDirectoryImpl(string* path)
+			{
+				char t[MAX_PATH];
+				if (FAILED(SHGetFolderPathA(NULL, CSIDL_DESKTOP, NULL, 0, t)))
+					return false;
+				*path = t;
+				return true;
+			}
 		}
 
 		bool stdGetWindowText(HWND, std::string*)
