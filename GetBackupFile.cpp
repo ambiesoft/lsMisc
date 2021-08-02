@@ -22,10 +22,7 @@
 //SUCH DAMAGE.
 
 
-
-
-
-
+#include <Shlwapi.h>
 
 #include <string>
 #include "GetBackupFile.h"

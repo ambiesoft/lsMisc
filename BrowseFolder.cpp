@@ -22,10 +22,10 @@
 //SUCH DAMAGE.
 
 
-
-
-
-
+// In MFC project, define AFX_INCLUDE_FILE="stdafx.h" which will be included here
+#if defined(AFX_INCLUDE_FILE)
+#include AFX_INCLUDE_FILE
+#endif
 
 
 #include <windows.h>
