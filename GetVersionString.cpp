@@ -64,6 +64,13 @@ namespace Ambiesoft {
 		DWORD  verHandle = 0;
 		UINT   size = 0;
 		LPBYTE lpBuffer = NULL;
+		WCHAR tmpPath[MAX_PATH];
+		if (szFileName == NULL)
+		{
+			tmpPath[0] = 0;
+			GetModuleFileName(NULL, tmpPath, _countof(tmpPath));
+			szFileName = tmpPath;
+		}
 		DWORD  verSize = GetFileVersionInfoSize(szFileName, &verHandle);
 
 		if (verSize != 0)
