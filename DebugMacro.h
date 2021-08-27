@@ -22,10 +22,31 @@
 //SUCH DAMAGE.
 
 
-
+#pragma once
+#include <Windows.h>
+#include <string>
 #if defined(_DEBUG)
+#ifdef __cplusplus_cli
 	#define DASSERT(s) System::Diagnostics::Debug::Assert(!!(s))
-	inline void DTRACE(System::Object^ o) { System::Diagnostics::Debug::Print(o ? o->ToString() : L"<NULL>"); } 
+	inline void DTRACE(System::Object^ o) { System::Diagnostics::Debug::Print(o ? o->ToString() : L"<NULL>"); }
+#else
+	#define DASSERT(s) assert(s)
+	inline void DTRACE(const char* pMessage) {
+		OutputDebugStringA(pMessage);
+		OutputDebugStringA("\r\n");
+	}
+	inline void DTRACE(const std::string& message) {
+		DTRACE(message.c_str());
+	}
+	inline void DTRACE(const wchar_t* pMessage) {
+		OutputDebugStringW(pMessage);
+		OutputDebugStringW(L"\r\n");
+	}
+	inline void DTRACE(const std::wstring& message) {
+		DTRACE(message.c_str());
+	}
+#endif
+	
 	void DTRACE_LASTERROR(DWORD dwLE);
 	#define DTRACE_NUMBER(start) do { static int num = start; DTRACE(num.ToString()); ++num; } while(0);
 	#define DTRACE_NUMBERTEXT(start,text) do { static int num = start; DTRACE(num.ToString() + ":" + text); ++num; } while(0);
@@ -37,6 +58,7 @@
 	#define DVERIFY_GL_NUM2(a,n1, n2) do { DASSERT( (a) ); DWORD gle = GetLastError(); if ( gle!=n1 && gle!= n2) { DTRACE(gle.ToString()); DASSERT( gle || 0); } } while(0)
 	#define DASSERT_IS_CLASS(instance, clazz) DASSERT( ((instance)->GetType())==clazz::typeid ) 
 	#define DASSERT_IS_CLASS_OR_NULL(instance, clazz) DASSERT( instance==nullptr || ((instance)->GetType())==clazz::typeid ) 
+#ifdef __cplusplus_cli
 	inline bool isDerived(System::Object^ o, System::Type^ t)
 		{
 			if ( !o || !t )
@@ -54,7 +76,8 @@
 			return false;
 		}
 	#define DASSERT_IS_DERIVED(instance, clazz) DASSERT(isDerived(instance, clazz::typeid))
-#else
+#endif
+#else // not _DEBUG
 	#define DASSERT(s) ((void)0)
 	#define DTRACE(s) ((void)0)
 	#define DTRACE_LASTERROR(s) ((void)0)
@@ -71,9 +94,4 @@
 	#define DASSERT_IS_DERIVED(instance, clazz) ((void)0)
 #endif
 
-#ifdef _RELEASE
-#define DTRACEBOX(s) System::Windows::Forms::MessageBox::Show(gcnew String(s))
-#else
-#define DTRACEBOX(s) ((void)0)
-#endif
 

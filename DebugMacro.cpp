@@ -23,7 +23,7 @@
 
 
 
-
+#include "DebugMacro.h"
 
 
 
@@ -31,6 +31,7 @@
 #include "GetLastErrorString.h"
 
 using namespace std;
+using namespace Ambiesoft;
 
 #ifdef __cplusplus_cli
 using namespace System;
@@ -40,17 +41,11 @@ void DTRACE_LASTERROR(DWORD dwLE)
 	wstring ws = GetLastErrorString(dwLE);
 	DTRACE(gcnew String(ws.c_str()));
 }
+#else
+void DTRACE_LASTERROR(DWORD dwLE)
+{
+	DTRACE(GetLastErrorString(dwLE).c_str());
+}
 #endif // __cplusplus_cli
-
-
-
-
-
-
-
-
-
-
-
 
 #endif // _DEBUG
