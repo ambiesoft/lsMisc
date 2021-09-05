@@ -420,6 +420,12 @@
     <ClCompile Include="gtestExpandPath.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\GetUnreparsePath.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGetUnreparsePath.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -796,6 +802,9 @@
     </ClInclude>
     <ClInclude Include="..\stdosd\stdosd_literal.h">
       <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetUnreparsePath.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
