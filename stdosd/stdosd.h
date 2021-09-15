@@ -700,7 +700,7 @@ namespace Ambiesoft {
 		// check argument of stdFormat is not std::string or std::wstring
 		static void stdFormatTestForNotString() {}
 		template<typename T, typename... ARGS>
-		static void stdFormatTestForNotString(T firstArg, ARGS... args)
+		static void stdFormatTestForNotString(T, ARGS... args)
 		{
             static_assert(!std::is_same<T, std::string>::value, "argument must not std::string");
             static_assert(!std::is_same<T, std::wstring>::value, "argument must not std::wstring");
@@ -723,7 +723,7 @@ namespace Ambiesoft {
 
 		static void stdFormatTestForNotChar() {}
 		template<typename T, typename... ARGS>
-		static void stdFormatTestForNotChar(T firstArg, ARGS... args)
+		static void stdFormatTestForNotChar(T, ARGS... args)
 		{
             using NoConstT = typename std::add_pointer<typename std::remove_cv<typename std::remove_pointer<T>::type>::type>::type;
 			static_assert(
