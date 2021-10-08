@@ -16,6 +16,25 @@ TEST(CHandle, Basic)
 	{
 		Ambiesoft::CHandle h(CreateMutex(NULL, TRUE, NULL));
 	}
+	{
+		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CHandle h2(std::move(h1));
+		EXPECT_FALSE(h1);
+		EXPECT_TRUE(h2);
+		h2 = std::move(h1);
+		EXPECT_FALSE(h2);
+	}
+	{
+		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		HANDLE hh1 = h1;
+		Ambiesoft::CHandle h2(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CHandle h3;
+		h2 = std::move(h1);
+		EXPECT_FALSE(h1);
+		h3 = std::move(h2);
+		EXPECT_FALSE(h2);
+		EXPECT_EQ(hh1, h3);
+	}
 
 	{
 		CHModule h(LoadLibrary(L"kernel32.dll"));
