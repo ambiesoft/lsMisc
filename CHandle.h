@@ -25,6 +25,12 @@
 #include <Windows.h>
 
 namespace Ambiesoft {
+	// TODO: make handle classes use template
+	//struct KernelHandleTraits
+	//{
+	//	static constexpr HANDLE Invalid = nullptr;
+	//};
+
 	class CHandle
 	{
 		HANDLE h_;

@@ -35,6 +35,27 @@ TEST(CHandle, Basic)
 		EXPECT_FALSE(h2);
 		EXPECT_EQ(hh1, h3);
 	}
+	{
+		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		HANDLE hh1 = h1;
+		Ambiesoft::CHandle h2(std::move(h1));
+		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h2, INFINITE));
+	}
+	{
+		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		HANDLE hh1 = h1;
+		Ambiesoft::CHandle h2;
+		h2 = std::move(h1);
+		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h2, INFINITE));
+	}
+	{
+		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		HANDLE hh1 = h1;
+		Ambiesoft::CHandle h2;
+		h2 = std::move(h1);
+		h1 = std::move(h2);
+		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h1, INFINITE));
+	}
 
 	{
 		CHModule h(LoadLibrary(L"kernel32.dll"));
