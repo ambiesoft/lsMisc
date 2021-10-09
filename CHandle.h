@@ -53,11 +53,14 @@ namespace Ambiesoft {
 		}
 		const CHandle& operator=(CHandle& that) = delete;
 		CHandle& operator=(CHandle&& that) {
-			Close();
-			this->h_ = that.h_;
-			that.h_ = nullptr;
+			if (&*this != &that) {
+				Close();
+				this->h_ = that.h_;
+				that.h_ = nullptr;
+			}
 			return *this;
 		}
+	
 		operator bool() const {
 			return h_ != nullptr && h_ != INVALID_HANDLE_VALUE;
 		}

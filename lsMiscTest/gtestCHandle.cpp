@@ -35,6 +35,12 @@ TEST(CHandle, Basic)
 		EXPECT_FALSE(h2);
 		EXPECT_EQ(hh1, h3);
 	}
+	{
+		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		HANDLE hh1 = h1;
+		h1 = std::move(h1);
+		EXPECT_EQ(hh1, h1);
+	}
 
 	{
 		CHModule h(LoadLibrary(L"kernel32.dll"));
