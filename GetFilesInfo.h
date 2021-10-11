@@ -22,6 +22,8 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <vector>
+#include <algorithm>
 
 namespace Ambiesoft {
 	struct myWIN32_FIND_DATA : public WIN32_FIND_DATA
