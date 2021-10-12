@@ -730,16 +730,36 @@ typedef BasicOption<std::string> COptionA;
 			// usage
 			if (isEmptyOptionStrings(options))
 			{
-				// main arg
-				if (argcount == ArgCount::ArgCount_Infinite)
+				switch (argcount)
 				{
-					usage += stdosd::stdLiterals<Elem>::commandlinemultipleargs();
-					addkaigyo(usage);
-				}
-				else if (argcount == ArgCount::ArgCount_Two)
-				{
-					usage += stdosd::stdLiterals<Elem>::commandlinetwoargs();
-					addkaigyo(usage);
+					case ArgCount::ArgCount_One:
+						usage += stdosd::stdLiterals<Elem>::commandlineonearg();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_ZeroOrOne:
+						usage += stdosd::stdLiterals<Elem>::commandlinezerooronearg();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_Two:
+						usage += stdosd::stdLiterals<Elem>::commandlinetwoargs();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_ZeroOrTwo:
+						usage += stdosd::stdLiterals<Elem>::commandlinezeroortwoargs();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_OneOrTwo:
+						usage += stdosd::stdLiterals<Elem>::commandlineoneortwoargs();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_ZeroOrOneOrTwo:
+						usage += stdosd::stdLiterals<Elem>::commandlinezerooroneortwoargs();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_Infinite:
+						usage += stdosd::stdLiterals<Elem>::commandlinemultipleargs();
+						addkaigyo(usage);
+						break;
 				}
 			}
 			else
@@ -861,15 +881,6 @@ typedef BasicOption<std::string> COptionA;
 			usage += program;
 			addspace(usage);
 			
-			for (size_t i = 0; i < useroptions_.size(); ++i)
-			{
-				processOptionStringHelper(
-					useroptions_[i]->argcountflag_,
-					useroptions_[i]->options_,
-					useroptions_[i]->helpString_,
-					explain,
-					usage);
-			}
 			for (size_t i = 0; i < inneroptions_.size(); ++i)
 			{
 				ArgCount argcount = ArgCount::ArgCount_Uninitialized;
@@ -895,9 +906,18 @@ typedef BasicOption<std::string> COptionA;
 						usage);
 				}
 			}
+			for (size_t i = 0; i < useroptions_.size(); ++i)
+			{
+				processOptionStringHelper(
+					useroptions_[i]->argcountflag_,
+					useroptions_[i]->options_,
+					useroptions_[i]->helpString_,
+					explain,
+					usage);
+			}
 
 			addkaigyo(usage);
-			addkaigyo(usage);
+			// addkaigyo(usage);
 			return appname + description + usage + explain;
 		}
 		bool isEmpty() const
