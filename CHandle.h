@@ -261,4 +261,15 @@ namespace Ambiesoft {
 		}
 
 	};
+
+	class CcoInitializer
+	{
+	public:
+		CcoInitializer() {
+			CoInitialize(nullptr);
+		}
+		~CcoInitializer() {
+			CoUninitialize();
+		}
+	};
 }
