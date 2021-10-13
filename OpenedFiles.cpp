@@ -912,7 +912,7 @@ void WhoUsesFile(LPCTSTR lpFileName, BOOL bFullPathCheck, vector<OPENEDFILEINFO>
 }
 bool EnableDebugPriv(void)
 {
-	Ambiesoft::CHandle token;
+	Ambiesoft::CKernelHandle token;
 	LUID sedebugnameValue;
 	TOKEN_PRIVILEGES tkp;
 

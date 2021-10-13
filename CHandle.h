@@ -39,6 +39,19 @@ namespace Ambiesoft {
 			return !!CloseHandle(h);
 		}
 	};
+	struct FileHandleTraits
+	{
+		using HandleType = HANDLE;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr || h == INVALID_HANDLE_VALUE;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!CloseHandle(h);
+		}
+	};
 	struct HwndTraits
 	{
 		using HandleType = HWND;
@@ -136,7 +149,8 @@ namespace Ambiesoft {
 	};
 
 
-	using CHandle = CHandleBase<KernelHandleTraits>;
+	using CKernelHandle = CHandleBase<KernelHandleTraits>;
+	using CFileHandle = CHandleBase<FileHandleTraits>;
 	using CHWnd = CHandleBase<HwndTraits>;
 	using CHIcon = CHandleBase<HiconTraits>;
 	using CHMenu = CHandleBase<HmenuTraits>;

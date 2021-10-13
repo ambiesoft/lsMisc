@@ -80,7 +80,7 @@ namespace Ambiesoft {
 
 	BOOL CloseConsoleWin(DWORD pid, DWORD maxwait)
 	{
-		CHandle process(OpenProcess(SYNCHRONIZE, FALSE, pid));
+		CKernelHandle process(OpenProcess(SYNCHRONIZE, FALSE, pid));
 		if (!process)
 			return FALSE;
 

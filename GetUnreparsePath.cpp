@@ -120,7 +120,7 @@ namespace Ambiesoft {
         if (PathIsUNC(path))
             return path;
 
-        Ambiesoft::CHandle file(CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL,
+        Ambiesoft::CFileHandle file(CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL,
             OPEN_EXISTING, 0, NULL));
 
         if (!file)

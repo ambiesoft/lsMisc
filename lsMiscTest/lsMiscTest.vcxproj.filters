@@ -420,11 +420,11 @@
     <ClCompile Include="gtestExpandPath.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetUnreparsePath.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestGetUnreparsePath.cpp">
       <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetUnreparsePath.cpp">
+      <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -804,7 +804,7 @@
       <Filter>stdosd</Filter>
     </ClInclude>
     <ClInclude Include="..\GetUnreparsePath.h">
-      <Filter>lsMisc</Filter>
+      <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,28 +7,30 @@
 
 #include "../CHandle.h"
 #include "../CreateSimpleWindow.h"
+#include "../stdosd/stdosd.h"
 
 using namespace std;
 using namespace Ambiesoft;
+using namespace Ambiesoft::stdosd;
 
 TEST(CHandle, Basic)
 {
 	{
-		Ambiesoft::CHandle h(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h(CreateMutex(NULL, TRUE, NULL));
 	}
 	{
-		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
-		Ambiesoft::CHandle h2(std::move(h1));
+		Ambiesoft::CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h2(std::move(h1));
 		EXPECT_FALSE(h1);
 		EXPECT_TRUE(h2);
 		h2 = std::move(h1);
 		EXPECT_FALSE(h2);
 	}
 	{
-		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
 		HANDLE hh1 = h1;
-		Ambiesoft::CHandle h2(CreateMutex(NULL, TRUE, NULL));
-		Ambiesoft::CHandle h3;
+		Ambiesoft::CKernelHandle h2(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h3;
 		h2 = std::move(h1);
 		EXPECT_FALSE(h1);
 		h3 = std::move(h2);
@@ -36,28 +38,52 @@ TEST(CHandle, Basic)
 		EXPECT_EQ(hh1, h3);
 	}
 	{
-		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
 		HANDLE hh1 = h1;
 		h1 = std::move(h1);
 		EXPECT_EQ(hh1, h1);
 		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h1, INFINITE));
 	}
 	{
-		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
 		HANDLE hh1 = h1;
-		Ambiesoft::CHandle h2;
+		Ambiesoft::CKernelHandle h2;
 		h2 = std::move(h1);
 		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h2, INFINITE));
 	}
 	{
-		Ambiesoft::CHandle h1(CreateMutex(NULL, TRUE, NULL));
+		Ambiesoft::CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
 		HANDLE hh1 = h1;
-		Ambiesoft::CHandle h2;
+		Ambiesoft::CKernelHandle h2;
 		h2 = std::move(h1);
 		h1 = std::move(h2);
 		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h1, INFINITE));
 	}
 
+	{
+		Ambiesoft::CFileHandle file;
+		EXPECT_FALSE(file);
+	}
+	{
+		Ambiesoft::CFileHandle file(CreateFile(stdGetModuleFileName().c_str(),
+			GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, 0, NULL));
+		EXPECT_TRUE(file);
+	}
+	{
+		Ambiesoft::CFileHandle file(CreateFile(stdGetModuleFileName().c_str(),
+			GENERIC_READ, FILE_SHARE_READ, NULL,
+			CREATE_NEW, 0, NULL));
+		EXPECT_FALSE(file);
+	}
+	{
+		CFileHandle file1(CreateFile(stdGetModuleFileName().c_str(),
+			GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, 0, NULL));
+		CFileHandle file2(std::move(file1));
+		EXPECT_FALSE(file1);
+		EXPECT_TRUE(file2);
+	}
 
 	{
 		CHWnd h(CreateSimpleWindow());
@@ -97,13 +123,13 @@ TEST(CHandle, Basic)
 
 	{
 		constexpr size_t count = 3;
-		vector<CHandle> threads;
+		vector<CKernelHandle> threads;
 		threads.reserve(count);
 
 		for (int i = 0; i < count; ++i)
 		{
 			unsigned dwThreadId = 0;
-			CHandle t(CreateEvent(NULL,TRUE,FALSE,NULL));
+			CKernelHandle t(CreateEvent(NULL,TRUE,FALSE,NULL));
 
 			threads.emplace_back(move(t));
 		}
