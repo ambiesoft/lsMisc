@@ -58,22 +58,12 @@ TEST(CHandle, Basic)
 		EXPECT_EQ(WAIT_OBJECT_0, WaitForSingleObject(h1, INFINITE));
 	}
 
-	{
-		CHModule h(LoadLibrary(L"kernel32.dll"));
-	}
-
-	{
-		CGetProcAddress<BOOL (WINAPI *)(LPSECURITY_ATTRIBUTES,BOOL,LPCSTR)> proc(L"kernel32.dll", "CreateMutexA");
-		if (proc)
-			proc.GetProc()(NULL, TRUE, "aaa");
-	}
 
 	{
 		CHWnd h(CreateSimpleWindow());
 		EXPECT_TRUE(h);
 		EXPECT_TRUE(IsWindow(h));
 	}
-
 	{
 		CHWnd h;
 		{
@@ -86,6 +76,24 @@ TEST(CHandle, Basic)
 		DestroyWindow(h);
 		EXPECT_FALSE(h);
 	}
+
+	{
+		CHMenu menu(CreatePopupMenu());
+	}
+	{
+		// CHIcon icon(CreateIcon(NULL, 16, 16, 1, 1, NULL, NULL));
+	}
+
+	{
+		CHModule h(LoadLibrary(L"kernel32.dll"));
+	}
+
+	{
+		CGetProcAddress<BOOL (WINAPI *)(LPSECURITY_ATTRIBUTES,BOOL,LPCSTR)> proc(L"kernel32.dll", "CreateMutexA");
+		if (proc)
+			proc.GetProc()(NULL, TRUE, "aaa");
+	}
+
 
 	{
 		constexpr size_t count = 3;

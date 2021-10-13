@@ -25,123 +25,157 @@
 #include <Windows.h>
 
 namespace Ambiesoft {
-	// TODO: make handle classes use template
-	//struct KernelHandleTraits
-	//{
-	//	static constexpr HANDLE Invalid = nullptr;
-	//};
 
-	class CHandle
+	struct KernelHandleTraits
 	{
-		HANDLE h_;
+		using HandleType = HANDLE;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!CloseHandle(h);
+		}
+	};
+	struct HwndTraits
+	{
+		using HandleType = HWND;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr || !IsWindow(h);
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!DestroyWindow(h);
+		}
+	};
+	struct HiconTraits
+	{
+		using HandleType = HICON;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!DestroyIcon(h);
+		}
+	};
+	struct HmenuTraits
+	{
+		using HandleType = HMENU;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!DestroyMenu(h);
+		}
+	};
+
+	template<class Trait>
+	class CHandleBase
+	{
+		using T = typename Trait::HandleType;
+		T h_;
 		void Close() {
-			if (*this)
-				CloseHandle(h_);
-			h_ = nullptr;
+			if (!Trait::IsInvalid(h_))
+				Trait::Close(h_);
+			Trait::SetInvalid(&h_);
 		}
 	public:
-		CHandle() : h_(nullptr){}
-		explicit CHandle(HANDLE h) :h_(h) {}
-		CHandle(const CHandle& that) = delete;
-		CHandle(CHandle&& that) noexcept {
+		CHandleBase() {
+			Trait::SetInvalid(&h_);
+		}
+		explicit CHandleBase(T h) :h_(h) {}
+		CHandleBase(const CHandleBase& that) = delete;
+		CHandleBase(CHandleBase&& that) noexcept {
 			h_ = that.h_;
-			that.h_ = nullptr;
+			Trait::SetInvalid(&that.h_);
 		}
 
-		~CHandle() {
+		~CHandleBase() {
 			Close();
 		}
 
-		const CHandle& operator=(HANDLE h) {
+		const CHandleBase& operator=(T h) {
 			Close();
 			this->h_ = h;
 			return *this;
 		}
-		const CHandle& operator=(CHandle& that) = delete;
-		CHandle& operator=(CHandle&& that) {
+		const CHandleBase& operator=(CHandleBase& that) = delete;
+		CHandleBase& operator=(CHandleBase&& that) {
 			if (&*this != &that) {
 				Close();
 				this->h_ = that.h_;
-				that.h_ = nullptr;
+				Trait::SetInvalid(&that.h_);
 			}
 			return *this;
 		}
-	
+
 		operator bool() const {
-			return h_ != nullptr && h_ != INVALID_HANDLE_VALUE;
+			return !Trait::IsInvalid(h_);
 		}
-		operator HANDLE() const {
+		operator T() const {
 			return h_;
 		}
-		HANDLE* operator &() {
+		T* operator &() {
 			return &h_;
 		}
-		HANDLE Release() {
-			HANDLE h = h_;
-			h_ = nullptr;
+		T Release() {
+			T h = h_;
+			Trait::SetInvalid(&h_);
 			return h;
 		}
 	};
-	class CHWnd
-	{
-		HWND h_;
-	public:
-		CHWnd():h_(nullptr) {}
-		explicit CHWnd(HWND h) :h_(h) {}
-		~CHWnd() {
-			if (h_ == nullptr)
-				return;
-			DestroyWindow(h_);
-		}
-		operator bool() const {
-			return !!IsWindow(h_);
-		}
-		operator HWND() const {
-			return h_;
-		}
-		const CHWnd& operator=(CHWnd& that) {
-			this->h_ = that.h_;
-			return *this;
-		}
-		const CHWnd& operator=(HWND h) {
-			this->h_ = h;
-			return *this;
-		}
-	};
-	class CHIcon
-	{
-		HICON h_;
-	public:
-		explicit CHIcon(HICON h) : h_(h) {}
-		~CHIcon() {
-			if (h_ == nullptr)
-				return;
-			DestroyIcon(h_);
-		}
-		operator bool() const {
-			return !!h_;
-		}
-		operator HICON() const {
-			return h_;
-		}
-	};
-	class CHMenu
-	{
-		HMENU h_;
-	public:
-		explicit CHMenu(HMENU h) :h_(h) {}
-		~CHMenu() {
-			if (h_ == nullptr)
-				return;
-			DestroyMenu(h_);
-		}
-		operator bool() const {
-			return !!IsMenu(h_);
-		}
-		operator HMENU() const {
-			return h_;
-		}
-	};
+
+
+	using CHandle = CHandleBase<KernelHandleTraits>;
+	using CHWnd = CHandleBase<HwndTraits>;
+	using CHIcon = CHandleBase<HiconTraits>;
+	using CHMenu = CHandleBase<HmenuTraits>;
+
+	//class CHIcon
+	//{
+	//	HICON h_;
+	//public:
+	//	explicit CHIcon(HICON h) : h_(h) {}
+	//	~CHIcon() {
+	//		if (h_ == nullptr)
+	//			return;
+	//		DestroyIcon(h_);
+	//	}
+	//	operator bool() const {
+	//		return !!h_;
+	//	}
+	//	operator HICON() const {
+	//		return h_;
+	//	}
+	//};
+
+	//class CHMenu
+	//{
+	//	HMENU h_;
+	//public:
+	//	explicit CHMenu(HMENU h) :h_(h) {}
+	//	~CHMenu() {
+	//		if (h_ == nullptr)
+	//			return;
+	//		DestroyMenu(h_);
+	//	}
+	//	operator bool() const {
+	//		return !!IsMenu(h_);
+	//	}
+	//	operator HMENU() const {
+	//		return h_;
+	//	}
+	//};
 
 	class CHModule
 	{
