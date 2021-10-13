@@ -518,6 +518,29 @@ namespace Ambiesoft {
 		}
 
 
+		template<typename C>
+		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>>
+			stdAddPathSeparator(const C* pD)
+		{
+			using myS = std::basic_string<C, std::char_traits<C>, std::allocator<C>>;
+			if (!pD || !pD[0])
+				return stdLiterals<C>::defaultSeparator();
+
+			myS ret = pD;
+			if (!isEndwithSeparator(ret))
+				ret += stdLiterals<C>::defaultSeparator();
+
+			return ret;
+		}
+		inline std::wstring stdAddPathSeparator(const std::wstring& d)
+		{
+			return stdAddPathSeparator(d.c_str());
+		}
+		inline std::string stdAddPathSeparator(const std::string& d)
+		{
+			return stdAddPathSeparator(d.c_str());
+		}
+
 
 		template<typename StringType>
 		inline StringType stdStringReplaceHelper(
