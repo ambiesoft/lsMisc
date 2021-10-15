@@ -29,4 +29,11 @@ namespace Ambiesoft {
 		LPCTSTR pszCurDir,
 		LPCTSTR pszArg = nullptr,
 		int iIconLocation = -1);
+	BOOL GetShortcutFileInfo(LPCTSTR pszShortcutFile,
+		std::wstring* targetFile,
+		std::wstring* iconFile,
+		std::wstring* curDir,
+		std::wstring* arg,
+		int* iIconLocation);
+
 }

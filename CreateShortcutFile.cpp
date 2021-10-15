@@ -190,4 +190,75 @@ BOOL CreateShortcutFile(HWND hWnd,
 	return TRUE;
 }
 
+
+BOOL GetShortcutFileInfo(LPCTSTR pszShortcutFile, 
+	std::wstring* targetFile,
+	std::wstring* iconFile,
+	std::wstring* curDir,
+	std::wstring* arg,
+	int* iIconLocation)
+{
+	HRESULT hr;
+	IShellLinkWPtr pShellLink = NULL;
+	CoStack costack;
+    hr = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, (LPVOID*)&pShellLink);
+
+	int bufflen = MAX_PATH;
+	std::unique_ptr<TCHAR[]> buffer(new TCHAR[MAX_PATH]);
+	if(SUCCEEDED(hr) && pShellLink != NULL)
+	{
+		IPersistFilePtr pPFile = NULL;
+		hr = pShellLink->QueryInterface(IID_IPersistFile, (LPVOID*)&pPFile);
+		if(SUCCEEDED(hr) && pPFile != NULL)
+		{
+			hr=pPFile->Load(pszShortcutFile, 0);
+			if(SUCCEEDED(hr))
+			{
+				if (targetFile)
+				{
+					WIN32_FIND_DATA wfd;
+					if (SUCCEEDED(pShellLink->GetPath(buffer.get(), bufflen, &wfd, 0)))
+						*targetFile = buffer.get();
+				}
+
+				if (iIconLocation || iconFile)
+				{
+					do 
+					{
+						int iI = -1;
+						if (FAILED(pShellLink->GetIconLocation(buffer.get(), bufflen, &iI)))
+							break;
+
+						if (iIconLocation)
+							*iIconLocation = iI;
+						if(iconFile)
+							*iconFile = buffer.get();
+					} while (false);
+				}
+
+				if (arg)
+				{
+					do
+					{
+						if (FAILED(pShellLink->GetArguments(buffer.get(), bufflen)))
+							break;
+						*arg = buffer.get();
+					} while (false);
+				}
+
+				if (curDir)
+				{
+					do
+					{
+						if (FAILED(pShellLink->GetWorkingDirectory(buffer.get(), bufflen)))
+							break;
+						*curDir = buffer.get();
+					} while (false);
+				}
+			}
+		}
+	}
+	return TRUE;
+}
+
 } // namespace
