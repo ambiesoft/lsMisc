@@ -337,7 +337,6 @@
     <ClCompile Include="gtestSetPriority.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
     <ClCompile Include="gtestStdosd.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
@@ -429,6 +428,13 @@
     <ClCompile Include="gteststop_watch.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\GetLocalPathFromNetPath.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGetLocalPathFromNetPath.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -810,6 +816,9 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stop_watch.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetLocalPathFromNetPath.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
