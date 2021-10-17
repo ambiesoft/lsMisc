@@ -24,6 +24,12 @@
 #pragma once
 #include <Windows.h>
 
+#ifndef NDEBUG
+#define HANDLEVERIFY(f) assert(f)
+#else
+#define HANDLEVERIFY(f) (f)
+#endif
+
 namespace Ambiesoft {
 
 	struct KernelHandleTraits
@@ -91,6 +97,32 @@ namespace Ambiesoft {
 			return !!DestroyMenu(h);
 		}
 	};
+	struct HDCTraits
+	{
+		using HandleType = HDC;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!ReleaseDC(WindowFromDC(h), h);
+		}
+	};
+	struct HFontTraits
+	{
+		using HandleType = HFONT;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return !!DeleteObject(h);
+		}
+	};
 
 	template<class Trait>
 	class CHandleBase
@@ -99,7 +131,9 @@ namespace Ambiesoft {
 		T h_;
 		void Close() {
 			if (!Trait::IsInvalid(h_))
-				Trait::Close(h_);
+			{
+				HANDLEVERIFY(Trait::Close(h_));
+			}
 			Trait::SetInvalid(&h_);
 		}
 	public:
@@ -154,43 +188,9 @@ namespace Ambiesoft {
 	using CHWnd = CHandleBase<HwndTraits>;
 	using CHIcon = CHandleBase<HiconTraits>;
 	using CHMenu = CHandleBase<HmenuTraits>;
-
-	//class CHIcon
-	//{
-	//	HICON h_;
-	//public:
-	//	explicit CHIcon(HICON h) : h_(h) {}
-	//	~CHIcon() {
-	//		if (h_ == nullptr)
-	//			return;
-	//		DestroyIcon(h_);
-	//	}
-	//	operator bool() const {
-	//		return !!h_;
-	//	}
-	//	operator HICON() const {
-	//		return h_;
-	//	}
-	//};
-
-	//class CHMenu
-	//{
-	//	HMENU h_;
-	//public:
-	//	explicit CHMenu(HMENU h) :h_(h) {}
-	//	~CHMenu() {
-	//		if (h_ == nullptr)
-	//			return;
-	//		DestroyMenu(h_);
-	//	}
-	//	operator bool() const {
-	//		return !!IsMenu(h_);
-	//	}
-	//	operator HMENU() const {
-	//		return h_;
-	//	}
-	//};
-
+	using CHDC = CHandleBase<HDCTraits>;
+	using CHFont = CHandleBase<HFontTraits>;
+	
 	class CHModule
 	{
 		HMODULE h_ = nullptr;
@@ -273,3 +273,4 @@ namespace Ambiesoft {
 		}
 	};
 }
+#undef HANDLEVERIFY
