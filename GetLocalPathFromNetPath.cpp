@@ -85,7 +85,7 @@ namespace Ambiesoft {
             wstring strPath(path);
         
             buff.resize(512);
-            len = buff.size();
+            len = (DWORD)buff.size();
             DWORD dwRet = WNetGetConnection(strPath.substr(0, 2).c_str(), &buff[0], &len);
             if (!(dwRet != 0 || buff[0] == 0))
             {
@@ -102,7 +102,7 @@ namespace Ambiesoft {
         if (serverandshare.empty())
             return path;
         buff.resize(512);
-        len = buff.size();
+        len = (DWORD)buff.size();
         if (0 == GetComputerName(&buff[0], &len) || GetLastError() == ERROR_BUFFER_OVERFLOW)
             return path;
         if (lstrcmpi(&buff[0], server.c_str()) != 0)
