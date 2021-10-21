@@ -86,6 +86,25 @@ TEST(CHandle, Basic)
 	}
 
 	{
+		{
+			CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
+			HANDLE hh1 = h1;
+			EXPECT_TRUE(h1 == h1);
+			EXPECT_TRUE(h1 == hh1);
+			EXPECT_TRUE(hh1 == h1);
+		}
+		{
+			CFileHandle f1(CreateFile(stdGetModuleFileName().c_str(),
+				GENERIC_READ, FILE_SHARE_READ, NULL,
+				OPEN_EXISTING, 0, NULL));
+			HANDLE ff1 = f1;
+			EXPECT_TRUE(f1 == f1);
+			EXPECT_TRUE(f1 == ff1);
+			EXPECT_TRUE(ff1 == f1);
+		}
+	}
+
+	{
 		CHWnd h(CreateSimpleWindow());
 		EXPECT_TRUE(h);
 		EXPECT_TRUE(IsWindow(h));

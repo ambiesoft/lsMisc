@@ -22,6 +22,7 @@
 //SUCH DAMAGE.
 
 #pragma once
+#include <cassert>
 #include <Windows.h>
 
 #ifndef NDEBUG
@@ -182,7 +183,11 @@ namespace Ambiesoft {
 		}
 	};
 
-
+	//template<class Trait>
+	//bool operator==(const typename Trait::HandleType& left, const CHandleBase<Trait>& right)
+	//{
+	//	return right == left;
+	//}
 	using CKernelHandle = CHandleBase<KernelHandleTraits>;
 	using CFileHandle = CHandleBase<FileHandleTraits>;
 	using CHWnd = CHandleBase<HwndTraits>;
