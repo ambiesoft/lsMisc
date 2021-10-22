@@ -48,7 +48,7 @@ TEST(CommandLineParser, BasicWchar)
 	bool isABC = false;
 	bool isXYZ = false;
 	wstring path;
-	COption opMain(L"", ArgCount::ArgCount_Infinite);
+	COption opMain(L"", ArgCount::ArgCount_OneToInfinite);
 	CCommandLineParser clp;
 	clp.AddOptionRange({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
 	clp.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &isABC);
@@ -89,7 +89,7 @@ TEST(CommandLineParser, BasicChar)
 	bool isABC = false;
 	bool isXYZ = false;
 	string path;
-	COptionA opMain("", ArgCount::ArgCount_Infinite);
+	COptionA opMain("", ArgCount::ArgCount_TwoToInfinite);
 	CCommandLineParserA clp;
 	clp.AddOptionRange({ string("-h"), string("/?") }, 0, &isHelp);
 	clp.AddOptionRange({ "-a","-b","-c" }, 0, &isABC);
@@ -475,7 +475,7 @@ TEST(CommandLineParser, EndWithDQComma)
 		};
 		CCommandLineParser parser;
 		
-		COption opMain(L"", ArgCount::ArgCount_Infinite);
+		COption opMain(L"", ArgCount::ArgCount_ZeroToInfinite);
 		parser.AddOption(&opMain);
 
 		parser.Parse(_countof(argv) - 1, argv);
@@ -496,7 +496,7 @@ TEST(CommandLineParser, Help)
 		CCommandLineParserA parser(CaseFlags_Default, "Rename or remove a folder", "lsMiscTest");
 
 		COptionA optionDefault("",
-			ArgCount::ArgCount_Infinite,
+			ArgCount::ArgCount_ZeroToInfinite,
 			ArgEncodingFlags_Default,
 			("specify directory"));
 		parser.AddOption(&optionDefault);
@@ -535,7 +535,7 @@ TEST(CommandLineParser, Help)
 		CCommandLineParser parser(CaseFlags_Default, L"Rename or remove a folder", L"lsMiscTestWchar");
 
 		COption optionDefault(L"",
-			ArgCount::ArgCount_Infinite,
+			ArgCount::ArgCount_OneToInfinite,
 			ArgEncodingFlags_Default,
 			(L"specify directory"));
 		parser.AddOption(&optionDefault);

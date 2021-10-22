@@ -202,7 +202,9 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(commandlinezeroortwoargs, "[Arg1 Arg2]");		\
 			STDOSD_DEFINE_STRINGFUNCTION(commandlineoneortwoargs, "Arg1 [Arg2]");		\
 			STDOSD_DEFINE_STRINGFUNCTION(commandlinezerooroneortwoargs, "[Arg1 [Arg2 [Arg3]]]");\
-			STDOSD_DEFINE_STRINGFUNCTION(commandlinemultipleargs, "[Arg1 [Arg2 [...]]]");\
+			STDOSD_DEFINE_STRINGFUNCTION(commandlinezerotoinfiniteargs, "[Arg1 [Arg2 [...]]]");\
+			STDOSD_DEFINE_STRINGFUNCTION(commandlineonetoinfiniteargs, "Arg1 [Arg2 [...]]");\
+			STDOSD_DEFINE_STRINGFUNCTION(commandlinetwotoinfiniteargs, "Arg1 Arg2 [Arg3 [...]]");\
 			STDOSD_DEFINE_STRINGFUNCTION(Arg,"Arg");									\
 			STDOSD_DEFINE_STRINGFUNCTION(OptionPrefix,"-/");							\
 		}

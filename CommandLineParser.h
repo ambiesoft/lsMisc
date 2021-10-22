@@ -179,17 +179,19 @@ namespace Ambiesoft {
 	// 000001000(8) = only tree
 	enum class ArgCount : unsigned int
 	{
-		ArgCount_Uninitialized = 0,
-		ArgCount_Zero = 1,
-		ArgCount_One = 2,
-		ArgCount_ZeroOrOne = 3,
-		ArgCount_Two = 4,
-		ArgCount_ZeroOrTwo = 5,
-		ArgCount_OneOrTwo = 6,
-		ArgCount_ZeroOrOneOrTwo = 7,
-		ArgCount_Three = 8,
+		ArgCount_Uninitialized,
+		ArgCount_Zero,
+		ArgCount_One,
+		ArgCount_ZeroOrOne,
+		ArgCount_Two,
+		ArgCount_ZeroOrTwo,
+		ArgCount_OneOrTwo,
+		ArgCount_ZeroOrOneOrTwo,
+		ArgCount_Three,
 
-		ArgCount_Infinite = 0xffffffff,
+		ArgCount_ZeroToInfinite,
+		ArgCount_OneToInfinite,
+		ArgCount_TwoToInfinite,
 	};
 
 	enum CaseFlags
@@ -406,7 +408,7 @@ namespace Ambiesoft {
 		{
 			init();
 			options_.push_back(MyS_());
-			argcountflag_ = ArgCount::ArgCount_Infinite;
+			argcountflag_ = ArgCount::ArgCount_ZeroToInfinite;
 		}
 		//BasicOption(MyS_ option, ArgCount acf) 
 		//{
@@ -756,9 +758,20 @@ typedef BasicOption<std::string> COptionA;
 						usage += stdosd::stdLiterals<Elem>::commandlinezerooroneortwoargs();
 						addkaigyo(usage);
 						break;
-					case ArgCount::ArgCount_Infinite:
-						usage += stdosd::stdLiterals<Elem>::commandlinemultipleargs();
+					case ArgCount::ArgCount_ZeroToInfinite:
+						usage += stdosd::stdLiterals<Elem>::commandlinezerotoinfiniteargs();
 						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_OneToInfinite:
+						usage += stdosd::stdLiterals<Elem>::commandlineonetoinfiniteargs();
+						addkaigyo(usage);
+						break;
+					case ArgCount::ArgCount_TwoToInfinite:
+						usage += stdosd::stdLiterals<Elem>::commandlinetwotoinfiniteargs();
+						addkaigyo(usage);
+						break;
+					default:
+						assert(false);
 						break;
 				}
 			}
