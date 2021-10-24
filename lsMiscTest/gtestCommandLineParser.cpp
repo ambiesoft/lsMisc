@@ -393,7 +393,7 @@ TEST(CommandLineParser, SameOption)
 		NULL
 		};
 		CCommandLineParser parser;
-		bool a;
+		bool a=false;
 		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_FALSE(a);
@@ -581,5 +581,82 @@ TEST(CommandLineParser, Help)
 	}
 	{
 
+	}
+}
+
+TEST(CommandLineParser, KeepDefaultValue)
+{
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a = false;
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_FALSE(a);
+	}
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a = true;
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	} 
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-a",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a = false;
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_TRUE(a);
+	}
+	{
+		wchar_t* argv[] = {
+		L"exe.exe",
+		L"-d",
+		NULL
+		};
+		CCommandLineParser parser;
+		bool a = false;
+		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.Parse(_countof(argv) - 1, argv);
+		EXPECT_FALSE(a);
+	}
+
+	{
+		bool isHelp = true;
+		bool isABC = false;
+		bool isXYZ = true;
+		wstring path = L"aaa";
+		int intval = 123;
+		COption opMain(L"", ArgCount::ArgCount_OneToInfinite);
+		CCommandLineParser clp;
+		clp.AddOptionRange({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
+		clp.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &isABC);
+		clp.AddOptionRange({ L"-xyz", L"-bbb" }, 0, &isXYZ);
+		clp.AddOption(L"-path", 1, &path);
+		clp.AddOption(L"-intval", 1, &intval);
+		clp.AddOption(&opMain);
+		wchar_t* argv[] = {
+			L"exe.exe",
+			NULL
+		};
+		clp.Parse(_countof(argv) - 1, argv);
+
+		EXPECT_TRUE(isHelp);
+		EXPECT_FALSE(isABC);
+		EXPECT_TRUE(isXYZ);
+		EXPECT_STREQ(path.c_str(), L"aaa");
+		EXPECT_EQ(intval, 123);
 	}
 }

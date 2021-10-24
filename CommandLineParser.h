@@ -229,10 +229,9 @@ namespace Ambiesoft {
 			
 			void setBoolTarget(bool* pb)
 			{
-				assert(pBool_==NULL);
+				assert(pBool_ == NULL);
 				assert(pb);
-				*pb = false;
-				pBool_=pb;
+				pBool_ = pb;
 			}
 			void setIntTarget(int* pi)
 			{
@@ -258,7 +257,6 @@ namespace Ambiesoft {
 					*pInt_ = 1;
 				if (pLL_)
 					*pLL_ = 1;
-
 			}
 			void setMys(const MyS_& mys)
 			{
