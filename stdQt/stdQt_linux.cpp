@@ -180,4 +180,8 @@ QString ToAsciiLower(const QString& s)
     // TODO: is usascii?
     return s.toLower();
 }
+bool isRootDriveExists(const QString& path)
+{
+    return true;
+}
 } // namespace

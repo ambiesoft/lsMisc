@@ -435,5 +435,12 @@ QString ToAsciiLower(const QString& s)
 
     return QString::fromStdWString(w);
 }
-
+bool isRootDriveExists(const QString& path)
+{
+    if(path.isEmpty())
+        return false;
+    if(PathIsRelative(path.toStdWString().c_str()))
+        return true;
+    return QDir(getRoot(path)).exists();
+}
 }
