@@ -130,13 +130,6 @@ namespace Ambiesoft {
 	{
 		using T = typename Trait::HandleType;
 		T h_;
-		void Close() {
-			if (!Trait::IsInvalid(h_))
-			{
-				HANDLEVERIFY(Trait::Close(h_));
-			}
-			Trait::SetInvalid(&h_);
-		}
 	public:
 		CHandleBase() {
 			Trait::SetInvalid(&h_);
@@ -180,6 +173,15 @@ namespace Ambiesoft {
 			T h = h_;
 			Trait::SetInvalid(&h_);
 			return h;
+		}
+		bool Close() {
+			bool ret = false;
+			if (!Trait::IsInvalid(h_))
+			{
+				ret = Trait::Close(h_);
+			}
+			Trait::SetInvalid(&h_);
+			return ret;
 		}
 	};
 
