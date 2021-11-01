@@ -17,6 +17,12 @@ TEST(CHandle, Basic)
 {
 	{
 		Ambiesoft::CKernelHandle h(CreateMutex(NULL, TRUE, NULL));
+		EXPECT_TRUE(h);
+		EXPECT_TRUE(h != NULL);
+		EXPECT_TRUE(h != nullptr);
+		EXPECT_FALSE(!h);
+		EXPECT_FALSE(h == NULL);
+		EXPECT_FALSE(h == nullptr);
 	}
 	{
 		Ambiesoft::CKernelHandle h1(CreateMutex(NULL, TRUE, NULL));
