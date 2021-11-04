@@ -435,6 +435,9 @@
       <Filter>GTest Files</Filter>
     </ClCompile>
     <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
+    <ClCompile Include="gtestStdosdPathString.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -820,6 +823,9 @@
     </ClInclude>
     <ClInclude Include="..\GetLocalPathFromNetPath.h">
       <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\PathString.h">
+      <Filter>stdosd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

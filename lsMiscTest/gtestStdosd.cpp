@@ -1183,3 +1183,4 @@ TEST(stdosd, stdGetenv)
 {
 	EXPECT_TRUE(stdGetenv("PATH").size() != 0);
 }
+

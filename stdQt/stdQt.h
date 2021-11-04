@@ -67,6 +67,7 @@ QString ToAsciiLower(const QString& s);
 bool fileExists(const QString& path);
 bool fileEmpty(const QString& path);
 bool isRootDriveExists(const QString& path);
+bool isSamePath(const QString& path1, const QString& path2);
 } // namespace AmbiesoftQt
 
 #endif // STDQT_H

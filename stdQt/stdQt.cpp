@@ -294,4 +294,10 @@ bool fileEmpty(const QString& path)
 
     return false;
 }
+
+bool isSamePath(const QString& path1, const QString& path2)
+{
+    return QDir(path1)==QDir(path2);
+}
+
 } // namespace AmbiesoftQt
