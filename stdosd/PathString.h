@@ -23,19 +23,8 @@
 
 #pragma once
 
-#include <vector>
-#include <string>
-#include <memory>
-#include <regex>
-#include <functional>
-#include <set>
 
-#include <cassert>
-#include <cstdio>
-#include <cstdarg>
-#include <cstdlib>
-#include <cstring>
-#include <wctype.h>
+#include <string>
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -47,58 +36,7 @@
 #endif
 
 #include "stdosd_literal.h"
-
-#define STDOSD_WCHARLITERAL_INNER(x) L ## x
-#define STDOSD_WCHARLITERAL(x) STDOSD_WCHARLITERAL_INNER(x)
-
-#define STDOSD_CHAR16TLITERAL_INNER(x) u ## x
-#define STDOSD_CHAR16TLITERAL(x) STDOSD_CHAR16TLITERAL_INNER(x)
-
-#if __GNUC__
-
-    #define STDOSD_CONSTEXPR const constexpr
-    #define CHAR16T_AVAILABLE
-
-#elif _WIN32 // not __GNUC__ but _WIN32
-
-    #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
-    #define STDOSD_CONSTEXPR const
-    #else
-    #define STDOSD_CONSTEXPR const constexpr
-    #endif
-
-    #if _MSC_VER >= 1900
-    #define CHAR16T_AVAILABLE
-    #endif
-
-	//#ifndef NOMINMAX
-	//#error NOMINMAX must be defined
-	//#endif
-
-#endif // _WIN32 __GNUC__
-
-
-#ifndef stdosd_max
-#define stdosd_max(a,b)            (((a) > (b)) ? (a) : (b))
-#endif
-
-#ifndef stdosd_min
-#define stdosd_min(a,b)            (((a) < (b)) ? (a) : (b))
-#endif
-
-#if defined(_MSC_VER) || defined(__MINGW32__)
-#define STDOSD_DEFAULTSEPARATOR "\\"
-#define STDOSD_PATHSEPARATORS "/\\"
-#define STDOSD_NEWLINE "\r\n"
-#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
-#define STDOSD_IS_CASESENSITIVE false
-#else
-#define STDOSD_DEFAULTSEPARATOR "/"
-#define STDOSD_PATHSEPARATORS "/"
-#define STDOSD_NEWLINE "\n"
-#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
-#define STDOSD_IS_CASESENSITIVE true
-#endif
+#include "stdosd.h"
 
 namespace Ambiesoft {
     namespace stdosd {
@@ -113,19 +51,83 @@ namespace Ambiesoft {
         template<class C>
         class PathString
         {
-            using S = std::basic_string<C>;
+            using S = std::basic_string < C, std::char_traits<C>, std::allocator<C>>;
             S path_;
         public:
             PathString() {}
-            PathString(const S& path):path_(path){}
+            PathString(const S& path){
+                S s(path);
+                S t(path);
+                for(;;) {
+                    s = t;
+                    t = stdStringReplace(t, stdLiterals<C>::NBackSlash, stdLiterals<C>::NSlash);
+                    if (t == s)
+                        break;
+                } 
 
-            bool operator==(const S& that) {
-                if (this->path_.empty() && that.path_.empty())
-                    return true;
-                return false;
+                S dd(1, stdLiterals<C>::NSlash);
+                dd += stdLiterals<C>::NSlash;
+                S ss(1, stdLiterals<C>::NSlash);
+                for (;;) {
+                    s = t;
+                    t = stdStringReplace(t, dd, ss);
+                    if (t == s)
+                        break;
+                }
+                path_ = stdTrimEnd(s, stdLiterals<C>::NSlash);
+#ifdef _WIN32
+                for (size_t i = 0; i < path_.size(); ++i)
+                    path_[i] = std::tolower(path_[i]);
+#endif
+            }
+            PathString(const PathString& that) {
+                path_ = that.path_;
+            }
+            bool Equals(const PathString& that) const {
+                return this->path_ == that.path_;
+            }
+
+            bool cdUp() {
+                typename S::size_type pos = path_.find_last_of(stdLiterals<C>::NSlash);
+                if (pos == S::npos)
+                    return false;
+                path_ = path_.substr(0, pos);
+                return true;
             }
         };
-	}
+
+        template<class C>
+        bool operator==(
+            const PathString<C>& left, const PathString<C>& right) noexcept
+        {
+            return left.Equals(right);
+        }
+        template<class C>
+        bool operator!=(
+            const PathString<C>& left, const PathString<C>& right) noexcept
+        {
+            return !left.Equals(right);
+        }
+
+        template<class C>
+        bool stdIsSamePathString(const C* c1, const C* c2) {
+            if (c1 == c2)
+                return true;
+            if (!c1 && !c2)
+                return true;
+            if (!c1)
+                if (c2[0] == 0)
+                    return true;
+            if (!c2)
+                if (c1[0] == 0)
+                    return true;
+            return PathString<C>(c1) == PathString<C>(c2);
+        }
+        template<class C>
+        bool stdIsSamePathString(const std::basic_string<C>& c1, const std::basic_string<C>& c2) {
+            return PathString<C>(c1) == PathString<C>(c2);
+        }
+    }
 }
 
 

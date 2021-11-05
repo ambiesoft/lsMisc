@@ -570,6 +570,20 @@ namespace Ambiesoft {
 		{
 			return stdStringReplaceHelper(str, from, to);
 		}
+		inline std::string stdStringReplace(
+			std::string str,
+			char from,
+			char to)
+		{
+			return stdStringReplaceHelper(str, std::string(1, from), std::string(1, to));
+		}
+		inline std::wstring stdStringReplace(
+			std::wstring str,
+			wchar_t from,
+			wchar_t to)
+		{
+			return stdStringReplaceHelper(str, std::wstring(1, from), std::wstring(1, to));
+		}
 
 
 		template<typename C>
@@ -1158,14 +1172,17 @@ namespace Ambiesoft {
 		template<typename C>
 		inline std::basic_string<C> stdTrimStart(
 			const std::basic_string<C>& str,
-			const C* whitespace = stdLiterals<C>::WHITESPACE())
+			const C* whitespace = stdLiterals<C>::WHITESPACE(),
+			size_t len = std::basic_string<C>::npos)
 		{
             using ST = std::basic_string<C>;
 
 			if (whitespace == nullptr || whitespace[0] == 0)
 				return str;
-
-            const typename ST::size_type strBegin = str.find_first_not_of(whitespace);
+			if (len == ST::npos)
+				len = stdStringLength(whitespace);
+			const typename ST::size_type strBegin =
+				str.find_first_not_of(ST(whitespace, len));
 			if (strBegin == ST::npos)
 				return ST(); // no content
 
@@ -1176,20 +1193,30 @@ namespace Ambiesoft {
 			const std::basic_string<C>& str,
 			const std::basic_string<C>& whitespace)
 		{
-			return stdTrimStart(str, whitespace.c_str());
+			return stdTrimStart(str, whitespace.c_str(), whitespace.size());
+		}
+		template<typename C>
+		inline std::basic_string<C> stdTrimStart(
+			const std::basic_string<C>& str,
+			C whitespace)
+		{
+			return stdTrimStart(str, &whitespace, 1);
 		}
 
 		template<typename C>
 		inline std::basic_string<C> stdTrimEnd(
 			const std::basic_string<C>& str,
-			const C* whitespace = stdLiterals<C>::WHITESPACE())
+			const C* whitespace = stdLiterals<C>::WHITESPACE(),
+			size_t len = std::basic_string<C>::npos)
 		{
 			using ST = std::basic_string<C>;
 
 			if (whitespace == nullptr || whitespace[0] == 0)
 				return str;
-
-			const typename ST::size_type strEnd = str.find_last_not_of(whitespace);
+			if (len == ST::npos)
+				len = stdStringLength(whitespace);
+			const typename ST::size_type strEnd =
+				str.find_last_not_of(ST(whitespace, len));
 			
 			return str.substr(0, strEnd + 1);
 		}
@@ -1198,20 +1225,30 @@ namespace Ambiesoft {
 			const std::basic_string<C>& str,
 			const std::basic_string<C>& whitespace)
 		{
-			return stdTrimEnd(str, whitespace.c_str());
+			return stdTrimEnd(str, whitespace.c_str(), whitespace.size());
+		}
+		template<typename C>
+		inline std::basic_string<C> stdTrimEnd(
+			const std::basic_string<C>& str,
+			C whitespace)
+		{
+			return stdTrimEnd(str, &whitespace, 1);
 		}
 
 		template<typename C>
 		inline std::basic_string<C> stdTrim(
 			const std::basic_string<C>& str,
-			const C* whitespace = stdLiterals<C>::WHITESPACE())
+			const C* whitespace = stdLiterals<C>::WHITESPACE(),
+			size_t len = std::basic_string<C>::npos)
 		{
 			using ST = std::basic_string<C>;
 
 			if (whitespace == nullptr || whitespace[0] == 0)
 				return str;
-
-			const typename ST::size_type strBegin = str.find_first_not_of(whitespace);
+			if (len == ST::npos)
+				len = stdStringLength(whitespace);
+			const typename ST::size_type strBegin = 
+				str.find_first_not_of(ST(whitespace, len));
 			if (strBegin == ST::npos)
 				return ST(); // no content
 
@@ -1225,7 +1262,14 @@ namespace Ambiesoft {
 			const std::basic_string<C>& str,
 			const std::basic_string<C>& whitespace)
 		{
-			return stdTrim(str, whitespace.c_str());
+			return stdTrim(str, whitespace.c_str(), whitespace.size());
+		}
+		template<typename C>
+		inline std::basic_string<C> stdTrim(
+			const std::basic_string<C>& str,
+			C whitespace)
+		{
+			return stdTrim(str, &whitespace, 1);
 		}
 
 
