@@ -1333,6 +1333,7 @@ namespace Ambiesoft {
 		inline int stdStrCmp(const C* p1, const C* p2, bool ignorecase = false)
 		{
 			static_assert(sizeof(C) == 0);
+            return 0;
 		}
 		template<>
 		inline int stdStrCmp(const char* p1, const char* p2, bool ignorecase)
