@@ -75,8 +75,7 @@ namespace Ambiesoft {
 
 		if (verSize != 0)
 		{
-			// LPTSTR verData = new TCHAR[verSize];
-			unique_ptr<TCHAR[]> verData(new TCHAR[verSize]);
+			unique_ptr<BYTE[]> verData(new BYTE[verSize]);
 
 			if (GetFileVersionInfo(szFileName, verHandle, verSize, verData.get()))
 			{
