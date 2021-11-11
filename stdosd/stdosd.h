@@ -1581,6 +1581,7 @@ namespace Ambiesoft {
 		inline bool stdFileExists(const	C* file)
 		{
 			static_assert(sizeof(C) == 0);
+            return false;
 		}
 		template<>
 		inline bool stdFileExists(const char* file)
