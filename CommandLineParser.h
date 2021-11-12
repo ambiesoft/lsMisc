@@ -357,7 +357,24 @@ namespace Ambiesoft {
 
 		void setArgFlag(int exactcount)
 		{
-			argcountflag_ = (ArgCount)(1 << exactcount);
+			switch (exactcount)
+			{
+			case 0:
+				argcountflag_ = ArgCount::ArgCount_Zero;
+				break;
+			case 1:
+				argcountflag_ = ArgCount::ArgCount_One;
+				break;
+			case 2:
+				argcountflag_ = ArgCount::ArgCount_Two;
+				break;
+			case 3:
+				argcountflag_ = ArgCount::ArgCount_Three;
+				break;
+			default:
+				argcountflag_ = ArgCount::ArgCount_ZeroToInfinite;
+				break;
+			}
 		}
 
 		void setParsed()
@@ -1025,6 +1042,24 @@ typedef BasicOption<std::string> COptionA;
 			option.helpString_ = helpstring;
 			inneroptions_.push_back(option);
 		}
+		template<class TARGET>
+		void AddOptionRange(
+			const std::vector<MyS_>& optionStrings,
+			ArgCount argCount,
+			TARGET* pTarget,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
+		{
+			MyO_ option(optionStrings);
+			option.argcountflag_ = argCount;
+			option.case_ = case_;
+			check(&option);
+			// *pTarget = TARGET();
+			option.setTarget(pTarget);
+			option.encoding_ = arf;
+			option.helpString_ = helpstring;
+			inneroptions_.push_back(option);
+		}
 
 		// single option string
 		template<class TARGET>
@@ -1036,6 +1071,16 @@ typedef BasicOption<std::string> COptionA;
 			const MyS_& helpstring = MyS_())
 		{
 			AddOptionRange({ optionString1 }, exactCount, pTarget, arf, helpstring);
+		}
+		template<class TARGET>
+		void AddOption(
+			MyS_ optionString1,
+			ArgCount argCount,
+			TARGET* pTarget,
+			ArgEncodingFlags arf = ArgEncodingFlags_Default,
+			const MyS_& helpstring = MyS_())
+		{
+			AddOptionRange({ optionString1 }, argCount, pTarget, arf, helpstring);
 		}
 
 		// two option strings
