@@ -24,19 +24,22 @@
 
 namespace AmbiesoftQt {
 
-
-class WaitingCursor
-{
-public:
-    WaitingCursor(const QCursor& cursor = Qt::WaitCursor)
+    class WaitingCursor
     {
-        QApplication::setOverrideCursor(cursor);
-    }
-    ~WaitingCursor()
-    {
-        QApplication::restoreOverrideCursor();
-    }
-};
+    public:
+        WaitingCursor(const QCursor& cursor = Qt::WaitCursor)
+        {
+    #ifndef QT_NO_CURSOR
+            QApplication::setOverrideCursor(cursor);
+    #endif
+        }
+        ~WaitingCursor()
+        {
+    #ifndef QT_NO_CURSOR
+            QApplication::restoreOverrideCursor();
+    #endif
+        }
+    };
 
 } // namespace AmbiesoftQt
 
