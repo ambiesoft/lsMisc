@@ -24,4 +24,5 @@
 #pragma once
 #include <Windows.h>
 #include <string>
-std::wstring GetHotkeyStringW(WORD wKey);
+std::wstring GetHotkeyControlStringW(WORD wKey);
+UINT GetHotkeyModForRegisterHotKey(WORD wKey);

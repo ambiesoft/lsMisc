@@ -252,7 +252,18 @@ static wstring GetVKString(BYTE vk)
     return L"<ERROR>";
 }
 
-wstring GetHotkeyStringW(WORD wKey)
+UINT GetHotkeyModForRegisterHotKey(WORD wKey)
+{
+    UINT ret = 0;
+    if (HIBYTE(wKey) & HOTKEYF_CONTROL)
+        ret |= MOD_CONTROL;
+    if (HIBYTE(wKey) & HOTKEYF_SHIFT)
+        ret |= MOD_SHIFT;
+    if (HIBYTE(wKey) & HOTKEYF_ALT)
+        ret |= MOD_ALT;
+    return ret;
+}
+wstring GetHotkeyControlStringW(WORD wKey)
 {
 	wstring ret;
 	if(wKey==0)
@@ -264,6 +275,15 @@ wstring GetHotkeyStringW(WORD wKey)
 		ret += L"Shift+";
 	if(HIBYTE(wKey) & HOTKEYF_ALT)
 		ret += L"Alt+";
+
+    //if (HIBYTE(wKey) & MOD_CONTROL)
+    //    ret += L"Ctrl+";
+    //if (HIBYTE(wKey) & MOD_SHIFT)
+    //    ret += L"Shift+";
+    //if (HIBYTE(wKey) & MOD_ALT)
+    //    ret += L"Alt+";
+    //if (HIBYTE(wKey) & MOD_WIN)
+    //    ret += L"Win+";
 
     return ret + GetVKString(LOBYTE(wKey));
 
