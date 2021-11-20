@@ -34,7 +34,7 @@ using namespace std;
 using namespace Ambiesoft::stdosd;
 
 namespace Ambiesoft {
-	wstring GetAllTexts(HANDLE hFile, LONG fileSize)
+	vector<BYTE> GetAllTexts(HANDLE hFile, LONG fileSize)
 	{
 		if (fileSize == -1)
 		{
@@ -42,12 +42,12 @@ namespace Ambiesoft {
 			li.QuadPart = 0;
 			if (!GetFileSizeEx(hFile, &li))
 			{
-				return wstring();
+				return vector<BYTE>();
 			}
 			fileSize = li.LowPart;
 		}
 		vector<BYTE> v;
-		v.resize(fileSize + 4);
+		v.resize(fileSize);
 		DWORD dwRead = 0;
 		if (!ReadFile(hFile,
 			&v[0],
@@ -55,12 +55,8 @@ namespace Ambiesoft {
 			&dwRead,
 			NULL) || dwRead != fileSize)
 		{
-			return wstring();
+			return vector<BYTE>();
 		}
-		v[fileSize] = 0;
-		v[fileSize + 1] = 0;
-		v[fileSize + 2] = 0;
-		v[fileSize + 3] = 0;
-		return toStdWstringFromUtf8((const char*)&v[0]);
+		return move(v);
 	}
 }

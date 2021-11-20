@@ -22,8 +22,8 @@
 //SUCH DAMAGE.
 
 #pragma once
-#include <string>
+#include <vector>
 #include <Windows.h>
 namespace Ambiesoft {
-	std::wstring GetAllTexts(HANDLE hFile, LONG fileSize = -1);
+	std::vector<BYTE> GetAllTexts(HANDLE hFile, LONG fileSize = -1);
 }
