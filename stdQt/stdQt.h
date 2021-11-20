@@ -17,24 +17,6 @@ QString doublequoteIfNecessary(const QString& s);
 QString undoublequoteIfNecessary(QString s);
 bool Move3Files(const QString& replaced, const QString& replacement, const QString& backup, QString* pError = nullptr);
 
-class CWaitCursor
-{
-public:
-    CWaitCursor()
-    {
-#ifndef QT_NO_CURSOR
-        QApplication::setOverrideCursor(Qt::WaitCursor);
-#endif
-    }
-    ~CWaitCursor()
-    {
-#ifndef QT_NO_CURSOR
-        QApplication::restoreOverrideCursor();
-#endif
-    }
-};
-
-
 void Info(QWidget* parent, QString message);
 void Alert(QWidget* parent, QString message);
 bool YesNo(QWidget* parent,

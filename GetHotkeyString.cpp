@@ -252,7 +252,23 @@ static wstring GetVKString(BYTE vk)
     return L"<ERROR>";
 }
 
-wstring GetHotkeyStringW(WORD wKey)
+
+wstring GetHotkeyRegisterStringW(WORD wKey)
+{
+    wstring ret;
+    if (wKey == 0)
+        return ret;
+
+    if (HIBYTE(wKey) & MOD_CONTROL)
+        ret += L"Ctrl+";
+    if (HIBYTE(wKey) & MOD_SHIFT)
+        ret += L"Shift+";
+    if (HIBYTE(wKey) & MOD_ALT)
+        ret += L"Alt+";
+
+    return ret + GetVKString(LOBYTE(wKey));
+}
+wstring GetHotkeyControlStringW(WORD wKey)
 {
 	wstring ret;
 	if(wKey==0)
@@ -266,44 +282,28 @@ wstring GetHotkeyStringW(WORD wKey)
 		ret += L"Alt+";
 
     return ret + GetVKString(LOBYTE(wKey));
+}
+WORD ChangeHotKeyRegisterToControl(WORD wKey)
+{
+    BYTE mod = 0;
+    if (HIBYTE(wKey) & MOD_CONTROL)
+        mod |= HOTKEYF_CONTROL;
+    if (HIBYTE(wKey) & MOD_SHIFT)
+        mod |= HOTKEYF_SHIFT;
+    if (HIBYTE(wKey) & MOD_ALT)
+        mod |= HOTKEYF_ALT;
+    
+    return MAKEWORD(LOBYTE(wKey), mod);
+}
+WORD ChangeHotKeyControlToRegister(WORD wKey)
+{
+    BYTE mod = 0;
+    if (HIBYTE(wKey) & HOTKEYF_CONTROL)
+        mod |= MOD_CONTROL;
+    if (HIBYTE(wKey) & HOTKEYF_SHIFT)
+        mod |= MOD_SHIFT;
+    if (HIBYTE(wKey) & HOTKEYF_ALT)
+        mod |= MOD_ALT;
 
- //   if (VK_F1 <= LOBYTE(wKey) && LOBYTE(wKey) <= VK_F24)
- //   {
- //       // GetKeyNameText does not work for function keys
- //       int n = LOBYTE(wKey) - VK_F1 + 1;
- //       return ret + L"F" + to_wstring(n);
- //   }
- //   else if(VK_LEFT <= LOBYTE(wKey) && LOBYTE(wKey) <= VK_F24)
-
- //   unsigned int scanCode = MapVirtualKey(LOBYTE(wKey), 0); //MAPVK_VK_TO_VSC);
- //   // because MapVirtualKey strips the extended bit for some keys
- //   switch (LOBYTE(wKey))
- //   {
- //       case VK_LEFT: case VK_UP: case VK_RIGHT: case VK_DOWN: // arrow keys
- //       case VK_PRIOR: case VK_NEXT: // page up and page down
- //       case VK_END: case VK_HOME:
- //       case VK_INSERT: case VK_DELETE:
- //       case VK_DIVIDE: // numpad slash
- //       case VK_NUMLOCK:
- //       {
- //           scanCode |= 0x100; // set extended bit
- //           break;
- //       }
- //   }
-
-
- //   else
- //   {
- //       wchar_t keyName[64] = { 0 };
- //       if (GetKeyNameText(scanCode << 16, keyName, sizeof(keyName) / sizeof(keyName[0]) != 0))
- //       {
- //           ret += keyName;
- //       }
- //       else
- //       {
- //           ret += L"[Error]";
- //       }
- //   }
-
-	//return ret;
+    return MAKEWORD(LOBYTE(wKey), mod);
 }
