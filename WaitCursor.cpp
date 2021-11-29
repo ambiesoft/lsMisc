@@ -1,4 +1,4 @@
-//Copyright (C) 2017 Ambiesoft All rights reserved.
+Ôªø//Copyright (C) 2017 Ambiesoft All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
@@ -42,7 +42,7 @@ namespace Ambiesoft {
 			ms_pcsCursor = new CRITICAL_SECTION;
 			InitializeCriticalSection(ms_pcsCursor);
 
-			atexit(DeleteCursorCS);
+			atexit(&CWaitCursor::DeleteCursorCS);
 		}
 
 
@@ -72,14 +72,13 @@ namespace Ambiesoft {
 			if (m_hCurOld == NULL) {
 				SetCursor(LoadCursor(NULL, IDC_ARROW));
 			}
-			//å≥ÇÃÉJÅ[É\ÉãÇ…ñﬂÇ∑
 			SetCursor(m_hCurOld);
 			m_hCurOld = NULL;
 		}
 		LeaveCriticalSection(ms_pcsCursor);
 	}
 
-	void CWaitCursor::DeleteCursorCS(void)
+	void CWaitCursor::DeleteCursorCS()
 	{
 		assert(ms_pcsCursor);
 		DeleteCriticalSection(ms_pcsCursor);
