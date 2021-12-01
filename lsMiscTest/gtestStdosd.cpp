@@ -1184,3 +1184,17 @@ TEST(stdosd, stdGetenv)
 	EXPECT_TRUE(stdGetenv("PATH").size() != 0);
 }
 
+TEST(stdosd, stdIsSubDirectoryTest)
+{
+	{
+		EXPECT_TRUE(stdIsSubDirectory(L"C:\\A\\", L"C:\\A\\B"));
+		EXPECT_TRUE(stdIsSubDirectory(L"C:\\A\\", L"C:\\A\\B\\"));
+		EXPECT_TRUE(stdIsSubDirectory(L"C:\\a\\", L"C:\\A\\B\\"));
+		EXPECT_TRUE(stdIsSubDirectory(L"C:\\A\\", L"C:\\A\\b\\"));
+
+		EXPECT_FALSE(stdIsSubDirectory(L"C:\\A\\", L"C:\\A\\"));
+		EXPECT_FALSE(stdIsSubDirectory(L"C:\\c\\", L"C:\\A\\B\\"));
+
+		EXPECT_TRUE(stdIsSubDirectory(L"..", L"."));
+	}
+}

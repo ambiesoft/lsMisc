@@ -1866,6 +1866,33 @@ namespace Ambiesoft {
 			std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> ret = stdGetFiles(pStr, FILEITERATEMODE::SKIP_NONE, GETFILESEMODE::FILE_AND_DIRECTORY, 1);
 			return ret.size() == 2;
 		}
+
+		template<typename C>
+		inline bool stdIsSubDirectory(const C* pParent, const C* pSub)
+		{
+			if (!pParent || pParent[0] == 0)
+				return false;
+			if (!pSub || pSub[0] == 0)
+				return false;
+
+			std::basic_string<C> parent = stdGetFullPathName(pParent);
+			std::basic_string<C> sub = stdGetFullPathName(pSub);
+
+			for (std::basic_string<C> dir = stdGetParentDirectory(sub);
+				!dir.empty();
+				dir = stdGetParentDirectory(dir))
+			{
+				if (stdIsSamePath(dir, parent))
+					return true;
+			}
+			return false;
+		}
+		template<typename C>
+		inline bool stdIsSubDirectory(const std::basic_string<C>& parent, const std::basic_string<C>& sub)
+		{
+			return stdIsSubDirectory(parent.c_str(), sub.c_str());
+		}
+
 	}
 }
 

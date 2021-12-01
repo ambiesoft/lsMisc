@@ -32,7 +32,7 @@
 
 #include "CommandLineString.h"
 #include "stdosd/stdosd.h"
-
+#include "OpenCommon.h"
 #include "RunAsAdmin.h"
 
 using namespace std;
