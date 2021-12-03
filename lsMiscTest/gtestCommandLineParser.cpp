@@ -489,7 +489,7 @@ TEST(CommandLineParser, Help)
 {
 	{
 		char* argv[] = {
-			   "exe.exe",
+			   "myapp.exe",
 			   "-op delete",
 			   NULL
 		};
@@ -528,7 +528,7 @@ TEST(CommandLineParser, Help)
 	}
 	{
 		wchar_t* argv[] = {
-			   L"exe.exe",
+			   L"myapp.exe",
 			   L"-op delete -pri 3 \"C:\\aaa bbb\\cc dd\\xxx.txt\"",
 			   NULL
 		};

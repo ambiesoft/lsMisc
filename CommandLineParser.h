@@ -92,7 +92,15 @@ namespace Ambiesoft {
 	{
 		s += L"\r\n";
 	}
-	
+	inline static void addprevkaigyo(std::string& s)
+	{
+		s = "\r\n" + s;
+	}
+	inline static void addprevkaigyo(std::wstring& s)
+	{
+		s = L"\r\n" + s;
+	}
+
 	inline static void addspace(std::string& s)
 	{
 		s += " ";
@@ -751,39 +759,30 @@ typedef BasicOption<std::string> COptionA;
 				{
 					case ArgCount::ArgCount_One:
 						usage += stdosd::stdLiterals<Elem>::commandlineonearg();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_ZeroOrOne:
 						usage += stdosd::stdLiterals<Elem>::commandlinezerooronearg();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_Two:
 						usage += stdosd::stdLiterals<Elem>::commandlinetwoargs();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_ZeroOrTwo:
 						usage += stdosd::stdLiterals<Elem>::commandlinezeroortwoargs();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_OneOrTwo:
 						usage += stdosd::stdLiterals<Elem>::commandlineoneortwoargs();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_ZeroOrOneOrTwo:
 						usage += stdosd::stdLiterals<Elem>::commandlinezerooroneortwoargs();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_ZeroToInfinite:
 						usage += stdosd::stdLiterals<Elem>::commandlinezerotoinfiniteargs();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_OneToInfinite:
 						usage += stdosd::stdLiterals<Elem>::commandlineonetoinfiniteargs();
-						addkaigyo(usage);
 						break;
 					case ArgCount::ArgCount_TwoToInfinite:
 						usage += stdosd::stdLiterals<Elem>::commandlinetwotoinfiniteargs();
-						addkaigyo(usage);
 						break;
 					default:
 						assert(false);
@@ -875,6 +874,9 @@ typedef BasicOption<std::string> COptionA;
 		}
 
 		MyS_ getHelpMessage() const {
+			return getHelpMessage(nullptr);
+		}
+		MyS_ getHelpMessage(const Elem* exceptOption) const {
 			MyS_ appname;
 			MyS_ description;
 			MyS_ explain;
@@ -914,8 +916,13 @@ typedef BasicOption<std::string> COptionA;
 				ArgCount argcount = ArgCount::ArgCount_Uninitialized;
 				std::vector<MyS_> options;
 				MyS_ helpString;
+				bool skip = false;
 				for (size_t j = 0; j < inneroptions_[i].options_.size(); ++j)
 				{
+					if (exceptOption && exceptOption == inneroptions_[i].options_[j]) {
+						skip = true;
+						continue;
+					}
 					assert(argcount == ArgCount::ArgCount_Uninitialized || argcount == inneroptions_[i].argcountflag_);
 					argcount = inneroptions_[i].argcountflag_;
 
@@ -924,7 +931,7 @@ typedef BasicOption<std::string> COptionA;
 
 					options.emplace_back(inneroptions_[i].options_[j]);
 				}
-				if (inneroptions_[i].options_.size() != 0)
+				if (!skip && inneroptions_[i].options_.size() != 0)
 				{
 					processOptionStringHelper(
 						argcount,
@@ -936,6 +943,15 @@ typedef BasicOption<std::string> COptionA;
 			}
 			for (size_t i = 0; i < useroptions_.size(); ++i)
 			{
+				bool skip = false;
+				for (size_t j = 0; j < useroptions_[i]->options_.size(); ++j) {
+					if (exceptOption && exceptOption == useroptions_[i]->options_[j]) {
+						skip = true;
+						continue;
+					}
+				}
+				if (skip)
+					continue;
 				processOptionStringHelper(
 					useroptions_[i]->argcountflag_,
 					useroptions_[i]->options_,
@@ -945,7 +961,7 @@ typedef BasicOption<std::string> COptionA;
 			}
 
 			addkaigyo(usage);
-			// addkaigyo(usage);
+			addkaigyo(usage);
 			return appname + description + usage + explain;
 		}
 		bool isEmpty() const
