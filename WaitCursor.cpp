@@ -21,13 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <cassert>
+#include <Windows.h>
 
 #include "WaitCursor.h"
 
@@ -45,7 +40,6 @@ namespace Ambiesoft {
 			atexit(&CWaitCursor::DeleteCursorCS);
 		}
 
-
 		EnterCriticalSection(ms_pcsCursor);
 		if (bWait)
 		{
@@ -56,8 +50,6 @@ namespace Ambiesoft {
 				return;
 			}
 			m_nCount = 1;
-
-
 			m_hCurOld = SetCursor(LoadCursor(NULL, IDC_WAIT));
 		}
 		else
