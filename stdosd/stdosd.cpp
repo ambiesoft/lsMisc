@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <ostream>
+
 #include "stdosd.h"
 
 #ifndef _countof
@@ -37,69 +38,70 @@ namespace Ambiesoft {
 
 		template<class T>
 		void stdGetRandomString(T* s, const size_t len) {
+            using NazoStdLiterals = typename ::Ambiesoft::stdosd::stdLiterals<T>;
 			static const T alphanum[] = {
-				stdLiterals<T>::N0,
-				stdLiterals<T>::N1,
-				stdLiterals<T>::N2,
-				stdLiterals<T>::N3,
-				stdLiterals<T>::N4,
-				stdLiterals<T>::N5,
-				stdLiterals<T>::N6,
-				stdLiterals<T>::N7,
-				stdLiterals<T>::N8,
-				stdLiterals<T>::N9,
-				stdLiterals<T>::NA,
-				stdLiterals<T>::NB,
-				stdLiterals<T>::NC,
-				stdLiterals<T>::ND,
-				stdLiterals<T>::NE,
-				stdLiterals<T>::NF,
-				stdLiterals<T>::NG,
-				stdLiterals<T>::NH,
-				stdLiterals<T>::NI,
-				stdLiterals<T>::NJ,
-				stdLiterals<T>::NK,
-				stdLiterals<T>::NL,
-				stdLiterals<T>::NM,
-				stdLiterals<T>::NN,
-				stdLiterals<T>::NO,
-				stdLiterals<T>::NP,
-				stdLiterals<T>::NQ,
-				stdLiterals<T>::NR,
-				stdLiterals<T>::NS,
-				stdLiterals<T>::NT,
-				stdLiterals<T>::NU,
-				stdLiterals<T>::NV,
-				stdLiterals<T>::NW,
-				stdLiterals<T>::NX,
-				stdLiterals<T>::NY,
-				stdLiterals<T>::NZ,
-				stdLiterals<T>::Na,
-				stdLiterals<T>::Nb,
-				stdLiterals<T>::Nc,
-				stdLiterals<T>::Nd,
-				stdLiterals<T>::Ne,
-				stdLiterals<T>::Nf,
-				stdLiterals<T>::Ng,
-				stdLiterals<T>::Nh,
-				stdLiterals<T>::Ni,
-				stdLiterals<T>::Nj,
-				stdLiterals<T>::Nk,
-				stdLiterals<T>::Nl,
-				stdLiterals<T>::Nm,
-				stdLiterals<T>::Nn,
-				stdLiterals<T>::No,
-				stdLiterals<T>::Np,
-				stdLiterals<T>::Nq,
-				stdLiterals<T>::Nr,
-				stdLiterals<T>::Ns,
-				stdLiterals<T>::Nt,
-				stdLiterals<T>::Nu,
-				stdLiterals<T>::Nv,
-				stdLiterals<T>::Nw,
-				stdLiterals<T>::Nx,
-				stdLiterals<T>::Ny,
-				stdLiterals<T>::Nz,
+                NazoStdLiterals::N0,
+                NazoStdLiterals::N1,
+                NazoStdLiterals::N2,
+                NazoStdLiterals::N3,
+                NazoStdLiterals::N4,
+                NazoStdLiterals::N5,
+                NazoStdLiterals::N6,
+                NazoStdLiterals::N7,
+                NazoStdLiterals::N8,
+                NazoStdLiterals::N9,
+                NazoStdLiterals::NA,
+                NazoStdLiterals::NB,
+                NazoStdLiterals::NC,
+                NazoStdLiterals::ND,
+                NazoStdLiterals::NE,
+                NazoStdLiterals::NF,
+                NazoStdLiterals::NG,
+                NazoStdLiterals::NH,
+                NazoStdLiterals::NI,
+                NazoStdLiterals::NJ,
+                NazoStdLiterals::NK,
+                NazoStdLiterals::NL,
+                NazoStdLiterals::NM,
+                NazoStdLiterals::NN,
+                NazoStdLiterals::NO,
+                NazoStdLiterals::NP,
+                NazoStdLiterals::NQ,
+                NazoStdLiterals::NR,
+                NazoStdLiterals::NS,
+                NazoStdLiterals::NT,
+                NazoStdLiterals::NU,
+                NazoStdLiterals::NV,
+                NazoStdLiterals::NW,
+                NazoStdLiterals::NX,
+                NazoStdLiterals::NY,
+                NazoStdLiterals::NZ,
+                NazoStdLiterals::Na,
+                NazoStdLiterals::Nb,
+                NazoStdLiterals::Nc,
+                NazoStdLiterals::Nd,
+                NazoStdLiterals::Ne,
+                NazoStdLiterals::Nf,
+                NazoStdLiterals::Ng,
+                NazoStdLiterals::Nh,
+                NazoStdLiterals::Ni,
+                NazoStdLiterals::Nj,
+                NazoStdLiterals::Nk,
+                NazoStdLiterals::Nl,
+                NazoStdLiterals::Nm,
+                NazoStdLiterals::Nn,
+                NazoStdLiterals::No,
+                NazoStdLiterals::Np,
+                NazoStdLiterals::Nq,
+                NazoStdLiterals::Nr,
+                NazoStdLiterals::Ns,
+                NazoStdLiterals::Nt,
+                NazoStdLiterals::Nu,
+                NazoStdLiterals::Nv,
+                NazoStdLiterals::Nw,
+                NazoStdLiterals::Nx,
+                NazoStdLiterals::Ny,
+                NazoStdLiterals::Nz,
 			};
 
 			// for debug
@@ -123,7 +125,9 @@ namespace Ambiesoft {
 			s[lenMinusOne] = 0;
 		}
 		template void stdGetRandomString<char>(char* s, const size_t len);
+#ifdef _WIN32
 		template void stdGetRandomString<wchar_t>(wchar_t* s, const size_t len);
+#endif
 
 		template<typename C>
 		inline std::basic_string<C> stdRegexReplace(
@@ -156,14 +160,16 @@ namespace Ambiesoft {
 			const std::basic_regex<wchar_t>& regex,
 			std::function< std::basic_string<wchar_t>(const std::match_results<std::basic_string<wchar_t>::const_iterator>& match) > format);
 
-		std::basic_string<SYSTEM_CHAR_TYPE> stdGetProgramName()
+
+        std::basic_string<::Ambiesoft::stdosd::SYSTEM_CHAR_TYPE> stdGetProgramName()
 		{
-			return stdGetFileNameWitoutExtension(stdGetModuleFileName<SYSTEM_CHAR_TYPE>());
+            return stdGetFileNameWitoutExtension(stdGetModuleFileName<Ambiesoft::stdosd::SYSTEM_CHAR_TYPE>());
 		}
 
 		template<typename C>
-		bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit)
+        bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit)
 		{
+            using NazoStdLiterals = typename ::Ambiesoft::stdosd::stdLiterals<C>;
 			if (pStr == NULL || *pStr == 0)
 				return false;
 			if (len == -1)
@@ -176,12 +182,12 @@ namespace Ambiesoft {
 			bool unitted = true;
 			switch (lastchar)
 			{
-			case stdLiterals<C>::Nk: unit = 1000; break;
-			case stdLiterals<C>::NK: unit = 1024; break;
-			case stdLiterals<C>::Nm: unit = 1000 * 1000; break;
-			case stdLiterals<C>::NM: unit = 1024 * 1024; break;
-			case stdLiterals<C>::Ng: unit = 1000 * 1000 * 1000; break;
-			case stdLiterals<C>::NG: unit = 1024 * 1024 * 1024; break;
+            case NazoStdLiterals::Nk: unit = 1000; break;
+            case NazoStdLiterals::Nm: unit = 1000 * 1000; break;
+            case NazoStdLiterals::NM: unit = 1024 * 1024; break;
+            case NazoStdLiterals::Ng: unit = 1000 * 1000 * 1000; break;
+            case NazoStdLiterals::NK: unit = 1024; break;
+            case NazoStdLiterals::NG: unit = 1024 * 1024 * 1024; break;
 			default:
 				unitted = false;
 				break;
@@ -196,8 +202,8 @@ namespace Ambiesoft {
 			bool bsigned = true;
 			switch (str[0])
 			{
-			case stdLiterals<C>::NPlus: *nSign = 1; break;
-			case stdLiterals<C>::NMinus: *nSign = -1; break;
+            case NazoStdLiterals::NPlus: *nSign = 1; break;
+            case NazoStdLiterals::NMinus: *nSign = -1; break;
 			default:
 				bsigned = false;
 			}
@@ -207,7 +213,7 @@ namespace Ambiesoft {
 			if (pUnit)
 				*pUnit = unit;
 
-			__int64 r = stdFromString<__int64, C>(str.c_str());
+            __int64_t r = stdFromString<__int64_t, C>(str.c_str());
 
 			*lResult = r * unit;
 			if (*nSign < 0)
@@ -216,8 +222,10 @@ namespace Ambiesoft {
 			return true;
 		}
 
-		template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
-		template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
+        template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+#ifdef _WIN32
+        template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+#endif
 
 	}
 }

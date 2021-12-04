@@ -129,6 +129,7 @@ namespace Ambiesoft {
 			return L"";
 		}
 
+#ifdef _WIN32
         size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* pBuf, size_t len)
         {
             // https://stackoverflow.com/a/198099
@@ -138,41 +139,70 @@ namespace Ambiesoft {
             pBuf[bytesWritten] = '\0';
             return bytesWritten;
         }
-
-        HFILEITERATOR stdCreateFileIterator(const std::string& directory)
+#endif
+        HFILEITERATOR stdCreateFileIterator(
+            const std::string& directory,
+            FILEITERATEMODE fim,
+            GETFILESEMODE gfm,
+            int depth)
         {
             return (HFILEITERATOR)opendir(directory.c_str());
         }
-        bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
-        {
-            if(hFileIterator==nullptr)
-                return false;
-            DIR* dir = (DIR*)hFileIterator;
-            unique_ptr<struct dirent64> dirEnt(new struct dirent64);
-            struct dirent64* pResult = nullptr;
-            if(0 != readdir64_r(dir, dirEnt.get(), &pResult) || pResult==nullptr)
-            {
-                return false;
-            }
 
-            const bool isDir = (pResult->d_type & DT_DIR) != 0;
-            off_t size=0;
-            if(!isDir)
-            {
-                struct stat64 st;
-                st.st_size = 0;
-                stat64(pResult->d_name, &st);
-                size = st.st_size;
-            }
 
-            fi->setAll(isDir,
-                       pResult->d_name,
-                       size);
-            return true;
+
+
+        namespace detail {
+            bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
+            {
+                if(hFileIterator==nullptr)
+                    return false;
+                DIR* dir = (DIR*)hFileIterator;
+                unique_ptr<struct dirent64> dirEnt(new struct dirent64);
+                struct dirent64* pResult = nullptr;
+                if(0 != readdir64_r(dir, dirEnt.get(), &pResult) || pResult==nullptr)
+                {
+                    return false;
+                }
+
+                const bool isDir = (pResult->d_type & DT_DIR) != 0;
+                off_t size=0;
+                if(!isDir)
+                {
+                    struct stat64 st;
+                    st.st_size = 0;
+                    stat64(pResult->d_name, &st);
+                    size = st.st_size;
+                }
+
+                fi->setAll(isDir,
+                           pResult->d_name,
+                           size);
+                return true;
+            }
         }
         bool stdCloseFileIterator(HFILEITERATOR hFileIterator)
         {
             return 0==closedir((DIR*)hFileIterator);
+        }
+
+        namespace detail {
+            size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size)
+            {
+                size_t ret = readlink("/proc/self/exe", p, size) ;
+                if(ret < size)
+                {
+                    p[ret]=0;
+                    ++ret;
+                }
+                return ret;
+            }
+
+            size_t stdExpandEnvironmentStringsImpl(const char* pIN, char* p, size_t size)
+            {
+                assert(false);
+                return 0;
+            }
         }
 	}
 }

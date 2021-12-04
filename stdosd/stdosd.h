@@ -21,7 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#pragma once
+#ifndef STDOSD_INCLUDED
+#define STDOSD_INCLUDED
 
 #include <vector>
 #include <string>
@@ -44,6 +45,14 @@
     #include <sys/types.h>
     #include <sys/stat.h>
     #include <unistd.h>
+#endif
+
+#if defined(_MSC_VER) && (_MSC_VER <= 1500)
+    typedef __int64 int64_t;
+    typedef unsigned __int64 uint64_t;
+#else
+    /* gcc or VC10 */
+    #include <stdint.h>
 #endif
 
 #include "stdosd_literal.h"
@@ -1151,8 +1160,9 @@ namespace Ambiesoft {
 			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi);
 #ifdef _WIN32
 			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi);
-		}
 #endif
+		}
+
 		template<typename C>
 		inline bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo<C>* fi)
 		{
@@ -1779,7 +1789,7 @@ namespace Ambiesoft {
 		}
 
 		template<typename R, typename C>
-		inline R stdFromString(const C* pStr)
+        inline R stdFromString(const C* pStr)
 		{
 			static_assert(sizeof(C) == 0, "Must be full specialized");
 		}
@@ -1787,35 +1797,46 @@ namespace Ambiesoft {
 		inline int stdFromString<int, char>(const char* pStr)
 		{
 			return atoi(pStr);
-		}
+        }
+#ifdef _WIN32
 		template<>
 		inline int stdFromString<int, wchar_t>(const wchar_t* pStr)
-		{
-			return _wtoi(pStr);
-		}
+        {
+            return _wtoi(pStr);
+        }
+#endif
 		template<>
-		inline __int64 stdFromString<__int64, char>(const char* pStr)
+        inline __int64_t stdFromString<__int64_t, char>(const char* pStr)
 		{
-			return _atoi64(pStr);
+#ifdef _WIN32
+            return _atoi64(pStr);
+#else
+            return atoll(pStr);
+#endif
 		}
+#ifdef _WIN32
 		template<>
-		inline __int64 stdFromString<__int64, wchar_t>(const wchar_t* pStr)
+        inline __int64_t stdFromString<__int64_t, wchar_t>(const wchar_t* pStr)
 		{
 			return _wtoi64(pStr);
 		}
-
+#endif
 		template<typename C>
-		bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit = nullptr);
-		extern template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
-		extern template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64* lResult, int* pUnit);
-		inline bool stdGetUnittedSize(const std::string& s, int* nSign, __int64* lResult, int* pUnit = nullptr)
+        bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit = nullptr);
+        extern template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+#ifdef _WIN32
+        extern template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+#endif
+        inline bool stdGetUnittedSize(const std::string& s, int* nSign, __int64_t* lResult, int* pUnit = nullptr)
 		{
 			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
 		}
-		inline bool stdGetUnittedSize(const std::wstring& s, int* nSign, __int64* lResult, int* pUnit = nullptr)
+#ifdef _WIN32
+        inline bool stdGetUnittedSize(const std::wstring& s, int* nSign, __int64_t* lResult, int* pUnit = nullptr)
 		{
 			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
 		}
+#endif
 
 		inline std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> stdGetFiles(
 			const SYSTEM_CHAR_TYPE* pDirectory,
@@ -1899,3 +1920,5 @@ namespace Ambiesoft {
 
 #undef stdosd_max
 #undef stdosd_min
+
+#endif //#ifndef STDOSD_INCLUDED

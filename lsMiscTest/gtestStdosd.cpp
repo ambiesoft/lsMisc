@@ -1149,11 +1149,12 @@ TEST(stdosd, stdToString)
 TEST(stdosd, stdGetUnittedSize)
 {
 	int nSign = 0;
-	__int64 val = 0;
+    __int64_t val = 0;
 	EXPECT_FALSE(stdGetUnittedSize((const char*)NULL, 0, &nSign, &val));
 	EXPECT_FALSE(stdGetUnittedSize("", 0, &nSign, &val));
+#ifdef _WIN32
 	EXPECT_FALSE(stdGetUnittedSize(L"", 0, &nSign, &val));
-
+#endif
 	EXPECT_TRUE(stdGetUnittedSize("100", -1, &nSign, &val));
 	EXPECT_EQ(nSign, 0);
 	EXPECT_EQ(val, 100);
@@ -1166,17 +1167,20 @@ TEST(stdosd, stdGetUnittedSize)
 	EXPECT_EQ(nSign, -1);
 	EXPECT_EQ(val, -100 * 1024);
 
+#ifdef _WIN32
 	EXPECT_TRUE(stdGetUnittedSize(L"-100K", -1, &nSign, &val));
 	EXPECT_EQ(nSign, -1);
 	EXPECT_EQ(val, -100 * 1024);
-
+#endif
 	EXPECT_TRUE(stdGetUnittedSize(string("-100K"), &nSign, &val));
 	EXPECT_EQ(nSign, -1);
 	EXPECT_EQ(val, -100 * 1024);
 
+#ifdef _WIN32
 	EXPECT_TRUE(stdGetUnittedSize(wstring(L"-100K"), &nSign, &val));
 	EXPECT_EQ(nSign, -1);
 	EXPECT_EQ(val, -100 * 1024);
+#endif
 }
 
 TEST(stdosd, stdGetenv)
@@ -1187,6 +1191,7 @@ TEST(stdosd, stdGetenv)
 TEST(stdosd, stdIsSubDirectoryTest)
 {
 	{
+#ifdef _WIN32
 		EXPECT_TRUE(stdIsSubDirectory(L"C:\\A\\", L"C:\\A\\B"));
 		EXPECT_TRUE(stdIsSubDirectory(L"C:\\A\\", L"C:\\A\\B\\"));
 		EXPECT_TRUE(stdIsSubDirectory(L"C:\\a\\", L"C:\\A\\B\\"));
@@ -1196,5 +1201,6 @@ TEST(stdosd, stdIsSubDirectoryTest)
 		EXPECT_FALSE(stdIsSubDirectory(L"C:\\c\\", L"C:\\A\\B\\"));
 
 		EXPECT_TRUE(stdIsSubDirectory(L"..", L"."));
+#endif
 	}
 }
