@@ -41,7 +41,7 @@
 #ifdef _WIN32
     #include <Windows.h>
 #endif
-#if __GNUC__
+#if defined(__GNUC__)
     #include <sys/types.h>
     #include <sys/stat.h>
     #include <unistd.h>
@@ -1806,7 +1806,7 @@ namespace Ambiesoft {
         }
 #endif
 		template<>
-        inline __int64_t stdFromString<__int64_t, char>(const char* pStr)
+        inline int64_t stdFromString<int64_t, char>(const char* pStr)
 		{
 #ifdef _WIN32
             return _atoi64(pStr);
@@ -1816,23 +1816,23 @@ namespace Ambiesoft {
 		}
 #ifdef _WIN32
 		template<>
-        inline __int64_t stdFromString<__int64_t, wchar_t>(const wchar_t* pStr)
+        inline int64_t stdFromString<int64_t, wchar_t>(const wchar_t* pStr)
 		{
 			return _wtoi64(pStr);
 		}
 #endif
 		template<typename C>
-        bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit = nullptr);
-        extern template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+        bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit = nullptr);
+        extern template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit);
 #ifdef _WIN32
-        extern template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+        extern template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit);
 #endif
-        inline bool stdGetUnittedSize(const std::string& s, int* nSign, __int64_t* lResult, int* pUnit = nullptr)
+        inline bool stdGetUnittedSize(const std::string& s, int* nSign, int64_t* lResult, int* pUnit = nullptr)
 		{
 			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
 		}
 #ifdef _WIN32
-        inline bool stdGetUnittedSize(const std::wstring& s, int* nSign, __int64_t* lResult, int* pUnit = nullptr)
+        inline bool stdGetUnittedSize(const std::wstring& s, int* nSign, int64_t* lResult, int* pUnit = nullptr)
 		{
 			return stdGetUnittedSize(s.c_str(), s.size(), nSign, lResult, pUnit);
 		}

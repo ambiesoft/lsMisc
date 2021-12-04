@@ -167,7 +167,7 @@ namespace Ambiesoft {
 		}
 
 		template<typename C>
-        bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit)
+        bool stdGetUnittedSize(const C* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit)
 		{
             using NazoStdLiterals = typename ::Ambiesoft::stdosd::stdLiterals<C>;
 			if (pStr == NULL || *pStr == 0)
@@ -213,7 +213,7 @@ namespace Ambiesoft {
 			if (pUnit)
 				*pUnit = unit;
 
-            __int64_t r = stdFromString<__int64_t, C>(str.c_str());
+            int64_t r = stdFromString<int64_t, C>(str.c_str());
 
 			*lResult = r * unit;
 			if (*nSign < 0)
@@ -222,9 +222,9 @@ namespace Ambiesoft {
 			return true;
 		}
 
-        template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+        template bool stdGetUnittedSize(const char* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit);
 #ifdef _WIN32
-        template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, __int64_t* lResult, int* pUnit);
+        template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit);
 #endif
 
 	}

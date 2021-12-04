@@ -1149,7 +1149,7 @@ TEST(stdosd, stdToString)
 TEST(stdosd, stdGetUnittedSize)
 {
 	int nSign = 0;
-    __int64_t val = 0;
+    int64_t val = 0;
 	EXPECT_FALSE(stdGetUnittedSize((const char*)NULL, 0, &nSign, &val));
 	EXPECT_FALSE(stdGetUnittedSize("", 0, &nSign, &val));
 #ifdef _WIN32
