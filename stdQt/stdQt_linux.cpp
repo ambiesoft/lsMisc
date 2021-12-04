@@ -20,7 +20,7 @@ bool Move3Files(const QString& replaced, const QString& replacement, const QStri
     Q_ASSERT(!replacement.isEmpty());
 
     // maybe first save, original file not exist
-    if(!QFile(replaced).exists())
+    if(!QFileInfo(replaced).exists())
     {
         if(0 != rename(replacement.toStdString().c_str(),
                        replaced.toStdString().c_str()))

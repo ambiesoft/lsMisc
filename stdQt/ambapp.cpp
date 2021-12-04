@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QFileInfo>
 #include <QDebug>
 #include <QLibraryInfo>
 #include <QStyle>
@@ -17,7 +18,7 @@ namespace  {
 bool IsAvailableLanguage(const QString& lang)
 {
     QString i18nFile = ":/translations/i18n_" + lang + ".qm";
-    return QFile(i18nFile).exists();
+    return QFileInfo(i18nFile).exists();
 }
 } // namespace
 

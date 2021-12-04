@@ -30,7 +30,7 @@ bool Move3Files(const QString& replaced, const QString& replacement, const QStri
     Q_ASSERT(!replacement.isEmpty());
 
     // maybe first save, original file not exist
-    if(!QFile(replaced).exists())
+    if(!QFileInfo(replaced).exists())
     {
         if(!MoveFileW(replacement.toStdWString().c_str(),
                       replaced.toStdWString().c_str()))
@@ -392,7 +392,7 @@ bool showInGraphicalShell(QWidget *parent, const QString &pathIn)
     {
         QString s = pathCombine(paths[i], "explorer.exe");
 
-        if (QFile(s).exists())
+        if (QFileInfo(s).exists())
         {
             explorer = s;
             break;
