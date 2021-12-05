@@ -39,10 +39,10 @@ Generating Code...
 
 
 #include <Shlwapi.h>
-#pragma comment(lib, "Shlwapi.lib")
+// #pragma comment(lib, "Shlwapi.lib")
 #include <winioctl.h>
 #include <Shlobj.h>
-#pragma comment(lib, "Shell32.lib")
+// #pragma comment(lib, "Shell32.lib")
 
 #include <regex>
 #include <locale>
@@ -231,7 +231,7 @@ namespace Ambiesoft {
 
 			if (nRet == 0 || nRet != nReqSize)
 			{
-				delete pOut;
+                delete [] pOut;
 				return NULL;
 			}
 			pOut[nReqSize] = 0;
@@ -253,13 +253,13 @@ namespace Ambiesoft {
 		//	return p;
 		//}
 
-		static unsigned short* toWstringFromUtf8(const string& str)
-		{
-			return (unsigned short*)toutf16(CP_UTF8, (const LPBYTE)str.c_str(), str.size());
-		}
+//		static unsigned short* toWstringFromUtf8(const string& str)
+//		{
+//			return (unsigned short*)toutf16(CP_UTF8, (const LPBYTE)str.c_str(), str.size());
+//		}
 		static unsigned short* toWstringFromAnsi(const string& str)
 		{
-			return (unsigned short*)toutf16(CP_ACP, (const LPBYTE)str.c_str(), str.size());
+            return (unsigned short*)toutf16(CP_ACP, (LPBYTE)str.c_str(), str.size());
 		}
 		
 		static string toString(const unsigned short* p)
@@ -289,7 +289,7 @@ namespace Ambiesoft {
 
 			if (nRet == 0 || nRet != nReqSize)
 			{
-				delete pOut;
+                delete [] pOut;
 				return NULL;
 			}
 
@@ -425,6 +425,8 @@ namespace Ambiesoft {
 			GETFILESEMODE gfm,
 			int depth)
         {
+            STDOSD_UNUSED(depth)
+
 			std::string d(directory);
 			d.erase(d.find_last_not_of("/\\")+1);
 			d += "\\*";
@@ -445,6 +447,7 @@ namespace Ambiesoft {
 			GETFILESEMODE gfm,
 			int depth)
 		{
+            STDOSD_UNUSED(depth)
 			std::wstring d(directory);
 			d.erase(d.find_last_not_of(L"/\\") + 1);
 			d += L"\\*";

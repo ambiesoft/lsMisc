@@ -118,6 +118,7 @@ namespace Ambiesoft {
 				std::srand((unsigned)std::time(nullptr));
 				return true;
 			}();
+            STDOSD_UNUSED(initSeed);
 			size_t lenMinusOne = len - 1;
 			for (size_t i = 0; i < lenMinusOne; ++i) {
 				s[i] = alphanum[std::rand() % (_countof(alphanum))];
@@ -172,7 +173,7 @@ namespace Ambiesoft {
             using NazoStdLiterals = typename ::Ambiesoft::stdosd::stdLiterals<C>;
 			if (pStr == NULL || *pStr == 0)
 				return false;
-			if (len == -1)
+            if (len == (size_t)-1)
 				len = stdStringLength(pStr);
 			if (len == 0)
 				return false;

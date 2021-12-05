@@ -123,21 +123,21 @@ TEST(stdosd, SplitStringA)
 	vector<string> v;
 
 	v = stdSplitString("", ",");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), "");
 
 	v = stdSplitString("aaa", ",");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 
 	v = stdSplitString("aaa,bbb,ccc", ",");
-	EXPECT_EQ(v.size(), 3);
+    EXPECT_EQ(v.size(), 3u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 	EXPECT_STREQ(v[1].c_str(), "bbb");
 	EXPECT_STREQ(v[2].c_str(), "ccc");
 
 	v = stdSplitString("aaa,,bbb,,ccc", ",");
-	EXPECT_EQ(v.size(), 5);
+    EXPECT_EQ(v.size(), 5u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 	EXPECT_STREQ(v[1].c_str(), "");
 	EXPECT_STREQ(v[2].c_str(), "bbb");
@@ -149,15 +149,15 @@ TEST(stdosd, SplitStringW)
 	vector<wstring> v;
 	
 	v = stdSplitString(L"", L",");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), L"");
 	
 	v = stdSplitString(L"aaa", L",");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), L"aaa");
 
 	v = stdSplitString(L"aaa,bbb,ccc", L",");
-	EXPECT_EQ(v.size(), 3);
+    EXPECT_EQ(v.size(), 3u);
 	EXPECT_STREQ(v[0].c_str(), L"aaa");
 	EXPECT_STREQ(v[1].c_str(), L"bbb");
 	EXPECT_STREQ(v[2].c_str(), L"ccc");
@@ -167,25 +167,25 @@ TEST(stdosd, SplitStringToLineW)
 {
 	vector<wstring> v; 
 	v = stdSplitStringToLine(L"");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), L"");
 
 	v = stdSplitStringToLine(L"aaa");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), L"aaa");
 
 	v = stdSplitStringToLine(L"aaa\nbbb");
-	EXPECT_EQ(v.size(), 2);
+    EXPECT_EQ(v.size(), 2u);
 	EXPECT_STREQ(v[0].c_str(), L"aaa");
 	EXPECT_STREQ(v[1].c_str(), L"bbb");
 
 	v = stdSplitStringToLine(L"aaa\r\nbbb");
-	EXPECT_EQ(v.size(), 2);
+    EXPECT_EQ(v.size(), 2u);
 	EXPECT_STREQ(v[0].c_str(), L"aaa");
 	EXPECT_STREQ(v[1].c_str(), L"bbb");
 
 	v = stdSplitStringToLine(L"aaa\r\n\nbbb");
-	EXPECT_EQ(v.size(), 3);
+    EXPECT_EQ(v.size(), 3u);
 	EXPECT_STREQ(v[0].c_str(), L"aaa");
 	EXPECT_STREQ(v[1].c_str(), L"");
 	EXPECT_STREQ(v[2].c_str(), L"bbb");
@@ -195,25 +195,25 @@ TEST(stdosd, SplitStringToLineA)
 {
 	vector<string> v;
 	v = stdSplitStringToLine("");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), "");
 
 	v = stdSplitStringToLine("aaa");
-	EXPECT_EQ(v.size(), 1);
+    EXPECT_EQ(v.size(), 1u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 
 	v = stdSplitStringToLine("aaa\nbbb");
-	EXPECT_EQ(v.size(), 2);
+    EXPECT_EQ(v.size(), 2u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 	EXPECT_STREQ(v[1].c_str(), "bbb");
 
 	v = stdSplitStringToLine("aaa\r\nbbb");
-	EXPECT_EQ(v.size(), 2);
+    EXPECT_EQ(v.size(), 2u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 	EXPECT_STREQ(v[1].c_str(), "bbb");
 
 	v = stdSplitStringToLine("aaa\r\n\nbbb");
-	EXPECT_EQ(v.size(), 3);
+    EXPECT_EQ(v.size(), 3u);
 	EXPECT_STREQ(v[0].c_str(), "aaa");
 	EXPECT_STREQ(v[1].c_str(), "");
 	EXPECT_STREQ(v[2].c_str(), "bbb");

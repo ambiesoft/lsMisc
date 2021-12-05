@@ -63,11 +63,14 @@
 #define STDOSD_CHAR16TLITERAL_INNER(x) u ## x
 #define STDOSD_CHAR16TLITERAL(x) STDOSD_CHAR16TLITERAL_INNER(x)
 
+
+#define STDOSD_UNUSED(x) (void)x;
+
 #if __GNUC__
 
     #define STDOSD_CONSTEXPR const constexpr
     #define CHAR16T_AVAILABLE
-
+    #define STDOSD_ATTR_UNUSED __attribute__((unused))
 #elif _WIN32 // not __GNUC__ but _WIN32
 
     #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
@@ -80,10 +83,7 @@
     #define CHAR16T_AVAILABLE
     #endif
 
-	//#ifndef NOMINMAX
-	//#error NOMINMAX must be defined
-	//#endif
-
+    #define STDOSD_ATTR_UNUSED
 #endif // _WIN32 __GNUC__
 
 
@@ -94,6 +94,8 @@
 #ifndef stdosd_min
 #define stdosd_min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
+
+
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #define STDOSD_DEFAULTSEPARATOR "\\"
@@ -744,7 +746,7 @@ namespace Ambiesoft {
 		}
 
 		// check argument of stdFormat is not std::string or std::wstring
-		static void stdFormatTestForNotString() {}
+        static void STDOSD_ATTR_UNUSED stdFormatTestForNotString() {}
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotString(T, ARGS... args)
 		{
@@ -753,9 +755,9 @@ namespace Ambiesoft {
 			stdFormatTestForNotString(args...);
 		}
 
-		static void stdFormatTestForNotWChar() {}
+        static void STDOSD_ATTR_UNUSED stdFormatTestForNotWChar() {}
 		template<typename T, typename... ARGS>
-		static void stdFormatTestForNotWChar(T firstArg, ARGS... args)
+        static void stdFormatTestForNotWChar(T, ARGS... args)
 		{
             using NoConstT = typename std::add_pointer<typename std::remove_cv<typename std::remove_pointer<T>::type>::type>::type;
             static_assert(
@@ -767,7 +769,7 @@ namespace Ambiesoft {
             stdFormatTestForNotWChar(args...);
 		}
 
-		static void stdFormatTestForNotChar() {}
+        static void STDOSD_ATTR_UNUSED stdFormatTestForNotChar() {}
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotChar(T, ARGS... args)
 		{
@@ -1028,7 +1030,9 @@ namespace Ambiesoft {
 		template<typename C>
 		inline C* stdStringLower(C* pD1, size_t size)
 		{
-			static_assert(sizeof(C)==0);
+            STDOSD_UNUSED(pD1);
+            STDOSD_UNUSED(size);
+            static_assert(sizeof(C)==0, "false");
 		}
 		template<>
 		inline char* stdStringLower(char* pc, size_t size)
@@ -1067,7 +1071,9 @@ namespace Ambiesoft {
 		template<typename C>
 		inline C* stdStringUpper(C* pD1, size_t size)
 		{
-			static_assert(sizeof(C) == 0);
+            STDOSD_UNUSED(pD1);
+            STDOSD_UNUSED(size);
+            static_assert(sizeof(C) == 0, "false");
 		}
 		template<>
 		inline char* stdStringUpper(char* pc, size_t size)
@@ -1318,11 +1324,11 @@ namespace Ambiesoft {
 #endif
 
 #if defined(_WIN32)
-		template<typename C>
-		inline bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
-		{
-			// TODO: implement
-		}
+//		template<typename C>
+//		inline bool stdGetClipboardText(HWINDOWHANDLE hWindow, std::basic_string<C>& result)
+//		{
+//            static_assert(sizeof(hWindow)==0, "needs specific implement");
+//        }
 
 
 		bool stdGetWindowText(HWINDOWHANDLE hWindow, std::wstring* result);
@@ -1342,7 +1348,10 @@ namespace Ambiesoft {
 		template<typename C>
 		inline int stdStrCmp(const C* p1, const C* p2, bool ignorecase = false)
 		{
-			static_assert(sizeof(C) == 0);
+            STDOSD_UNUSED(p1)
+            STDOSD_UNUSED(p2)
+            STDOSD_UNUSED(ignorecase)
+            static_assert(sizeof(C) == 0, "false");
             return 0;
 		}
 		template<>
@@ -1590,7 +1599,8 @@ namespace Ambiesoft {
 		template<typename C>
 		inline bool stdFileExists(const	C* file)
 		{
-			static_assert(sizeof(C) == 0);
+            STDOSD_UNUSED(file);
+            static_assert(sizeof(C) == 0, "false");
             return false;
 		}
 		template<>
@@ -1611,7 +1621,9 @@ namespace Ambiesoft {
 		template<typename C>
 		inline bool stdDirectoryExists(const C* folder)
 		{
-            static_assert(sizeof(C)==0);
+            STDOSD_UNUSED(folder);
+            static_assert(sizeof(C)==0, "false");
+            return false;
 		}
 		template<>
 		inline bool stdDirectoryExists(const char* folder)
@@ -1686,6 +1698,7 @@ namespace Ambiesoft {
 		template<typename C>
 		inline bool stdIsSamePath(const std::nullptr_t* n1, const C* p2)
 		{
+            STDOSD_UNUSED(n1)
 			if (p2 == nullptr)
 				return true;
 			if (p2[0] == 0)
@@ -1791,6 +1804,7 @@ namespace Ambiesoft {
 		template<typename R, typename C>
         inline R stdFromString(const C* pStr)
 		{
+            STDOSD_UNUSED(pStr);
 			static_assert(sizeof(C) == 0, "Must be full specialized");
 		}
 		template<>

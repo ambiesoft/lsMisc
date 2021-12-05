@@ -24,53 +24,25 @@
 // #include "stdafx.h"
 
 
-#ifndef _WINDOWS_
-#pragma message("including windows.h")
 #include <windows.h>
-#endif
-
-#ifndef _INC_TCHAR
-#pragma message("including tchar.h")
 #include <tchar.h>
-#endif
-
-#ifndef _INC_SHLWAPI
-#pragma message("including shlwlapi")
 #include <Shlwapi.h>
-#pragma comment(lib,"shlwapi.lib")
-#endif
-
-
-#ifndef _STRING_
-#pragma message("including string")
 #include <string>
-#endif
-
-#ifndef _ALGORITHM_
-#pragma message("including algorithm")
 #include <algorithm>
-#endif
 
-//#ifndef STLSOFT_INCL_STLSOFT_SMARTPTR_HPP_SCOPED_HANDLE
-//#pragma message("including scoped_handel.hpp")
-//#include <stlsoft/smartptr/scoped_handle.hpp>
-//#endif
 #include <memory>
 
 #include "PathUtil.h"
 
 using namespace std;
 
-
-#pragma comment(lib,"shlwapi.lib")
-
 namespace Ambiesoft { namespace stdosd {
     static inline const wchar_t* toWc(const char16_t* p) {
         return (const wchar_t*)p;
     }
-    static inline const char16_t* to16c(const wchar_t* p) {
-        return (const char16_t*)p;
-    }
+//    static inline const char16_t* to16c(const wchar_t* p) {
+//        return (const char16_t*)p;
+//    }
 
     //server/			should be treated as root
 	//server/folder		should not be treated as root
@@ -149,7 +121,7 @@ namespace Ambiesoft { namespace stdosd {
 	{
 		LPCTSTR pT = p;
 		int i = 0;
-		for (; pT = PathFindNextComponent(pT); ++i)
+        for (; (pT = PathFindNextComponent(pT)) != nullptr; ++i)
 		{
 
 		}
