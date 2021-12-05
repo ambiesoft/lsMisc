@@ -3,6 +3,8 @@
 #include <tchar.h>
 #include <iostream>
 #include <sstream>
+#include <cassert>
+#include <thread>
 
 #include <stdint.h>
 
@@ -575,9 +577,28 @@ TEST(CommandLineParser, Help)
 			ArgEncodingFlags_Default,
 			(L"Specify priority, 0=High 1=Normal 2=Low 3=Idle"));
 
+		int dummy;
+		parser.AddOption(L"-except1", 0, &dummy,
+			ArgEncodingFlags::ArgEncodingFlags_Default,
+			L"This must be removed");
+		parser.AddOption(L"--is-except2", 0, &dummy,
+			ArgEncodingFlags::ArgEncodingFlags_Default,
+			L"This must be removed 2");
+
 		parser.Parse(_countof(argv) - 1, argv);
 
-		EXPECT_EQ(IDOK, MessageBox(nullptr, parser.getHelpMessage().c_str(), L"", MB_OKCANCEL));
+		std::thread t1([&] {
+			MessageBox(nullptr, parser.getHelpMessage().c_str(), L"FULL", MB_OKCANCEL);
+			});
+		std::thread t2([&] {
+			MessageBox(nullptr, parser.getHelpMessage(L"-except1").c_str(), L"except1", MB_OKCANCEL);
+			});
+		std::thread t3([&] {
+			MessageBox(nullptr, parser.getHelpMessage({ L"-except1",L"--is-except2" }).c_str(), L"except1 and 2", MB_OKCANCEL);
+			});
+		t1.join();
+		t2.join();
+		t3.join();
 	}
 	{
 

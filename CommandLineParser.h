@@ -874,9 +874,13 @@ typedef BasicOption<std::string> COptionA;
 		}
 
 		MyS_ getHelpMessage() const {
-			return getHelpMessage(nullptr);
+			return getHelpMessage(std::vector<const Elem*>());
 		}
 		MyS_ getHelpMessage(const Elem* exceptOption) const {
+			std::vector<const Elem*> v = { exceptOption };
+			return getHelpMessage(v);
+		}
+		MyS_ getHelpMessage(const std::vector<const Elem*>& exceptOptions) const {
 			MyS_ appname;
 			MyS_ description;
 			MyS_ explain;
@@ -919,9 +923,12 @@ typedef BasicOption<std::string> COptionA;
 				bool skip = false;
 				for (size_t j = 0; j < inneroptions_[i].options_.size(); ++j)
 				{
-					if (exceptOption && exceptOption == inneroptions_[i].options_[j]) {
-						skip = true;
-						continue;
+					for (auto&& exceptOption : exceptOptions)
+					{
+						if (exceptOption && exceptOption == inneroptions_[i].options_[j]) {
+							skip = true;
+							break;
+						}
 					}
 					assert(argcount == ArgCount::ArgCount_Uninitialized || argcount == inneroptions_[i].argcountflag_);
 					argcount = inneroptions_[i].argcountflag_;
@@ -945,9 +952,12 @@ typedef BasicOption<std::string> COptionA;
 			{
 				bool skip = false;
 				for (size_t j = 0; j < useroptions_[i]->options_.size(); ++j) {
-					if (exceptOption && exceptOption == useroptions_[i]->options_[j]) {
-						skip = true;
-						continue;
+					for (auto&& exceptOption : exceptOptions)
+					{
+						if (exceptOption && exceptOption == useroptions_[i]->options_[j]) {
+							skip = true;
+							break;
+						}
 					}
 				}
 				if (skip)
