@@ -687,6 +687,7 @@ namespace Ambiesoft {
             // (void)count;
             return vsnprintf_s(buffer, sizeOfBuffer, count, format, argptr);
 #elif defined(__GNUC__)
+            STDOSD_UNUSED(count);
             return vsnprintf(buffer, sizeOfBuffer, format, argptr);
 
 #elif _WIN32
@@ -704,9 +705,10 @@ namespace Ambiesoft {
 							  va_list argptr)
 		{
 #if defined(__MINGW32__)
-            (void)count;
+            STDOSD_UNUSED(count);
             return vswprintf_s(buffer, sizeOfBuffer, format, argptr);
 #elif defined(__GNUC__)
+            STDOSD_UNUSED(count);
             return vswprintf(buffer,sizeOfBuffer,format,argptr);
 
 #elif _WIN32
@@ -1013,6 +1015,7 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			strcpy_s(pDst, size, pSrc);
 #else
+            STDOSD_UNUSED(size);
             std::strcpy(pDst, pSrc);
 #endif
 		}
@@ -1022,6 +1025,7 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			wcscpy_s(pDst, size, pSrc);
 #else
+            STDOSD_UNUSED(size);
             wcscpy(pDst, pSrc);
 #endif
 		}
@@ -1040,6 +1044,7 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_strlwr_s(pc, size + 1);
 #else
+            STDOSD_UNUSED(size);
             for ( char* p = pc; *p; ++p)
                 *p = tolower(*p);
 #endif
@@ -1052,6 +1057,7 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_wcslwr_s(pwc, size + 1);
 #else
+            STDOSD_UNUSED(size);
             for ( wchar_t* pw = pwc ; *pw; ++pw)
                 *pw = towlower(*pw);
 #endif
@@ -1081,6 +1087,7 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_strupr_s(pc, size + 1);
 #else
+            STDOSD_UNUSED(size);
             for ( char* p = pc; *p; ++p)
                 *p = toupper(*p);
 #endif
@@ -1093,6 +1100,7 @@ namespace Ambiesoft {
 #ifdef _WIN32
 			_wcsupr_s(pwc, size + 1);
 #else
+            STDOSD_UNUSED(size);
             for ( wchar_t* pw = pwc; *pw; ++pw)
                 *pw = towupper(*pw);
 #endif

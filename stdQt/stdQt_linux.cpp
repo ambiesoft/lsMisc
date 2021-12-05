@@ -182,6 +182,7 @@ QString ToAsciiLower(const QString& s)
 }
 bool isRootDriveExists(const QString& path)
 {
+    Q_UNUSED(path);
     return true;
 }
 } // namespace

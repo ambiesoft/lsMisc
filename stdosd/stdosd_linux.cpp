@@ -189,6 +189,7 @@ namespace Ambiesoft {
         namespace detail {
             size_t stdGetModuleFileNameImpl(HMODULEINSTANCE hInst, char* p, size_t size)
             {
+                assert(hInst==nullptr);
                 size_t ret = readlink("/proc/self/exe", p, size) ;
                 if(ret < size)
                 {

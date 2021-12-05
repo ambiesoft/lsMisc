@@ -984,12 +984,13 @@ TEST(stdosd, stdJoinStrings)
 #define MAX_PATH 260
 #endif
 
-#ifndef _WIN32
-static void GetSystemDirectoryA(char* p, int count)
-{
-    strcpy(p, "/somesystem");
-}
-#endif
+//#ifndef _WIN32
+//static void GetSystemDirectoryA(char* p, int count)
+//{
+//    STDOSD_UNUSED(count);
+//    strcpy(p, "/somesystem");
+//}
+//#endif
 TEST(stdosd, stdGetFullPathExecutable)
 {
 #if defined(_MSC_VER) || defined(__MINGW32__)
