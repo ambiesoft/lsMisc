@@ -438,6 +438,15 @@
     <ClCompile Include="gtestStdosdPathString.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\NTFSTransaction.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestNTFSTransaction.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetBackupFile.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -826,6 +835,12 @@
     </ClInclude>
     <ClInclude Include="..\stdosd\PathString.h">
       <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NTFSTransaction.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetBackupFile.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

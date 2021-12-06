@@ -262,6 +262,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\GetBackupFile.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\GetLocalPathFromNetPath.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -634,6 +640,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\NTFSTransaction.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\OpenCommon.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -853,6 +865,7 @@
     <ClCompile Include="gtestGetUnreparsePath.cpp" />
     <ClCompile Include="gtestISqlPrivateProfile.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
+    <ClCompile Include="gtestNTFSTransaction.cpp" />
     <ClCompile Include="gtestRunCommandGetResult.cpp" />
     <ClCompile Include="gtestSessionGlobalMemory.cpp" />
     <ClCompile Include="gtestStdosdPathString.cpp">
@@ -951,6 +964,7 @@
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeDirPos.h" />
     <ClInclude Include="..\FindTopWindowFromPID.h" />
+    <ClInclude Include="..\GetBackupFile.h" />
     <ClInclude Include="..\GetLocalPathFromNetPath.h" />
     <ClInclude Include="..\GetUnreparsePath.h" />
     <ClInclude Include="..\MakeFilenamable.h" />
@@ -1020,6 +1034,7 @@
     <ClInclude Include="..\md5.h" />
     <ClInclude Include="..\MFCHelper.h" />
     <ClInclude Include="..\myStrStrI.h" />
+    <ClInclude Include="..\NTFSTransaction.h" />
     <ClInclude Include="..\OpenCommon.h" />
     <ClInclude Include="..\OpenedFiles.h" />
     <ClInclude Include="..\os_traits.h" />
