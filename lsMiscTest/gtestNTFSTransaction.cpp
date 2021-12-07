@@ -63,7 +63,7 @@ bool WriteAllText(const wchar_t* filename, const char* pText, size_t size)
 	if (!file)
 		return false;
 	DWORD dwWritten;
-	if (!WriteFile(file, pText, size, &dwWritten, NULL) ||
+	if (!WriteFile(file, pText, (DWORD)size, &dwWritten, NULL) ||
 		size != dwWritten)
 	{
 		return false;

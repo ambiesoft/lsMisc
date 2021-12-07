@@ -23,6 +23,8 @@
 
 #include "tstring.h"
 
+// project must also include UTF16toUTF8
+
 namespace Ambiesoft {
 	BOOL GetClipboardText(HWND hWnd, std::string& strData);
 	BOOL GetClipboardText(HWND hWnd, std::wstring& strData);

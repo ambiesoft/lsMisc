@@ -1,9 +1,4 @@
 
-
-
-
-
-
 #include <string>
 #include <memory>
 #include "tchar.h"

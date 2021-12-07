@@ -21,6 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
+// import Shlwapi.lib by '#pragma comment(lib, "Shlwapi.lib")'
+
 #ifndef STDOSD_INCLUDED
 #define STDOSD_INCLUDED
 
