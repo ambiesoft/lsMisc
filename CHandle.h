@@ -33,6 +33,8 @@
 
 namespace Ambiesoft {
 
+	// Process, thread, mutex, etc
+	// invalid is nullptr
 	struct KernelHandleTraits
 	{
 		using HandleType = HANDLE;
@@ -152,7 +154,7 @@ namespace Ambiesoft {
 		}
 		const CHandleBase& operator=(CHandleBase& that) = delete;
 		CHandleBase& operator=(CHandleBase&& that) {
-			if (&*this != &that) {
+			if (addressof(*this) != addressof(that)) {
 				Close();
 				this->h_ = that.h_;
 				Trait::SetInvalid(&that.h_);
@@ -167,6 +169,7 @@ namespace Ambiesoft {
 			return h_;
 		}
 		T* operator &() {
+			Close();
 			return &h_;
 		}
 		T Release() {
