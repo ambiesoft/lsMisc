@@ -67,5 +67,17 @@ std::wstring toStdWstringFromACP(const char* pApcString, int inByteLen = -1);
 char* UTF16toUTF8Ex(System::String^ s);
 #endif //__cplusplus_cli  
 
-
+class fromUtf8ReturnedFuncToWstring
+{
+	std::string s_;
+	std::wstring& ws_;
+public:
+	fromUtf8ReturnedFuncToWstring(std::wstring& ws) :ws_(ws) {}
+	operator std::string& () {
+		return s_;
+	}
+	~fromUtf8ReturnedFuncToWstring() {
+		ws_ = toStdWstringFromUtf8(s_);
+	}
+};
 } // namespace
