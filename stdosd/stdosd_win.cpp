@@ -462,7 +462,7 @@ namespace Ambiesoft {
 			return new CFileIteratorInternal(hFF, &wfd, fim, gfm);
 		}
 		namespace detail {
-			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileDirectoryInfo<char>* fi)
 			{
 				CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
 				if (!pIterator->next())
@@ -474,7 +474,7 @@ namespace Ambiesoft {
 
 				return true;
 			}
-			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi)
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileDirectoryInfo<wchar_t>* fi)
 			{
 				CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
 				if (!pIterator->next())

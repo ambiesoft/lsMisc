@@ -712,7 +712,7 @@ TEST(stdosd, stdFileIteratorTest)
 
 			bool found = false;
 			string targetName = stdGetFileName(stdGetModuleFileName<char>());
-			FileInfo<char> fi;
+			FileDirectoryInfo<char> fi;
 			while (stdFileNext(hI, &fi))
 			{
 				if (fi.name() == targetName)
@@ -740,7 +740,7 @@ TEST(stdosd, stdFileIteratorTest)
 
 			bool found = false;
 			wstring targetName = stdGetFileName(stdGetModuleFileName());
-			FileInfo<wchar_t> fi;
+			FileDirectoryInfo<wchar_t> fi;
 			while (stdFileNext(hI, &fi))
 			{
 				if (fi.name() == targetName)

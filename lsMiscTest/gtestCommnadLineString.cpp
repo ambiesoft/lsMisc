@@ -47,6 +47,14 @@ TEST(CommandLineString, SameWithOtherMethods)
 	pC1 = L"a";
 	isSameResult(pC1, __LINE__);
 
+	pC1 = nullptr;
+	{
+		int dummy;
+		EXPECT_DEATH(CCommandLineString::getCommandLineArg(pC1, &dummy), "");
+		EXPECT_DEATH(CommandLineToArgvW(pC1, &dummy), "");
+	}
+	
+
 	pC1 = L"";
 	isSameResult(pC1, __LINE__);
 

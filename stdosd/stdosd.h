@@ -125,7 +125,7 @@ namespace Ambiesoft {
 
         typedef void* HFILEITERATOR;
 		template<typename C>
-        class FileInfo
+        class FileDirectoryInfo
         {
             unsigned long long size_ = 0;
             std::basic_string<C> name_;
@@ -1173,14 +1173,14 @@ namespace Ambiesoft {
 			int depth = -1);
 #endif
 		namespace detail {
-			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi);
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileDirectoryInfo<char>* fi);
 #ifdef _WIN32
-			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<wchar_t>* fi);
+			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileDirectoryInfo<wchar_t>* fi);
 #endif
 		}
 
 		template<typename C>
-		inline bool stdFileNext(HFILEITERATOR hFileIterator, FileInfo<C>* fi)
+		inline bool stdFileNext(HFILEITERATOR hFileIterator, FileDirectoryInfo<C>* fi)
 		{
 			if (!hFileIterator)
 				return false;
@@ -1875,7 +1875,7 @@ namespace Ambiesoft {
 			HFILEITERATOR hIt = stdCreateFileIterator(pDirectory, fim, gfm);
 			if (!hIt)
 				return ret;
-			FileInfo<SYSTEM_CHAR_TYPE> fi;
+			FileDirectoryInfo<SYSTEM_CHAR_TYPE> fi;
 			--depth;
 			while (stdFileNext(hIt, &fi))
 			{
