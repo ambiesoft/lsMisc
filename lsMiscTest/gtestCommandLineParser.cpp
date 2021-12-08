@@ -722,3 +722,76 @@ TEST(CommandLineParser, MultipleArgWithSameOption)
 		EXPECT_STREQ(vs[3].c_str(), "x x x");
 	}
 }
+TEST(CommandLineParser, WrongInt)
+{
+	// int
+	{
+		char* arg = "myapp.exe -n 2a";
+		CCommandLineParserA parser;
+		parser.setStrict();
+
+		int n = -1;
+		parser.AddOption("-n",
+			1,
+			&n);
+
+		try
+		{
+			parser.Parse(arg);
+			EXPECT_TRUE(false);
+		}
+		catch (exception& ex)
+		{
+			EXPECT_STREQ(ex.what(), "2a is not int");
+		}
+		EXPECT_EQ(n, -1);
+	}
+
+	// long long
+	{
+		// char
+		{
+			char* arg = "myapp.exe -n 234234a";
+			CCommandLineParserA parser;
+			parser.setStrict();
+
+			long long n = -1;
+			parser.AddOption("-n",
+				1,
+				&n);
+
+			try
+			{
+				parser.Parse(arg);
+				EXPECT_TRUE(false);
+			}
+			catch (exception& ex)
+			{
+				EXPECT_STREQ(ex.what(), (string("234234a is not ") + typeid(long long).name()).c_str());
+			}
+			EXPECT_EQ(n, -1);
+		}
+		// wchar
+		{
+			wchar_t* arg = L"myapp.exe -n 234234a";
+			CCommandLineParserW parser;
+			parser.setStrict();
+
+			long long n = -1;
+			parser.AddOption(L"-n",
+				1,
+				&n);
+
+			try
+			{
+				parser.Parse(arg);
+				EXPECT_TRUE(false);
+			}
+			catch (exception& ex)
+			{
+				EXPECT_STREQ(ex.what(), (string("234234a is not ") + typeid(long long).name()).c_str());
+			}
+			EXPECT_EQ(n, -1);
+		}
+	}
+}

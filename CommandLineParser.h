@@ -33,6 +33,7 @@
 #include <cassert>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <algorithm>
 
 #include "UrlEncode.h"
@@ -43,6 +44,49 @@
 
 namespace Ambiesoft {
 
+	template <class T, class I>
+	class illegal_value_type_error;
+	template <class I>
+	class illegal_value_type_error<std::string, I> : public std::exception
+	{
+		std::string s_;
+		mutable std::string buff_;
+	public:
+		explicit illegal_value_type_error(const std::string& s)
+			: s_(s){}
+
+		virtual const char* what() const
+#if defined(__MINGW32__) || defined(__GNUC__)
+			_GLIBCXX_USE_NOEXCEPT
+#endif
+		{
+			std::stringstream ss;
+			ss << s_ << " is not " << typeid(I).name();
+			buff_ = ss.str();
+			return buff_.c_str();
+		}
+	};
+	template <class I>
+	class illegal_value_type_error<std::wstring,I> : public std::exception
+	{
+		std::wstring s_;
+		mutable std::string buff_;
+	public:
+		explicit illegal_value_type_error(const std::wstring& s)
+			: s_(s) {}
+
+		virtual const char* what() const
+#if defined(__MINGW32__) || defined(__GNUC__)
+			_GLIBCXX_USE_NOEXCEPT
+#endif
+		{
+			std::wstringstream ss;
+			ss << s_ << L" is not " << typeid(I).name();
+			buff_ = toStdAcpString(ss.str());
+			return buff_.c_str();
+		}
+	};
+
 	inline static unsigned int AtoI(const std::string& s)
 	{
 		return atoi(s.c_str());
@@ -50,6 +94,16 @@ namespace Ambiesoft {
 	inline static unsigned int AtoI(const std::wstring& s)
 	{
 		return _wtoi(s.c_str());
+	}
+	template<class I>
+	inline static std::string ItoA(const I& i, const std::string& s)
+	{
+		return std::to_string(i);
+	}
+	template<class I>
+	inline static std::wstring ItoA(const I& i, const std::wstring& s)
+	{
+		return std::to_wstring(i);
 	}
 
 	inline static unsigned long long AtoI64(const std::string& s)
@@ -233,6 +287,7 @@ namespace Ambiesoft {
 			MyS_* pMys_ = nullptr;
 
 			std::vector<MyS_>* pVmys_ = nullptr;
+
 			UserTarget()
 			{
 			}
@@ -272,7 +327,7 @@ namespace Ambiesoft {
 				if (pLL_)
 					*pLL_ = 1;
 			}
-			void setParsed(const MyS_& mys)
+			void setParsedValue(const MyS_& mys, const bool bStrict)
 			{
 				if(pBool_)
 				{
@@ -289,10 +344,26 @@ namespace Ambiesoft {
 						*pBool_=true;
 					}
 				}
-				if(pInt_)
-					*pInt_=AtoI(mys);
+				if (pInt_)
+				{
+					int tmp = AtoI(mys);
+					if (bStrict) {
+						if (ItoA(tmp, mys) != mys) {
+							throw illegal_value_type_error<MyS_, int>(mys);
+						}
+					}
+					*pInt_ = tmp;
+				}
 				if (pLL_)
-					*pLL_ = AtoI64(mys);
+				{
+					long long tmp = AtoI64(mys);
+					if (bStrict) {
+						if (ItoA(tmp, mys) != mys) {
+							throw illegal_value_type_error<MyS_, long long>(mys);
+						}
+					}
+					*pLL_ = tmp;
+				}
 				if(pMys_)
 					*pMys_=mys;
 				if (pVmys_)
@@ -318,11 +389,11 @@ namespace Ambiesoft {
 			userTarget_.setTarget(pT);
 		}
 
-		void AddValue(const MyS_& value)
+		void AddValue(const MyS_& value, const bool bStrict)
 		{
 			setHadOption();
-			userTarget_.setParsed(encoding_ == ArgEncodingFlags_UTF8UrlEncode ?
-				UrlDecodeStd<MyS_>(value.c_str()) : value);
+			userTarget_.setParsedValue(encoding_ == ArgEncodingFlags_UTF8UrlEncode ?
+				UrlDecodeStd<MyS_>(value.c_str()) : value, bStrict);
 
 			values_.push_back(value);
 		}
@@ -700,6 +771,9 @@ typedef BasicOption<std::string> COptionA;
 		MyS_ appname_;
 		MyS_ program_;
 
+		// throws error if true
+		bool strict_ = false;
+
 		MyO_* FindOption(const MyS_& option)
 		{
             for (typename POPTIONARRAY::iterator it = useroptions_.begin(); it != useroptions_.end(); ++it)
@@ -871,6 +945,9 @@ typedef BasicOption<std::string> COptionA;
 			init();
 		}
 
+		void setStrict() {
+			strict_ = true;
+		}
 		MyS_ getHelpMessage() const {
 			return getHelpMessage(std::vector<const Elem*>());
 		}
@@ -1186,7 +1263,7 @@ typedef BasicOption<std::string> COptionA;
 				}
 
 				const Elem* pArgv = targv[i];
-				pMyO->AddValue(pArgv);
+				pMyO->AddValue(pArgv, strict_);
 				return i;
 			}
 
@@ -1236,7 +1313,7 @@ typedef BasicOption<std::string> COptionA;
 					}
 					else
 					{
-						pA->AddValue((pArgv));
+						pA->AddValue(pArgv, strict_);
 						continue;
 					}
 				}
