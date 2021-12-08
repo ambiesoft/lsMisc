@@ -224,6 +224,7 @@ namespace Ambiesoft {
         typedef typename myStringType::traits_type::char_type Elem;
         typedef myStringType MyS_;
 
+		// Todo: to template
 		class UserTarget
 		{
 			bool* pBool_ = nullptr;
@@ -231,32 +232,37 @@ namespace Ambiesoft {
 			long long* pLL_ = nullptr;
 			MyS_* pMys_ = nullptr;
 
+			std::vector<MyS_>* pVmys_ = nullptr;
 			UserTarget()
 			{
 			}
 			
-			void setBoolTarget(bool* pb)
+			void setTarget(bool* pb)
 			{
 				assert(pBool_ == NULL);
 				assert(pb);
 				pBool_ = pb;
 			}
-			void setIntTarget(int* pi)
+			void setTarget(int* pi)
 			{
 				assert(pInt_ == NULL);
 				pInt_ = pi;
 			}
-			void setLongLongTarget(long long* pLL)
+			void setTarget(long long* pLL)
 			{
 				assert(pLL_ == NULL);
 				pLL_ = pLL;
 			}
-			void setMysTarget(MyS_* pM)
+			void setTarget(MyS_* pM)
 			{
 				assert(pMys_==NULL);
 				pMys_=pM;
 			}
-
+			void setTarget(std::vector<MyS_>* pVmys)
+			{
+				assert(pVmys_ == nullptr);
+				pVmys_ = pVmys;
+			}
 			void setTrue()
 			{
 				if (pBool_)
@@ -266,7 +272,7 @@ namespace Ambiesoft {
 				if (pLL_)
 					*pLL_ = 1;
 			}
-			void setMys(const MyS_& mys)
+			void setParsed(const MyS_& mys)
 			{
 				if(pBool_)
 				{
@@ -289,6 +295,8 @@ namespace Ambiesoft {
 					*pLL_ = AtoI64(mys);
 				if(pMys_)
 					*pMys_=mys;
+				if (pVmys_)
+					pVmys_->push_back(mys);
 			}
 			friend MyT_;
 		};
@@ -303,27 +311,17 @@ namespace Ambiesoft {
 		ArgEncodingFlags encoding_;
 		UserTarget userTarget_;
 		MyS_ helpString_;
-		void setTarget(bool* pT)
+
+		template<class TargetType>
+		void setTarget(TargetType* pT)
 		{
-			userTarget_.setBoolTarget(pT);
+			userTarget_.setTarget(pT);
 		}
-		void setTarget(int* pT)
-		{
-			userTarget_.setIntTarget(pT);
-		}
-		void setTarget(long long* pT)
-		{
-			userTarget_.setLongLongTarget(pT);
-		}
-		void setTarget(MyS_* pT)
-		{
-			userTarget_.setMysTarget(pT);
-		}			
 
 		void AddValue(const MyS_& value)
 		{
 			setHadOption();
-			userTarget_.setMys(encoding_ == ArgEncodingFlags_UTF8UrlEncode ? 
+			userTarget_.setParsed(encoding_ == ArgEncodingFlags_UTF8UrlEncode ?
 				UrlDecodeStd<MyS_>(value.c_str()) : value);
 
 			values_.push_back(value);

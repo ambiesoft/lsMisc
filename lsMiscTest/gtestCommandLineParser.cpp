@@ -492,7 +492,8 @@ TEST(CommandLineParser, Help)
 	{
 		char* argv[] = {
 			   "myapp.exe",
-			   "-op delete",
+			   "-op",
+			   "delete",
 			   NULL
 		};
 		CCommandLineParserA parser(CaseFlags_Default, "Rename or remove a folder", "lsMiscTest");
@@ -679,5 +680,45 @@ TEST(CommandLineParser, KeepDefaultValue)
 		EXPECT_TRUE(isXYZ);
 		EXPECT_STREQ(path.c_str(), L"aaa");
 		EXPECT_EQ(intval, 123);
+	}
+}
+TEST(CommandLineParser, MultipleArgWithSameOption)
+{
+	{
+		//char* argv[] = {
+		//	   "myapp.exe",
+		//	   "-s aaa -s bbb -s ccc -s \"x x x\" -d ddd",
+		//	   NULL
+		//};
+		char* arg = "myapp.exe -s aaa -s bbb -s ccc -s \"x x x\" -d ddd";
+		CCommandLineParserA parser(CaseFlags_Default, "CommandLineParser, MultipleArgWithSameOption", "lsMiscTest");
+
+		COptionA optionDefault("",
+			ArgCount::ArgCount_One,
+			ArgEncodingFlags_Default,
+			("specify directory"));
+		parser.AddOption(&optionDefault);
+
+		bool bHelp = false;
+		parser.AddOptionRange({ "-h", "/h", "/?","--help","-H", "-hh" },
+			0,
+			&bHelp,
+			ArgEncodingFlags_Default,
+			("show help"));
+
+		vector<string> vs;
+		parser.AddOption("-s",
+			1,
+			&vs,
+			ArgEncodingFlags_Default,
+			("s"));
+
+		parser.Parse(arg);
+
+		EXPECT_EQ(vs.size(), 4u);
+		EXPECT_STREQ(vs[0].c_str(), "aaa");
+		EXPECT_STREQ(vs[1].c_str(), "bbb");
+		EXPECT_STREQ(vs[2].c_str(), "ccc");
+		EXPECT_STREQ(vs[3].c_str(), "x x x");
 	}
 }
