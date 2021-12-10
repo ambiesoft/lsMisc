@@ -10,8 +10,6 @@
 
 #include "../stdosd/PathUtil.h"
 
-#include "debug.h"
-
 using namespace Ambiesoft::stdosd;
 
 TEST(PathUtil, IsRoot)

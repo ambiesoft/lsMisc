@@ -9,8 +9,6 @@
 #error NOMINMAX must be defined.
 #endif
 
-#include "debug.h"
-
 using namespace std;
 
 TEST(FormatSizeof, Basic)

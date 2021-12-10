@@ -25,6 +25,7 @@
 #pragma once
 #include <Windows.h>
 #include <string>
+#include <cassert>
 #if defined(_DEBUG)
 #ifdef __cplusplus_cli
 	#define DASSERT(s) System::Diagnostics::Debug::Assert(!!(s))

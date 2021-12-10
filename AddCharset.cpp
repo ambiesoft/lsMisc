@@ -21,18 +21,10 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <comdef.h>
 #include "AnyCloser.h"
 
 #include "addCharset.h"
-
-
 
 namespace Ambiesoft {
 	bool addCharset(_bstr_t& bstrHtml)

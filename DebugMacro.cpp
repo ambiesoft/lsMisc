@@ -25,8 +25,6 @@
 
 #include "DebugMacro.h"
 
-
-
 #ifdef _DEBUG
 #include "GetLastErrorString.h"
 

@@ -11,8 +11,6 @@
 
 #include "../RevealFolder.h"
 
-#include "debug.h"
-
 using namespace Ambiesoft;
 
 TEST(RevealFolder,Basic)

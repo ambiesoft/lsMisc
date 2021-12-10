@@ -185,9 +185,6 @@
     <ClCompile Include="..\md5.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\MFCHelper.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\myStrStrI.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -245,7 +242,6 @@
     <ClCompile Include="..\XBrowseForFolder.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="debug.cpp" />
     <ClCompile Include="testOSTraits.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
@@ -428,24 +424,30 @@
     <ClCompile Include="gteststop_watch.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetLocalPathFromNetPath.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestGetLocalPathFromNetPath.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
     <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
-    <ClCompile Include="..\NTFSTransaction.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestNTFSTransaction.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetBackupFile.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="gtestStdosdPathString.cpp">
       <Filter>GTest Files\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NTFSTransaction.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetLocalPathFromNetPath.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetBackupFile.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestDebugMacro.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\DebugNew.cpp">
+      <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -653,9 +655,6 @@
     <ClInclude Include="..\md5.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\MFCHelper.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\myStrStrI.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -767,9 +766,6 @@
     <ClInclude Include="..\GetWindowTstring.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="debug.h">
-      <Filter>GTest Files\Header</Filter>
-    </ClInclude>
     <ClInclude Include="StdAfx.h">
       <Filter>GTest Files\Header</Filter>
     </ClInclude>
@@ -827,19 +823,22 @@
     <ClInclude Include="..\GetUnreparsePath.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\stop_watch.h">
-      <Filter>lsMisc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GetLocalPathFromNetPath.h">
-      <Filter>lsMisc</Filter>
-    </ClInclude>
     <ClInclude Include="..\stdosd\PathString.h">
       <Filter>stdosd</Filter>
     </ClInclude>
+    <ClInclude Include="..\stop_watch.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
     <ClInclude Include="..\NTFSTransaction.h">
-      <Filter>lsMisc</Filter>
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetLocalPathFromNetPath.h">
+      <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\GetBackupFile.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DebugNew.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>

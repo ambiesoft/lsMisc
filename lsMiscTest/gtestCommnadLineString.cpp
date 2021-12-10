@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 
 #include "../CommandLineString.h"
-#include "debug.h"
 
 using namespace Ambiesoft;
 using namespace std;

@@ -21,8 +21,9 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#include <afx.h>
+// #include <afx.h>
 #include <Windows.h>
+#include <tchar.h>
 #include <ShlObj.h>
 
 // #include "stlScopedClear.h"

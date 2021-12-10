@@ -22,7 +22,7 @@
 //SUCH DAMAGE.
 
 
-#include <afx.h>
+// #include <afx.h>
 
 #ifndef _SHLOBJ_H_
 #pragma message("including shlobj.h")
@@ -39,6 +39,7 @@
 #include <vector>
 #endif
 
+#include "DebugMacro.h"
 #include "SetCSIDLtoEnv.h"
 
 using namespace std;
@@ -53,7 +54,8 @@ static BOOL mySetEnvironmentVariable(LPCWSTR pPrefix, LPCWSTR pSuffix, LPCWSTR p
 	if(pSuffix)
 		w1 += pSuffix;
 
-	TRACE(L"%s=%s\r\n", w1.c_str(), p2);
+	DTRACE(w1.c_str());
+	DTRACE(p2);
 
 	BOOL bRet = SetEnvironmentVariable(w1.c_str(),p2);
 	if(bRet && pResult)
@@ -65,7 +67,7 @@ static BOOL mySetEnvironmentVariable(LPCWSTR pPrefix, LPCWSTR pSuffix, LPCWSTR p
 
 #define SETENVSPFOLDER(PPP,TTT, SSS,RRR) do {\
 		if(SHGetSpecialFolderPath(NULL,szT, CSIDL_##TTT, FALSE)) {\
-			VERIFY(mySetEnvironmentVariable(PPP,SSS, L#TTT, szT,RRR)); \
+			DVERIFY(mySetEnvironmentVariable(PPP,SSS, L#TTT, szT,RRR)); \
 		}\
 	} while(false) 
 

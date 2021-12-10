@@ -13,8 +13,6 @@
 #include "../GetBackupFile.h"
 #include "../NTFSTransaction.h"
 
-#include "debug.h"
-
 #include "../DebugNew.h"
 
 using namespace std;

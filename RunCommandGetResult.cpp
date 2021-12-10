@@ -38,8 +38,6 @@
 #include "RunCommandGetResult.h"
 #include "UTF16toUTF8.h"
 
-#include "DebugNew.h"
-
 using namespace std;
 namespace Ambiesoft {
 	

@@ -114,26 +114,7 @@ int main(int argc, char* argv[])
 #endif
 	mysandbox();
 
-#ifdef _DEBUG
-	// leak test
-	malloc(17);
-	calloc(1,18);
-	realloc(nullptr, 28);
-	new char[33];
-#endif
-
     testing::InitGoogleTest(&argc, argv);
-	int gret = RUN_ALL_TESTS();
-
-	
-	//testOpenedFiles();
-	//testStlMutex();
-
-
-
-	//BOOL b = IsFileExists(_T("c:\\T\\aaa.txt"));
-	//b = IsFileExistsA("c:\\T\\bbb.txt");
-	//b = IsFileExistsW(L"c:\\T\\ccc");
-    return gret;
+	return RUN_ALL_TESTS();
 }
 

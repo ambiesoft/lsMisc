@@ -8,7 +8,6 @@
 #include <gtest/gtest.h>
 
 #include "../Lock.h"
-#include "debug.h"
 
 using namespace Ambiesoft;
 using namespace std;
