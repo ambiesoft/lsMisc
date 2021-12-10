@@ -435,9 +435,6 @@
       <Filter>GTest Files</Filter>
     </ClCompile>
     <ClCompile Include="testIncludeWithoutOtherHeader.cpp" />
-    <ClCompile Include="gtestStdosdPathString.cpp">
-      <Filter>GTest Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\NTFSTransaction.cpp">
       <Filter>lsMisc</Filter>
     </ClCompile>
@@ -446,6 +443,9 @@
     </ClCompile>
     <ClCompile Include="..\GetBackupFile.cpp">
       <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestStdosdPathString.cpp">
+      <Filter>GTest Files\Header</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -768,13 +768,13 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
-      <Filter>Header</Filter>
+      <Filter>GTest Files\Header</Filter>
     </ClInclude>
     <ClInclude Include="StdAfx.h">
-      <Filter>Header</Filter>
+      <Filter>GTest Files\Header</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header</Filter>
+      <Filter>GTest Files\Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stdosd\stdosd.h">
       <Filter>stdosd</Filter>
@@ -868,14 +868,14 @@
     <Filter Include="Resource">
       <UniqueIdentifier>{60021751-ef5b-4b39-bfb5-c43d1b7c20d8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header">
-      <UniqueIdentifier>{47986b19-0e7d-47cc-9aa7-9fe4641e7537}</UniqueIdentifier>
-    </Filter>
     <Filter Include="stdosd">
       <UniqueIdentifier>{a39e5bc3-9df5-4df4-a3da-c20d510600c5}</UniqueIdentifier>
     </Filter>
     <Filter Include="stdwin32">
       <UniqueIdentifier>{b4a4d252-35f6-4b84-ba17-5ecf1ab4cb99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GTest Files\Header">
+      <UniqueIdentifier>{47986b19-0e7d-47cc-9aa7-9fe4641e7537}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

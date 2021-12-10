@@ -795,3 +795,140 @@ TEST(CommandLineParser, WrongInt)
 		}
 	}
 }
+TEST(CommandLineParser, BoolAsValue)
+{
+	// normal
+	{
+		wchar_t* arg = L"myapp.exe -b 1 -c 2 -d no";
+		CCommandLineParserW parser;
+
+		bool b = false;
+		parser.AddOption(L"-b",
+			1,
+			&b);
+		bool c = false;
+		parser.AddOption(L"-c",
+			1,
+			&c);
+		bool d = false;
+		parser.AddOption(L"-d",
+			1,
+			&d);
+
+		parser.Parse(arg);
+		EXPECT_TRUE(b);
+		EXPECT_TRUE(c);
+		EXPECT_FALSE(d);
+	}
+
+	// not bool like command line but not strict
+	{
+		wchar_t* arg = L"myapp.exe -b 100 -c OK -d 0";
+		CCommandLineParserW parser;
+
+		bool b = false;
+		parser.AddOption(L"-b",
+			1,
+			&b);
+		bool c = false;
+		parser.AddOption(L"-c",
+			1,
+			&c);
+		bool d = false;
+		parser.AddOption(L"-d",
+			1,
+			&d);
+
+		parser.Parse(arg);
+		EXPECT_TRUE(b);
+		EXPECT_TRUE(c);
+		EXPECT_FALSE(d);
+	}
+	// if argcount = 0
+	{
+		wchar_t* arg = L"myapp.exe -b 100 -c OK -d 0";
+		CCommandLineParserW parser;
+
+		bool b = false;
+		parser.AddOption(L"-b",
+			0,
+			&b);
+		bool c = false;
+		parser.AddOption(L"-c",
+			0,
+			&c);
+		bool d = false;
+		parser.AddOption(L"-d",
+			0,
+			&d);
+		bool e = false;
+		parser.AddOption(L"-e",
+			0,
+			&e);
+
+		parser.Parse(arg);
+		EXPECT_TRUE(b);
+		EXPECT_TRUE(c);
+		EXPECT_TRUE(d); // because '-d' exists
+		EXPECT_FALSE(e);
+	}
+
+	// normal (strict)
+	{
+		wchar_t* arg = L"myapp.exe -b 1 -c on -d no";
+		CCommandLineParserW parser;
+		parser.setStrict();
+
+		bool b = false;
+		parser.AddOption(L"-b",
+			1,
+			&b);
+		bool c = false;
+		parser.AddOption(L"-c",
+			1,
+			&c);
+		bool d = false;
+		parser.AddOption(L"-d",
+			1,
+			&d);
+
+		parser.Parse(arg);
+		EXPECT_TRUE(b);
+		EXPECT_TRUE(c);
+		EXPECT_FALSE(d);
+	}
+
+	// not bool like command line with strict
+	{
+		wchar_t* arg = L"myapp.exe -b 100 -c OK -d 0";
+		CCommandLineParserW parser;
+		parser.setStrict();
+
+		bool b = false;
+		parser.AddOption(L"-b",
+			1,
+			&b);
+		bool c = false;
+		parser.AddOption(L"-c",
+			1,
+			&c);
+		bool d = false;
+		parser.AddOption(L"-d",
+			1,
+			&d);
+
+		try
+		{
+			parser.Parse(arg);
+			EXPECT_TRUE(false);
+		}
+		catch (std::exception& ex)
+		{
+			EXPECT_STREQ(ex.what(), "100 is not bool");
+		}
+		EXPECT_FALSE(b);
+		EXPECT_FALSE(c);
+		EXPECT_FALSE(d);
+	}
+
+}

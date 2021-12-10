@@ -278,98 +278,96 @@ namespace Ambiesoft {
         typedef typename myStringType::traits_type::char_type Elem;
         typedef myStringType MyS_;
 
-		// Todo: to template
-		class UserTarget
+		class UserTargetBase
 		{
-			bool* pBool_ = nullptr;
-			int* pInt_ = nullptr;
-			long long* pLL_ = nullptr;
-			MyS_* pMys_ = nullptr;
-
-			std::vector<MyS_>* pVmys_ = nullptr;
-
-			UserTarget()
+		public:
+			virtual void setTrue() = 0;
+			virtual void setParsedValue(const MyS_& mys, const bool bStrict) = 0;
+			virtual void setTarget(void*) = 0;
+		};
+		template<class T>
+		class UserTarget : public UserTargetBase
+		{
+			static void setValue(bool* pB, const MyS_& mys, const bool bSrict)
 			{
-			}
-			
-			void setTarget(bool* pb)
-			{
-				assert(pBool_ == NULL);
-				assert(pb);
-				pBool_ = pb;
-			}
-			void setTarget(int* pi)
-			{
-				assert(pInt_ == NULL);
-				pInt_ = pi;
-			}
-			void setTarget(long long* pLL)
-			{
-				assert(pLL_ == NULL);
-				pLL_ = pLL;
-			}
-			void setTarget(MyS_* pM)
-			{
-				assert(pMys_==NULL);
-				pMys_=pM;
-			}
-			void setTarget(std::vector<MyS_>* pVmys)
-			{
-				assert(pVmys_ == nullptr);
-				pVmys_ = pVmys;
-			}
-			void setTrue()
-			{
-				if (pBool_)
-					*pBool_ = true;
-				if (pInt_)
-					*pInt_ = 1;
-				if (pLL_)
-					*pLL_ = 1;
-			}
-			void setParsedValue(const MyS_& mys, const bool bStrict)
-			{
-				if(pBool_)
+				if (
+					StringCompare(mys, stdosd::stdLiterals<Elem>::num0String()) ||
+					StringCompare(mys, stdosd::stdLiterals<Elem>::noString(), true) ||
+					StringCompare(mys, stdosd::stdLiterals<Elem>::offString(), true) ||
+					StringCompare(mys, stdosd::stdLiterals<Elem>::falseString(), true)
+					)
 				{
-					if(
-						StringCompare(mys, stdosd::stdLiterals<Elem>::num0String()) ||
-						StringCompare(mys, stdosd::stdLiterals<Elem>::offString(),true) ||
-						StringCompare(mys, stdosd::stdLiterals<Elem>::falseString(),true)
-						)
-					{
-						*pBool_=false;
-					}
-					else
-					{
-						*pBool_=true;
+					*pB = false;
+					return;
+				}
+				if (
+					StringCompare(mys, stdosd::stdLiterals<Elem>::num1String()) ||
+					StringCompare(mys, stdosd::stdLiterals<Elem>::yesString(), true) ||
+					StringCompare(mys, stdosd::stdLiterals<Elem>::onString(), true) ||
+					StringCompare(mys, stdosd::stdLiterals<Elem>::trueString(), true)
+					)
+				{
+					*pB = true;
+					return;
+				}
+				if (bSrict)
+				{
+					throw illegal_value_type_error<MyS_, bool>(mys);
+				}
+				// assume true if not false
+				*pB = true;
+			}
+			static void setValue(int* pI, const MyS_& mys, const bool bStrict)
+			{
+				int tmp = AtoI(mys);
+				if (bStrict) {
+					if (ItoA(tmp, mys) != mys) {
+						throw illegal_value_type_error<MyS_, int>(mys);
 					}
 				}
-				if (pInt_)
-				{
-					int tmp = AtoI(mys);
-					if (bStrict) {
-						if (ItoA(tmp, mys) != mys) {
-							throw illegal_value_type_error<MyS_, int>(mys);
-						}
-					}
-					*pInt_ = tmp;
-				}
-				if (pLL_)
-				{
-					long long tmp = AtoI64(mys);
-					if (bStrict) {
-						if (ItoA(tmp, mys) != mys) {
-							throw illegal_value_type_error<MyS_, long long>(mys);
-						}
-					}
-					*pLL_ = tmp;
-				}
-				if(pMys_)
-					*pMys_=mys;
-				if (pVmys_)
-					pVmys_->push_back(mys);
+				*pI = tmp;
 			}
-			friend MyT_;
+			static void setValue(long long* pLL_, const MyS_& mys, const bool bStrict)
+			{
+				long long tmp = AtoI64(mys);
+				if (bStrict) {
+					if (ItoA(tmp, mys) != mys) {
+						throw illegal_value_type_error<MyS_, long long>(mys);
+					}
+				}
+				*pLL_ = tmp;
+			}
+			static void setValue(MyS_* pMys_, const MyS_& mys, const bool bSrict)
+			{
+				*pMys_ = mys;
+			}
+			static void setValue(std::vector<MyS_>* pVmys_, const MyS_& mys, const bool bSrict)
+			{
+				pVmys_->push_back(mys);
+			}
+		
+			template<class T>
+			void setHadOption(T* pT) {}
+			template<>
+			void setHadOption<bool>(bool* pT) {
+				*pT = true;
+			}
+		private:
+			T* pUserRawTarget_ = nullptr;
+		public:
+			void setTarget(void* p) override
+			{
+				assert(!pUserRawTarget_);
+				pUserRawTarget_ = static_cast<T*>(p);
+			}
+			void setTrue() override
+			{
+				setHadOption(pUserRawTarget_);
+			}
+			void setParsedValue(const MyS_& mys, const bool bStrict) override
+			{
+				setValue(pUserRawTarget_, mys, bStrict);
+			}
 		};
 
 		std::vector<MyS_> options_;
@@ -380,20 +378,23 @@ namespace Ambiesoft {
 		bool parsed_;
 		CaseFlags case_;
 		ArgEncodingFlags encoding_;
-		UserTarget userTarget_;
+		UserTargetBase* userTarget_ = nullptr;
 		MyS_ helpString_;
 
 		template<class TargetType>
 		void setTarget(TargetType* pT)
 		{
-			userTarget_.setTarget(pT);
+			assert(!userTarget_);
+			userTarget_ = new UserTarget<TargetType>();
+			userTarget_->setTarget(pT);
 		}
 
 		void AddValue(const MyS_& value, const bool bStrict)
 		{
 			setHadOption();
-			userTarget_.setParsedValue(encoding_ == ArgEncodingFlags_UTF8UrlEncode ?
-				UrlDecodeStd<MyS_>(value.c_str()) : value, bStrict);
+			if(userTarget_)
+				userTarget_->setParsedValue(encoding_ == ArgEncodingFlags_UTF8UrlEncode ?
+					UrlDecodeStd<MyS_>(value.c_str()) : value, bStrict);
 
 			values_.push_back(value);
 		}
@@ -401,7 +402,8 @@ namespace Ambiesoft {
 		{
 			if (argcountflag_ == ArgCount::ArgCount_Zero)
 			{
-				userTarget_.setTrue();
+				if(userTarget_)
+					userTarget_->setTrue();
 			}
 			hadOption_ = true;
 		}

@@ -180,8 +180,13 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(dotString, ".");								\
 			STDOSD_DEFINE_STRINGFUNCTION(dotdotString, "..");							\
 			STDOSD_DEFINE_STRINGFUNCTION(num0String, "0");								\
+			STDOSD_DEFINE_STRINGFUNCTION(num1String, "1");								\
+			STDOSD_DEFINE_STRINGFUNCTION(noString, "no");								\
+			STDOSD_DEFINE_STRINGFUNCTION(yesString, "yes");								\
 			STDOSD_DEFINE_STRINGFUNCTION(offString, "off");								\
+			STDOSD_DEFINE_STRINGFUNCTION(onString, "on");								\
 			STDOSD_DEFINE_STRINGFUNCTION(falseString, "false");							\
+			STDOSD_DEFINE_STRINGFUNCTION(trueString, "true");							\
 			STDOSD_DEFINE_STRINGFUNCTION(CR,"\r");										\
 			STDOSD_DEFINE_STRINGFUNCTION(LF,"\n");										\
 			STDOSD_DEFINE_STRINGFUNCTION(CRLF,"\r\n");									\
