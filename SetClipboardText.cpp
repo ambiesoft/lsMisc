@@ -30,6 +30,7 @@
 #include <windows.h>
 // #include "tstring.h"
 // #include <string>
+#include "DebugNew.h"
 #include "SetClipboardText.h"
 
 namespace Ambiesoft {

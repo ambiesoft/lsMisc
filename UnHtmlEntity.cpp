@@ -30,7 +30,7 @@
 
 #include <windows.h>
 #include <string>
-
+#include "DebugNew.h"
 #include "UnHtmlEntity.h"
 
 

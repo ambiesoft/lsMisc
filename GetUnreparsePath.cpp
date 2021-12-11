@@ -10,7 +10,7 @@
 
 #include <string>
 #include <vector>
-
+#include "DebugNew.h"
 #include "CHandle.h"
 
 #include "GetUnreparsePath.h"

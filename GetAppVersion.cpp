@@ -31,7 +31,7 @@
 #include <sstream>
 #include <regex>
 #include <memory>
-
+#include "DebugNew.h"
 #include "RunCommandGetResult.h"
 #include "GetAppVersion.h"
 

@@ -43,7 +43,7 @@
 #include <tchar.h>
 #include <assert.h>
 #include <string>
-
+#include "DebugNew.h"
 // #include "stlScopedClear.h"
 #include "RevealFolder.h"
 // #include "GetOpenFile.h"

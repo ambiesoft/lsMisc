@@ -30,6 +30,7 @@
 #include <windows.h>
 #include <comdef.h>
 #include <tchar.h>
+#include "DebugNew.h"
 #include "HtmlClipboard.h"
 #include "HelpDefines.h"
 #include "AnyCloser.h"

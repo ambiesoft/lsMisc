@@ -7,7 +7,7 @@
 #include <memory>
 
 #include "../DebugNew.h"
-
+#include "../DebugMacro.h"
 #include "gtest/gtest.h"
 
 using namespace std;

@@ -29,6 +29,7 @@
 
 #include <memory>
 #include <string>
+#include "DebugNew.h"
 #include "UTF16toUTF8.h"
 
 

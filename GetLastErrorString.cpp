@@ -24,6 +24,7 @@
 #include <windows.h>
 
 #include "tstring.h"
+#include "DebugNew.h"
 #include "GetLastErrorString.h"
 
 namespace Ambiesoft {

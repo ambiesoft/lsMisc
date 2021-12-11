@@ -28,6 +28,7 @@
 
 
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsInDesktop.h"
 BOOL IsInDesktop(HWND h, int x, int y)
 {

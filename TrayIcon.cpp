@@ -32,7 +32,7 @@
 #pragma message("including windows.h")
 #include <windows.h>
 #endif
-
+#include "DebugNew.h"
 #include <shellapi.h>
 
 namespace Ambiesoft {

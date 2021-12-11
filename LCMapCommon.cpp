@@ -31,6 +31,7 @@
 #include "tstring.h"
 #include <windows.h>
 #include <tchar.h>
+#include "DebugNew.h"
 #include "LCMapCommon.h"
 
 static tstring LCMapCommon(LPCTSTR p, DWORD flag)

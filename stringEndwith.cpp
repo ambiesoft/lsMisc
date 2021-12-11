@@ -30,7 +30,7 @@
 
 #include <windows.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 
 BOOL stringEndwith(LPCTSTR pString, LPCTSTR pEnd)
 {

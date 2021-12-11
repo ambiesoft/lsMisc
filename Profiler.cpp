@@ -32,7 +32,7 @@
 
 #include <Windows.h>
 
-
+#include "DebugNew.h"
 #include "stdosd/stdosd.h"
 #include "stdwin32/stdwin32.h"
 #include "Profiler.h"

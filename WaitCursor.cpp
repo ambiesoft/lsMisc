@@ -23,7 +23,7 @@
 
 #include <cassert>
 #include <Windows.h>
-
+#include "DebugNew.h"
 #include "WaitCursor.h"
 
 namespace Ambiesoft {

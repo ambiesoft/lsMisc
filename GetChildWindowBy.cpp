@@ -30,7 +30,7 @@
 #include <vector>
 #include <limits>
 #include <cassert>
-
+#include "DebugNew.h"
 #include "GetChildWindowBy.h"
 
 using namespace std;

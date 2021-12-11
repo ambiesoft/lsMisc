@@ -27,7 +27,7 @@
 #include <winternl.h>
 
 #include <cassert>
-
+#include "../DebugNew.h"
 #include "SetPrority.h"
 
 using namespace std;

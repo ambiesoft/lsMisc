@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <crtdbg.h>
 
+#ifdef AMBIESOFT_USE_DEBUGNEW
 void*  operator new(size_t nSize, LPCSTR lpszFileName, int nLine)
 {
 	return ::operator new(nSize, _NORMAL_BLOCK, lpszFileName, nLine);
@@ -66,7 +67,6 @@ void operator delete[](void* p, int nType, LPCSTR lpszFileName, int nLine)
 {
 	::operator delete(p, nType, lpszFileName, nLine);
 }
-
-
+#endif  // AMBIESOFT_USE_DEBUGNEW
 #endif  // _DEBUG
 #endif  // _WIN32

@@ -30,6 +30,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <string>
+#include "DebugNew.h"
 #include "IsFilenamable.h"
 
 using std::wstring;

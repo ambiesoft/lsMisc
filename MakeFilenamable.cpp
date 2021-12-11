@@ -34,7 +34,7 @@
 #include <string>
 #include <algorithm>
 
-
+#include "DebugNew.h"
 #include "tstring.h"
 #include "MakeFilenamable.h"
 

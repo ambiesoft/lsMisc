@@ -28,6 +28,7 @@
 
 
 #include <Windows.h>
+#include "DebugNew.h"
 #include "Lock.h"
 
 namespace Ambiesoft {

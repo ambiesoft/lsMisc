@@ -31,7 +31,7 @@
 #include <tchar.h>
 #include <assert.h>
 #include <stdio.h>
-
+#include "DebugNew.h"
 #include "GetFormattedTime.h"
 
 BOOL GetFormattedTime(LONGLONG llSec, LPTSTR szFormatted)

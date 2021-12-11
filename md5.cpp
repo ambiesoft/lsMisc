@@ -15,6 +15,7 @@
 #include <Wincrypt.h>
 #include <stdio.h>
 #include <string>
+#include "DebugNew.h"
 using namespace std;
 
 #include "md5.h"

@@ -28,6 +28,7 @@
 
 
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsWindowsNT.h"
 
 #pragma warning(disable:4996) // deprecated GetVersionExW

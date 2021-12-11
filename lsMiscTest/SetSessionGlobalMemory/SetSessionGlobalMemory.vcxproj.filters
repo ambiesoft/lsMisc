@@ -33,6 +33,9 @@
     <ClCompile Include="..\..\UTF16toUTF8.cpp">
       <Filter>2 Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\DebugNew.cpp">
+      <Filter>2 Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -51,6 +54,9 @@
       <Filter>1 Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\UTF16toUTF8.h">
+      <Filter>1 Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\DebugNew.h">
       <Filter>1 Header Files</Filter>
     </ClInclude>
   </ItemGroup>

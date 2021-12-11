@@ -213,6 +213,8 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(commandlinetwotoinfiniteargs, "Arg1 Arg2 [Arg3 [...]]");\
 			STDOSD_DEFINE_STRINGFUNCTION(Arg,"Arg");									\
 			STDOSD_DEFINE_STRINGFUNCTION(OptionPrefix,"-/");							\
+			STDOSD_DEFINE_STRINGFUNCTION(FileModeWrite,"w");							\
+			STDOSD_DEFINE_STRINGFUNCTION(FileModeWriteByte,"wb");						\
 		}
 
 #define STDOSD_DEFINE_CHAR(name, chara) static STDOSD_CONSTEXPR CHART name = LITEL(chara)

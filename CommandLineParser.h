@@ -36,6 +36,8 @@
 #include <sstream>
 #include <algorithm>
 
+#include "DebugNew.h"
+
 #include "UrlEncode.h"
 #include "UTF16toUTF8.h"
 #include "CommandLineString.h"
@@ -288,6 +290,8 @@ namespace Ambiesoft {
 		template<class T>
 		class UserTarget : public UserTargetBase
 		{
+		public:
+		private:
 			static void setValue(bool* pB, const MyS_& mys, const bool bSrict)
 			{
 				if (
@@ -378,14 +382,14 @@ namespace Ambiesoft {
 		bool parsed_;
 		CaseFlags case_;
 		ArgEncodingFlags encoding_;
-		UserTargetBase* userTarget_ = nullptr;
+		std::unique_ptr<UserTargetBase> userTarget_;
 		MyS_ helpString_;
 
 		template<class TargetType>
 		void setTarget(TargetType* pT)
 		{
 			assert(!userTarget_);
-			userTarget_ = new UserTarget<TargetType>();
+			userTarget_.reset(new UserTarget<TargetType>());
 			userTarget_->setTarget(pT);
 		}
 
@@ -470,34 +474,36 @@ namespace Ambiesoft {
 			// pTarget_ = NULL;
 			encoding_ = ArgEncodingFlags_Default;
 		}
-		void copy(const MyT_& that)
-		{
-			options_ = that.options_;
-			argcountflag_ = that.argcountflag_;
-			values_ = that.values_;
-			hadOption_ = that.hadOption_;
-			parsed_ = that.parsed_;
-			case_ = that.case_;
-			encoding_ = that.encoding_;
-			userTarget_ = that.userTarget_;
-			helpString_ = that.helpString_;
-		}
+		//void copy(const MyT_& that)
+		//{
+		//	options_ = that.options_;
+		//	argcountflag_ = that.argcountflag_;
+		//	values_ = that.values_;
+		//	hadOption_ = that.hadOption_;
+		//	parsed_ = that.parsed_;
+		//	case_ = that.case_;
+		//	encoding_ = that.encoding_;
+		//	userTarget_.reset(
+		//		new UserTarget<decltype(*((UserTarget*)(that.userTarget_.get()))->pUserRawTarget_)>());
+
+		//	helpString_ = that.helpString_;
+		//}
 	public:
-		BasicOption(const MyT_& that)
-		{
-			if (this == &that)
-				return;
+		//BasicOption(const MyT_& that)
+		//{
+		//	if (this == &that)
+		//		return;
 
-			copy(that);
-		}
-		MyT_& operator=(const MyT_& that)
-		{
-			if (this == &that)
-				return *this;
+		//	copy(that);
+		//}
+		//MyT_& operator=(const MyT_& that)
+		//{
+		//	if (this == &that)
+		//		return *this;
 
-			copy(that);
-			return *this;
-		}
+		//	copy(that);
+		//	return *this;
+		//}
 		BasicOption()
 		{
 			init();
@@ -760,12 +766,12 @@ typedef BasicOption<std::string> COptionA;
 
 
 		typedef std::vector<BasicOption<MyS_>*> POPTIONARRAY;
-		typedef std::vector<BasicOption<MyS_> > OPTIONARRAY;
+		// typedef std::vector<BasicOption<MyS_> > OPTIONARRAY;
 
         typedef BasicOption<MyS_> MyO_;
 		POPTIONARRAY useroptions_;
-		OPTIONARRAY inneroptions_;
-		OPTIONARRAY unknowns_;
+		POPTIONARRAY inneroptions_;
+		POPTIONARRAY unknowns_;
 		bool empty_;
 		bool parsed_;
 		CaseFlags case_;
@@ -787,14 +793,14 @@ typedef BasicOption<std::string> COptionA;
 			}
 
 
-            for (typename OPTIONARRAY::iterator it = inneroptions_.begin();
+            for (typename POPTIONARRAY::iterator it = inneroptions_.begin();
 				it != inneroptions_.end();
 				++it)
 			{
-				if (it->isMatchOption(option))
+				if ((*it)->isMatchOption(option))
 				{
 					// operator * returns a reference
-					return &(*it);
+					return &(*(*it));
 				}
 			}
 			return NULL;
@@ -946,8 +952,14 @@ typedef BasicOption<std::string> COptionA;
 		{
 			init();
 		}
-
-		void setStrict() {
+		~BasicCommandLineParser()
+		{
+			for (auto&& op : inneroptions_)
+				delete op;
+			for (auto&& op : unknowns_)
+				delete op;
+		}
+			void setStrict() {
 			strict_ = true;
 		}
 		MyS_ getHelpMessage() const {
@@ -998,24 +1010,24 @@ typedef BasicOption<std::string> COptionA;
 				std::vector<MyS_> options;
 				MyS_ helpString;
 				bool skip = false;
-				for (size_t j = 0; j < inneroptions_[i].options_.size(); ++j)
+				for (size_t j = 0; j < inneroptions_[i]->options_.size(); ++j)
 				{
 					for (auto&& exceptOption : exceptOptions)
 					{
-						if (exceptOption && exceptOption == inneroptions_[i].options_[j]) {
+						if (exceptOption && exceptOption == inneroptions_[i]->options_[j]) {
 							skip = true;
 							break;
 						}
 					}
-					assert(argcount == ArgCount::ArgCount_Uninitialized || argcount == inneroptions_[i].argcountflag_);
-					argcount = inneroptions_[i].argcountflag_;
+					assert(argcount == ArgCount::ArgCount_Uninitialized || argcount == inneroptions_[i]->argcountflag_);
+					argcount = inneroptions_[i]->argcountflag_;
 
-					assert(helpString.empty() || helpString == inneroptions_[i].helpString_);
-					helpString = inneroptions_[i].helpString_;
+					assert(helpString.empty() || helpString == inneroptions_[i]->helpString_);
+					helpString = inneroptions_[i]->helpString_;
 
-					options.emplace_back(inneroptions_[i].options_[j]);
+					options.emplace_back(inneroptions_[i]->options_[j]);
 				}
-				if (!skip && inneroptions_[i].options_.size() != 0)
+				if (!skip && inneroptions_[i]->options_.size() != 0)
 				{
 					processOptionStringHelper(
 						argcount,
@@ -1061,13 +1073,13 @@ typedef BasicOption<std::string> COptionA;
 
 			MyS_ ret;
                         
-			for (typename OPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
+			for (typename POPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
-				ret += it->getFirstOption();
-				if (it->hadValue())
+				ret += (*it)->getFirstOption();
+				if ((*it)->hadValue())
 				{
 					ret += TEXT(" ");
-					ret += it->getValueStrings();
+					ret += (*it)->getValueStrings();
 				}
 			}
 			return ret;
@@ -1109,7 +1121,7 @@ typedef BasicOption<std::string> COptionA;
 				}
 			}
 
-			for(typename OPTIONARRAY::const_iterator it = inneroptions_.begin();
+			for(typename POPTIONARRAY::const_iterator it = inneroptions_.begin();
 				it != inneroptions_.end();
 				++it)
 			{
@@ -1118,8 +1130,8 @@ typedef BasicOption<std::string> COptionA;
 					++cIter)
 				{
 					// ensure same option does not exist
-					assert(!( it->isMatchOption(cIter->c_str(), 
-						it->case_ == CaseFlags_Insensitive || cli->case_ == CaseFlags_Insensitive)));
+					assert(!((*it)->isMatchOption(cIter->c_str(),
+						(*it)->case_ == CaseFlags_Insensitive || cli->case_ == CaseFlags_Insensitive)));
 				}
 			}
 		}
@@ -1136,13 +1148,12 @@ typedef BasicOption<std::string> COptionA;
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
-			MyO_ option(optionStrings, exactCount);
-			option.case_ = case_;
-			check(&option);
-			// *pTarget = TARGET();
-			option.setTarget(pTarget);
-			option.encoding_ = arf;
-			option.helpString_ = helpstring;
+			MyO_* option = new MyO_(optionStrings, exactCount);
+			option->case_ = case_;
+			check(option);
+			option->setTarget(pTarget);
+			option->encoding_ = arf;
+			option->helpString_ = helpstring;
 			inneroptions_.push_back(option);
 		}
 		template<class TARGET>
@@ -1153,14 +1164,13 @@ typedef BasicOption<std::string> COptionA;
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
-			MyO_ option(optionStrings);
-			option.argcountflag_ = argCount;
-			option.case_ = case_;
-			check(&option);
-			// *pTarget = TARGET();
-			option.setTarget(pTarget);
-			option.encoding_ = arf;
-			option.helpString_ = helpstring;
+			MyO_* option = new MyO_(optionStrings);
+			option->argcountflag_ = argCount;
+			option->case_ = case_;
+			check(option);
+			option->setTarget(pTarget);
+			option->encoding_ = arf;
+			option->helpString_ = helpstring;
 			inneroptions_.push_back(option);
 		}
 
@@ -1297,7 +1307,7 @@ typedef BasicOption<std::string> COptionA;
 					MyO_* pA = FindOption(pArgv);
 					if (!pA)
 					{
-						unknowns_.push_back(MyO_(pArgv));
+						unknowns_.push_back(new MyO_(pArgv));
 						continue;
 					}
 
@@ -1310,7 +1320,7 @@ typedef BasicOption<std::string> COptionA;
 					myOptionType* pA = FindOption(stdosd::stdLiterals<Elem>::nulString());
 					if (!pA)
 					{
-						unknowns_.push_back(MyO_((pArgv)));
+						unknowns_.push_back(new MyO_((pArgv)));
 						continue;
 					}
 					else
@@ -1332,11 +1342,11 @@ typedef BasicOption<std::string> COptionA;
 				(*it)->setParsed();
 			}
 
-			for (typename OPTIONARRAY::iterator it = unknowns_.begin();
+			for (typename POPTIONARRAY::iterator it = unknowns_.begin();
 				it != unknowns_.end();
 				++it)
 			{
-				it->setParsed();
+				(*it)->setParsed();
 			}
 		}
 	};

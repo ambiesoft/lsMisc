@@ -32,7 +32,7 @@
 #include <Lm.h>
 #include <string>
 #include <vector>
-
+#include "DebugNew.h"
 #include "CHandle.h"
 
 #include "GetLocalPathFromNetPath.h"

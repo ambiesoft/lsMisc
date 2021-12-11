@@ -29,7 +29,7 @@
 
 #include <windows.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 #include "ReplaceFileHelper.h"
 
 typedef BOOL (WINAPI *fnReplaceFile)(

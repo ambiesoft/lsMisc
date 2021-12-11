@@ -33,6 +33,7 @@
 #include <tchar.h>
 #include <string.h>
 #include <string>
+#include "DebugNew.h"
 using namespace std;
 
 #include"GetOpenFile.h"

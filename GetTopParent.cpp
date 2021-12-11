@@ -28,6 +28,7 @@
 
 
 #include <windows.h>
+#include "DebugNew.h"
 #include "GetTopParent.h"
 
 HWND GetTopParent(HWND h)

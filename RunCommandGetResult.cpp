@@ -34,7 +34,7 @@
 #include <memory>
 
 #include <process.h>
-
+#include "DebugNew.h"
 #include "RunCommandGetResult.h"
 #include "UTF16toUTF8.h"
 

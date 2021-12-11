@@ -839,7 +839,7 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\DebugNew.h">
-      <Filter>lsMisc</Filter>
+      <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

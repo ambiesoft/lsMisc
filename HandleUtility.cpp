@@ -29,7 +29,7 @@
 
 #include <Windows.h>
 #include "HandleUtility.h"
-
+#include "DebugNew.h"
 namespace Ambiesoft {
 
 #ifdef __cplusplus_cli

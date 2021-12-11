@@ -8,7 +8,7 @@
 
 #include <Windows.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 #include "EnableDebugPriv.h"
 
 void EnableDebugPriv( void )

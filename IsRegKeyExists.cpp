@@ -30,6 +30,7 @@
 
 #include <tchar.h>
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsRegKeyExists.h"
 
 BOOL IsRegKeyExists(HKEY hRoot, LPCTSTR pKey)

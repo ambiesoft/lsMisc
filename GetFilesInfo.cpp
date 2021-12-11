@@ -35,7 +35,7 @@
 #include <string>
 #include <algorithm>
 #include <memory>
-
+#include "DebugNew.h"
 #include "tstring.h"
 
 #include "GetFilesInfo.h"

@@ -35,6 +35,7 @@
 
 
 #include "sqlite3.h"
+#include "DebugNew.h"
 #include "IsFileExists.h"
 #include "UTF16toUTF8.h"
 #include "stdosd/stdosd.h"

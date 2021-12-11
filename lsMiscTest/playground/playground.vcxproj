@@ -139,11 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\DebugNew.cpp" />
+    <ClCompile Include="..\..\DebugNew.cpp" />
     <ClCompile Include="playground.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\DebugNew.h" />
+    <ClInclude Include="..\..\DebugNew.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

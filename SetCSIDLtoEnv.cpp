@@ -38,7 +38,7 @@
 #pragma message("including vector")
 #include <vector>
 #endif
-
+#include "DebugNew.h"
 #include "DebugMacro.h"
 #include "SetCSIDLtoEnv.h"
 

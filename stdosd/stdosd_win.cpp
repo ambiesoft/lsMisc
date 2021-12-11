@@ -51,6 +51,7 @@ Generating Code...
 #include <functional>
 #include "stdosd.h"
 
+#include "../DebugNew.h"
 
 #if !defined(REPARSE_DATA_BUFFER_HEADER_SIZE)
 typedef struct _REPARSE_DATA_BUFFER {
@@ -277,23 +278,22 @@ namespace Ambiesoft {
 			if (nReqSize == 0)
 				return NULL;
 
-			BYTE* pOut = new BYTE[nReqSize];
+			unique_ptr< BYTE> pOut(new BYTE[nReqSize]);
 			int nRet = WideCharToMultiByte(CP_UTF8,
 				0,
 				(LPCWCH)p,
 				-1,
-				(char*)pOut,
+				(char*)pOut.get(),
 				nReqSize,
 				NULL,
 				NULL);
 
 			if (nRet == 0 || nRet != nReqSize)
 			{
-                delete [] pOut;
 				return NULL;
 			}
 
-			return string((char*)pOut);
+			return string((char*)pOut.get());
 		}
 
         class CFileIteratorInternal
@@ -301,7 +301,7 @@ namespace Ambiesoft {
             HANDLE hFF_ = INVALID_HANDLE_VALUE;
             WIN32_FIND_DATAW* pFindData_ = nullptr;
 			FILEITERATEMODE fim_;
-			GETFILESEMODE gfm_;
+
 			bool loopStarted_ = false;
 		private:
 			static bool isDot(LPCWSTR pStr) {
@@ -322,9 +322,8 @@ namespace Ambiesoft {
 		public:
             CFileIteratorInternal(HANDLE h, 
 				const WIN32_FIND_DATAW* wfd, 
-				FILEITERATEMODE fim,
-				GETFILESEMODE gfm) :
-                hFF_(h), fim_(fim), gfm_(gfm)
+				FILEITERATEMODE fim):
+                hFF_(h), fim_(fim)
             {
                 if(wfd)
                 {
@@ -357,18 +356,20 @@ namespace Ambiesoft {
             {
                 if(!valid())
                     return false;
-				if (!loopStarted_)
-				{
-					loopStarted_ = true;
-					return true;
-				}
                 
 				for (;;)
 				{
-					if (!FindNextFileW(hFF_, pFindData_))
+					if (!loopStarted_)
 					{
-						Close();
-						return false;
+						loopStarted_ = true;
+					}
+					else
+					{
+						if (!FindNextFileW(hFF_, pFindData_))
+						{
+							Close();
+							return false;
+						}
 					}
 
 					if ((fim_ & FILEITERATEMODE::SKIP_DOT) != 0 &&
@@ -382,16 +383,16 @@ namespace Ambiesoft {
 						continue;
 					}
 
-					if ((gfm_ & GETFILESEMODE::DIRECTORY) == 0 &&
-						isDir(pFindData_))
-					{
-						continue;
-					}
-					if ((gfm_ & GETFILESEMODE::FILE) == 0 &&
-						isFile(pFindData_))
-					{
-						continue;
-					}
+					//if ((gfm_ & GETFILESEMODE::DIRECTORY) == 0 &&
+					//	isDir(pFindData_))
+					//{
+					//	continue;
+					//}
+					//if ((gfm_ & GETFILESEMODE::FILE) == 0 &&
+					//	isFile(pFindData_))
+					//{
+					//	continue;
+					//}
 
 					return true;
 				}
@@ -422,7 +423,6 @@ namespace Ambiesoft {
         HFILEITERATOR stdCreateFileIterator(
 			const std::string& directory,
 			FILEITERATEMODE fim, 
-			GETFILESEMODE gfm,
 			int depth)
         {
             STDOSD_UNUSED(depth)
@@ -439,12 +439,11 @@ namespace Ambiesoft {
 				return nullptr;
 			}
 
-            return new CFileIteratorInternal(hFF, &wfd, fim, gfm);
+			return new CFileIteratorInternal(hFF, &wfd, fim);
         }
 		HFILEITERATOR stdCreateFileIterator(
 			const std::wstring& directory,
 			FILEITERATEMODE fim,
-			GETFILESEMODE gfm,
 			int depth)
 		{
             STDOSD_UNUSED(depth)
@@ -459,7 +458,7 @@ namespace Ambiesoft {
 				return nullptr;
 			}
 
-			return new CFileIteratorInternal(hFF, &wfd, fim, gfm);
+			return new CFileIteratorInternal(hFF, &wfd, fim);
 		}
 		namespace detail {
 			bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileDirectoryInfo<char>* fi)
@@ -493,7 +492,7 @@ namespace Ambiesoft {
                 return false;
             CFileIteratorInternal* pIterator = (CFileIteratorInternal*)hFileIterator;
             pIterator->Close();
-
+			delete pIterator;
             return true;
         }
 

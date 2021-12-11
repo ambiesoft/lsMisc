@@ -31,6 +31,7 @@
 #include <windows.h>
 #include <map>
 #include <comdef.h>
+#include "DebugNew.h"
 #include "getFromHtmlLikeDataW.h"
 using namespace std;
 void getFromHtmlLikeDataW(const WCHAR* pDataO, map<_bstr_t, _bstr_t>& headerMap,

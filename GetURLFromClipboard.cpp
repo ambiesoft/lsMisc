@@ -29,7 +29,7 @@
 
 #include <windows.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 #include "GetURLFromClipboard.h"
 #include "RemoveLastInValidURLChar.h"
 

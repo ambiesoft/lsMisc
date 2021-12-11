@@ -41,7 +41,7 @@
 #include <set>
 #include <string>
 using namespace std;
-
+#include "DebugNew.h"
 #include "stdosd/blockedbool.h"
 #include "I18N.h"
 

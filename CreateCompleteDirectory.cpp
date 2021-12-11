@@ -45,7 +45,7 @@
 #pragma comment(lib,"shlwapi.lib")
 #endif
 
-
+#include "DebugNew.h"
 #include "CreateCompleteDirectory.h"
 
 static BOOL GetCountedDir( LPTSTR szBuff, LPCTSTR lpszDir, size_t sizeBuf, int nCount )

@@ -21,14 +21,8 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <windows.h>
-
+#include "DebugNew.h"
 #include "CHandle.h"
 #include "CloseConsoleWin.h"
 

@@ -21,15 +21,9 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <Windows.h>
 #include <string>
-
+#include "DebugNew.h"
 using namespace std;
 
 static LPCWSTR SkipSpace(LPCWSTR p)

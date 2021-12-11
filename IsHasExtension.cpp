@@ -30,6 +30,7 @@
 
 #include <tchar.h>
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsHasExtension.h"
 
 BOOL IsHasExtension(LPCTSTR pPath, LPCTSTR pExtention)

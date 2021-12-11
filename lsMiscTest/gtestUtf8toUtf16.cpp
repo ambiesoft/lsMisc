@@ -103,9 +103,27 @@ TEST(UTF8TOUTF16, convert16to8)
 TEST(DISABLED_UTF8TOUTF16, EUC)
 {
 	{
-		unsigned char t[2] = { 0xb0, 0xb1 };
-		string s = toStdUtf8String(51932, (char*)t, 2);
+		// 3 japanese 'あ' in EUCJP
+		unsigned char t[] = { 0xa4,0xa2, 0xa4, 0xa2  ,0xa4, 0xa2 , 0x0 };
+		string s = toStdUtf8String(51932, (char*)t, -1);
 		EXPECT_EQ(2, s.size());
 	}
+}
 
+TEST(UTF8TOUTF16, ShiftJIS)
+{
+	{
+		// 3 japanese 'あ' in ShiftJis
+		unsigned char t[] = { 0x82,0xa0, 0x82,0xa0, 0x82,0xa0, 0 };
+		// UTF8
+		unsigned char utf8[] = { 0xE3,0x81,0x82,0xE3,0x81,0x82,0xE3,0x81,0x82,0x0 };
+		// UTF16-LE
+		wchar_t utf16le[] = { 0x3042,0x3042,0x3042,0x00 };
+
+		string s = toStdUtf8String(932, (char*)t, -1);
+		EXPECT_STREQ(s.c_str(), (const char*)utf8);
+		
+		wstring ws = toStdWstringFromUtf8(s);
+		EXPECT_STREQ(ws.c_str(), utf16le);
+	}
 }

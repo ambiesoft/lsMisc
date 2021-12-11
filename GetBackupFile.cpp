@@ -25,6 +25,7 @@
 #include <Shlwapi.h>
 
 #include <string>
+#include "DebugNew.h"
 #include "GetBackupFile.h"
 
 namespace Ambiesoft {

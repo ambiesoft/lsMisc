@@ -44,7 +44,7 @@
 #ifndef _STRING_
 #include <string>
 #endif
-
+#include "DebugNew.h"
 
 #include "CommandLineString.h"
 #include "OpenCommon.h"

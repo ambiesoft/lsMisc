@@ -31,7 +31,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include "vbregexp.h"
-
+#include "DebugNew.h"
 #import "vbregexp.tlb" no_namespace named_guids
 
 static IRegExpPtr pReg;

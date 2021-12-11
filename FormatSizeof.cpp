@@ -29,6 +29,7 @@
 
 #include <Windows.h>
 #include <string>
+#include "DebugNew.h"
 #include "FormatSizeof.h"
 
 std::wstring FormatSizeof(double num)

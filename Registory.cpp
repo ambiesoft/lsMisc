@@ -31,7 +31,7 @@
 #include <windows.h>
 #include <comdef.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 #include "AnyCloser.h"
 #include "Registory.h"
 

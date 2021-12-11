@@ -2,6 +2,7 @@
 // because Qt project can not include MFC
 // #include "stdafx.h"
 
+#include "../DebugNew.h"
 
 #if defined(_WIN32)
 #ifndef NOMINMAX
@@ -21,6 +22,8 @@
 
 // Don't do this
 // #include "../stdwin32/stdwin32.h"
+
+
 
 using namespace Ambiesoft::stdosd;
 // using namespace Ambiesoft::stdwin32;
@@ -695,19 +698,22 @@ TEST(stdosd, stdStringLowerTest)
 TEST(stdosd, stdFileIteratorTest)
 {
     {
-        HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
+        HFILEITERATOR hI = stdCreateFileIterator(
+			stdGetParentDirectory(stdGetModuleFileName<char>()));
         EXPECT_NE(hI, nullptr);
         EXPECT_TRUE(stdCloseFileIterator(hI));
     }
     {
-        HFILEITERATOR hI = stdCreateFileIterator("nonexistantttttttttttttttttttttttttttttttttt");
+        HFILEITERATOR hI = stdCreateFileIterator(
+			"nonexistantttttttttttttttttttttttttttttttttt");
         EXPECT_EQ(hI, nullptr);
         EXPECT_FALSE(stdCloseFileIterator(hI));
     }
 
 	{
 		{
-			HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName<char>()));
+			HFILEITERATOR hI = stdCreateFileIterator(
+				stdGetParentDirectory(stdGetModuleFileName<char>()));
 			EXPECT_NE(hI, nullptr);
 
 			bool found = false;
@@ -735,7 +741,8 @@ TEST(stdosd, stdFileIteratorTest)
 #ifdef _WIN32
 	{
 		{
-			HFILEITERATOR hI = stdCreateFileIterator(stdGetParentDirectory(stdGetModuleFileName()));
+			HFILEITERATOR hI = stdCreateFileIterator(
+				stdGetParentDirectory(stdGetModuleFileName()));
 			EXPECT_NE(hI, nullptr);
 
 			bool found = false;
@@ -1203,5 +1210,254 @@ TEST(stdosd, stdIsSubDirectoryTest)
 
 		EXPECT_TRUE(stdIsSubDirectory(L"..", L"."));
 #endif
+	}
+}
+
+int stdMkDir(const char* pDir)
+{
+	return _mkdir(pDir);
+}
+int stdMkDir(const wchar_t* pDir)
+{
+	return _wmkdir(pDir);
+}
+template<class C>
+int stdMkDir(const std::basic_string<C>& dir)
+{
+	return stdMkDir(dir.c_str());
+}
+
+int stdRmDir(const char* pDir)
+{
+	return _rmdir(pDir);
+}
+int stdRmDir(const wchar_t* pDir)
+{
+	return _wrmdir(pDir);
+}
+template<class C>
+int stdRmDir(const std::basic_string<C>& dir)
+{
+	return stdRmDir(dir.c_str());
+}
+
+int stdUnlink(const char* pFile)
+{
+	return _unlink(pFile);
+}
+int stdUnlink(const wchar_t* pFile)
+{
+	return _wunlink(pFile);
+}
+template<class C>
+int stdUnlink(const std::basic_string<C>& file)
+{
+	return stdUnlink(file.c_str());
+}
+
+FILE* stdOpenFile(const char* pFile, const char* pMode)
+{
+	return fopen(pFile, pMode);
+}
+FILE* stdOpenFile(const wchar_t* pFile, const wchar_t* pMode)
+{
+	return _wfopen(pFile, pMode);
+}
+
+template<class C>
+bool stdCreateCompleteDirectory(const C* pDir)
+{
+	if (!pDir || !pDir[0])
+		return false;
+	if (stdDirectoryExists(pDir))
+		return true;
+	stdCreateCompleteDirectory(stdGetParentDirectory(pDir));
+	return stdMkDir(pDir) == 0;
+};
+template<class S>
+bool stdCreateCompleteDirectory(const S& dir)
+{
+	return stdCreateCompleteDirectory(dir.c_str());
+}
+template<class C>
+
+bool stdRemoveCompleteDirectory(const C* pDir)
+{
+	if (!pDir || !pDir[0])
+		return false;
+	if (!stdDirectoryExists(pDir))
+		return true;
+	std::vector<std::basic_string<C>> allDirs = stdGetFiles(
+		pDir, 
+		FILEITERATEMODE::SKIP_DOT_AND_DOTDOT,
+		GETFILESEMODE::DIRECTORY);
+
+	int success = 0;
+	auto fRemoveAll = [&]() {
+		for (auto&& d : allDirs)
+		{
+			if (0 == stdRmDir(d))
+				++success;
+		}
+	};
+	for (;;)
+	{
+		success = 0;
+		fRemoveAll();
+		if (success == 0)
+			break;
+	}
+
+	return !stdDirectoryExists(pDir) || 0 == stdRmDir(pDir);
+};
+template<class S>
+bool stdRemoveCompleteDirectory(const S& dir)
+{
+	return stdRemoveCompleteDirectory(dir.c_str());
+}
+
+template<class C>
+bool stdWriteAllText(const C* pFile, const unsigned char* pContent, size_t size,
+	bool bCreateDir = false)
+{
+	using S = std::basic_string<C>;
+	if (!pFile || !pFile[0])
+		return false;
+	if (bCreateDir)
+	{
+		if(!stdCreateCompleteDirectory(stdGetParentDirectory(pFile)))
+			return false;
+	}
+	std::unique_ptr<FILE, std::function<int(FILE*)>> file(
+		stdOpenFile(pFile, 
+			stdLiterals<C>::
+#ifdef _WIN32
+			FileModeWriteByte()
+#else
+			FileModeWrite()
+#endif
+		), fclose);
+	if (file.get() == nullptr)
+		return false;
+	size_t written = fwrite(pContent, sizeof(unsigned char), size, file.get());
+	return written == size;
+}
+template<class C>
+bool stdWriteAllText(const std::basic_string<C>& file, const unsigned char* pContent, size_t size,
+	bool bCreateDir = false)
+{
+	return stdWriteAllText(file.c_str(), pContent, size, bCreateDir);
+}
+TEST(stdosd, stdCreateCompleteDirectoryText)
+{
+
+	{
+		const SYSTEM_CHAR_TYPE* pDir = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/aaa/bb/c/d/e/f/g");
+		EXPECT_TRUE(stdCreateCompleteDirectory(pDir));
+		EXPECT_TRUE(stdDirectoryExists(pDir));
+		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
+	}
+	{
+		const SYSTEM_CHAR_TYPE* pDir = STDOSD_SYSTEM_CHAR_LITERAL("/kowa");
+		EXPECT_TRUE(stdCreateCompleteDirectory(pDir));
+		EXPECT_TRUE(stdDirectoryExists(pDir));
+		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
+	}
+}
+TEST(stdosd, stdDirectoryEmptyTest)
+{
+	const SYSTEM_CHAR_TYPE* pDir = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir");
+	const SYSTEM_CHAR_TYPE* pFile = STDOSD_SYSTEM_CHAR_LITERAL("file.txt");
+	using S = std::basic_string<SYSTEM_CHAR_TYPE>;
+
+	{
+		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
+		S dir = pDir;
+		EXPECT_EQ(0, stdMkDir(dir));
+		EXPECT_TRUE(stdDirectoryExists(dir));
+		EXPECT_TRUE(stdDirectoryEmpty(dir));
+
+		EXPECT_EQ(0, stdRmDir(dir));
+	}
+
+	{
+		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
+		S dir = pDir;
+		// check
+		EXPECT_FALSE(stdDirectoryExists(dir));
+		EXPECT_TRUE(stdDirectoryEmpty(dir));
+		
+		// create file
+		EXPECT_EQ(0, stdMkDir(dir));
+		S file = stdCombinePath(dir, pFile);
+		EXPECT_TRUE(stdWriteAllText(file, (unsigned char*)"aaa", 3));
+
+		// check file creation
+		EXPECT_TRUE(stdFileExists(file));
+
+		// check it is not empty
+		EXPECT_FALSE(stdDirectoryEmpty(dir));
+
+		// delete file
+		EXPECT_EQ(0, stdUnlink(file));
+
+		// check
+		EXPECT_FALSE(stdFileExists(file));
+		EXPECT_TRUE(stdDirectoryEmpty(dir));
+
+		EXPECT_EQ(0, stdRmDir(dir)); 
+	}
+}
+TEST(stdosd, stdGetFileCountTest)
+{
+	using S = std::basic_string<SYSTEM_CHAR_TYPE>;
+	const SYSTEM_CHAR_TYPE* pFile1 = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/file1.txt");
+	const SYSTEM_CHAR_TYPE* pFile2 = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/dir2/file2.txt");
+	const SYSTEM_CHAR_TYPE* pFile3 = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/dir2/file3.txt");
+
+	// depth = 1
+	{
+		EXPECT_TRUE(stdRemoveCompleteDirectory(stdGetParentDirectory(pFile1)));
+
+		EXPECT_TRUE(stdWriteAllText(pFile1, (unsigned char*)"aaa", 3, true));
+
+		// check file creation
+		EXPECT_TRUE(stdFileExists(pFile1));
+		EXPECT_EQ(1, stdGetFileCount(stdGetParentDirectory(pFile1)));
+
+		// delete file
+		EXPECT_EQ(0, stdUnlink(pFile1));
+
+		// check
+		EXPECT_EQ(0, stdGetFileCount(stdGetParentDirectory(pFile1)));
+		EXPECT_EQ(0, stdRmDir(stdGetParentDirectory(pFile1)));
+	}
+	// depth = 2
+	{
+		EXPECT_TRUE(stdRemoveCompleteDirectory(stdGetParentDirectory(pFile1)));
+
+		// check
+		EXPECT_EQ(0U, stdGetFileCount(pFile1));
+
+		// create file
+		EXPECT_TRUE(stdWriteAllText(pFile1, (unsigned char*)"aaa", 3, true));
+		EXPECT_TRUE(stdWriteAllText(pFile2, (unsigned char*)"aaa", 3, true));
+		EXPECT_TRUE(stdWriteAllText(pFile3, (unsigned char*)"aaa", 3, true));
+
+		// check file creation
+		EXPECT_TRUE(stdFileExists(pFile1));
+		EXPECT_TRUE(stdFileExists(pFile2));
+		EXPECT_TRUE(stdFileExists(pFile3));
+		
+		EXPECT_EQ(3, stdGetFileCount(stdGetParentDirectory(pFile1)));
+
+		// delete file
+		EXPECT_EQ(0, stdUnlink(pFile1));
+		EXPECT_EQ(0, stdUnlink(pFile2));
+		EXPECT_EQ(0, stdUnlink(pFile3));
+		
+		// check
+		EXPECT_EQ(0, stdGetFileCount(stdGetParentDirectory(pFile1)));
+		EXPECT_TRUE(stdRemoveCompleteDirectory(stdGetParentDirectory(pFile1)));
 	}
 }

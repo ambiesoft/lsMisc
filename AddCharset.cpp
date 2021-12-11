@@ -26,6 +26,8 @@
 
 #include "addCharset.h"
 
+#include "DebugNew.h"
+
 namespace Ambiesoft {
 	bool addCharset(_bstr_t& bstrHtml)
 	{

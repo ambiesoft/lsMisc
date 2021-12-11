@@ -36,6 +36,7 @@
 #include <Shlobj.h>
 #include <Shellapi.h>
 #include <io.h>
+#include "DebugNew.h"
 #include "XBrowseForFolder.h"
 
 #pragma warning(disable: 4127)	// conditional expression is constant (_ASSERTE)

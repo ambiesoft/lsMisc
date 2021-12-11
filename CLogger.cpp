@@ -21,12 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <tchar.h>
 #include <string>
 #include <time.h>
@@ -35,10 +29,9 @@
 #include "../lsMisc/UTF16toUTF8.h"
 
 #include "tstring.h"
-
 #include "CLogger.h"
 
-
+#include "DebugNew.h"
 
 namespace Ambiesoft {
 

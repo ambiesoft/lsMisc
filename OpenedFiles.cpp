@@ -18,7 +18,7 @@
 #include <algorithm>
 #include <sstream>
 #include <vector>
-
+#include "DebugNew.h"
 #include "OpenedFiles.h"
 // #include "stlScopedClear.h"
 #include "CHandle.h"

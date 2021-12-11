@@ -28,7 +28,7 @@
 
 
 #include <windows.h>
-
+#include "DebugNew.h"
 #include "ConfirmErrorRetry.h"
 
 namespace Ambiesoft {

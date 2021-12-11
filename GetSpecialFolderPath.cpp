@@ -43,7 +43,7 @@
 #pragma message("including shlobj.h")
 #include <Shlobj.h>
 #endif
-
+#include "DebugNew.h"
 #include "tstring.h"
 #include "GetSpecialFolderPath.h"
 

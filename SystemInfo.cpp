@@ -28,6 +28,7 @@
 #include <Windows.h>
 #include <process.h>
 #include <tchar.h>
+#include "DebugNew.h"
 #include "SystemInfo.h"
 
 // #include "stdwin32\stdwin32.h"

@@ -21,19 +21,13 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
-
 #include <Windows.h>
 #include <tchar.h>
 #include <vector>
 #include <string>
 #include <algorithm>
 
+#include "DebugNew.h"
 #include "CommandLineParser.h"
 
 #if defined(_WIN32) && defined(_MSC_VER)

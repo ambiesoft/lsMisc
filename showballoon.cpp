@@ -36,6 +36,8 @@
 #include <shlwapi.h>
 #include <Objbase.h>
 #include <string>
+
+#include "DebugNew.h"
 using namespace std;
 
 #include "showballoon.h"

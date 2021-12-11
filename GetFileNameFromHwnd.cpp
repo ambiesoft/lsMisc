@@ -8,7 +8,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <tlhelp32.h>
-
+#include "DebugNew.h"
 #include "GetFileNameFromHwnd.h"
 
 // warning C4996: 'GetVersionExW': was declared deprecated

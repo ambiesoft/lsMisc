@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
+#include "DebugNew.h"
 #include "stdosd/stdosd.h"
 
 #include "ExpandPath.h"

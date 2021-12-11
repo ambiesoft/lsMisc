@@ -35,7 +35,7 @@
 
 #include <algorithm>
 #include <memory>
-
+#include "DebugNew.h"
 #include "SHMoveFile.h"
 
 #include "CreateShortcutFile.h"

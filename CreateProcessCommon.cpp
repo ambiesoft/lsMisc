@@ -31,7 +31,7 @@
 #include <tchar.h>
 
 #include <string>
-
+#include "DebugNew.h"
 #include "stdosd/stdosd.h"
 #include "tstring.h"
 

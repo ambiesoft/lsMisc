@@ -32,7 +32,7 @@
 #include <wininet.h>
 #include <urlhist.h>
 #include <shlguid.h>
-
+#include "DebugNew.h"
 #pragma comment(lib,"Wininet.lib")
 
 BOOL DeleteIECache(BOOL bNormal, BOOL bCookie, BOOL bHistory) 

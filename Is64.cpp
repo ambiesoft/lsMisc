@@ -8,7 +8,7 @@
 
 #include <Windows.h>
 
-
+#include "DebugNew.h"
 #include "Is64.h"
 
 namespace Ambiesoft {

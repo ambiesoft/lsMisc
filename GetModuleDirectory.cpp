@@ -29,6 +29,7 @@
 
 #include <windows.h>
 #include <tchar.h>
+#include "DebugNew.h"
 #include "tstring.h"
 #include "GetModuleDirectory.h"
 #include "GetDirFromPath.h"

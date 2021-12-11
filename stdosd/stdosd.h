@@ -57,14 +57,9 @@
     #include <stdint.h>
 #endif
 
+#include "../DebugNew.h"
+
 #include "stdosd_literal.h"
-
-#define STDOSD_WCHARLITERAL_INNER(x) L ## x
-#define STDOSD_WCHARLITERAL(x) STDOSD_WCHARLITERAL_INNER(x)
-
-#define STDOSD_CHAR16TLITERAL_INNER(x) u ## x
-#define STDOSD_CHAR16TLITERAL(x) STDOSD_CHAR16TLITERAL_INNER(x)
-
 
 #define STDOSD_UNUSED(x) (void)x;
 
@@ -422,8 +417,6 @@ namespace Ambiesoft {
 
 			if (!pPath || pPath[0] == 0)
 				return mys();
-
-			
 
 			mys s(pPath);
 			size_t len = s.size();
@@ -1133,6 +1126,7 @@ namespace Ambiesoft {
 				SKIP_NONE = 0x0,
 				SKIP_DOT = 0x1,
 				SKIP_DOTDOT = 0x2,
+				SKIP_DOT_AND_DOTDOT = SKIP_DOT | SKIP_DOTDOT,
 			};
 		private:
 			using U = typename std::underlying_type<Type>::type;
@@ -1163,13 +1157,11 @@ namespace Ambiesoft {
         HFILEITERATOR stdCreateFileIterator(
 			const std::string& directory,
 			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
-			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
 			int depth = -1);
 #ifdef _WIN32
 		HFILEITERATOR stdCreateFileIterator(
 			const std::wstring& directory,
 			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
-			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
 			int depth = -1);
 #endif
 		namespace detail {
@@ -1627,6 +1619,11 @@ namespace Ambiesoft {
             return _wstat(file, &buffer) == 0 && stdFileExistsFromMode(buffer.st_mode);
 		}
 #endif
+		template<class C>
+		inline bool stdFileExists(const std::basic_string<C>& file)
+		{
+			return stdFileExists(file.c_str());
+		}
 
 		template<typename C>
 		inline bool stdDirectoryExists(const C* folder)
@@ -1647,6 +1644,16 @@ namespace Ambiesoft {
 		{
 			struct _stat  buffer;
 			return _wstat(folder, &buffer) == 0 && (S_IFDIR & buffer.st_mode) != 0;
+		}
+#endif
+		inline bool stdDirectoryExists(const std::basic_string<char>& path)
+		{
+			return stdDirectoryExists(path.c_str());
+		}
+#ifdef _WIN32
+		inline bool stdDirectoryExists(const std::basic_string<wchar_t>& path)
+		{
+			return stdDirectoryExists(path.c_str());
 		}
 #endif
 
@@ -1863,6 +1870,12 @@ namespace Ambiesoft {
 #endif
 
 		inline std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> stdGetFiles(
+			const std::basic_string<SYSTEM_CHAR_TYPE>& directory,
+			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
+			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
+			int depth = -1);
+
+		inline std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> stdGetFiles(
 			const SYSTEM_CHAR_TYPE* pDirectory,
 			FILEITERATEMODE fim = FILEITERATEMODE::SKIP_NONE,
 			GETFILESEMODE gfm = GETFILESEMODE::FILE_AND_DIRECTORY,
@@ -1872,32 +1885,53 @@ namespace Ambiesoft {
 			V ret;
 			if (depth == 0)
 				return ret;
-			HFILEITERATOR hIt = stdCreateFileIterator(pDirectory, fim, gfm);
+			HFILEITERATOR hIt = stdCreateFileIterator(pDirectory, fim);
 			if (!hIt)
 				return ret;
+
+			std::unique_ptr<void, std::function<bool(HFILEITERATOR)>> pFreer(hIt,
+				stdCloseFileIterator);
+
 			FileDirectoryInfo<SYSTEM_CHAR_TYPE> fi;
 			--depth;
 			while (stdFileNext(hIt, &fi))
 			{
 				if (fi.isDirectory())
 				{
-					ret.push_back(fi.name());
+					// This is done in stdFileNext
+					assert(!((fim & FILEITERATEMODE::SKIP_DOT) != 0 &&
+						fi.name() == stdLiterals<SYSTEM_CHAR_TYPE>::dotString()));
+					assert(!((fim & FILEITERATEMODE::SKIP_DOTDOT) != 0 &&
+						fi.name() == stdLiterals<SYSTEM_CHAR_TYPE>::dotdotString()));
+
+					if ((gfm & GETFILESEMODE::DIRECTORY) != 0)
+						ret.push_back(stdCombinePath(pDirectory, fi.name()));
 					if (depth != 0)
 					{
 						if (fi.name() != stdLiterals<SYSTEM_CHAR_TYPE>::dotString() &&
 							fi.name() != stdLiterals<SYSTEM_CHAR_TYPE>::dotdotString())
 						{
-							V v = stdGetFiles(fi.name().c_str(), fim, gfm, depth);
+							V v = stdGetFiles(stdCombinePath(pDirectory, fi.name()), 
+								fim, gfm, depth);
 							ret.insert(ret.end(), v.begin(), v.end());
 						}
 					}
 				}
 				else
 				{
-					ret.push_back(fi.name());
+					if ((gfm & GETFILESEMODE::FILE) != 0)
+						ret.push_back(stdCombinePath(pDirectory, fi.name()));
 				}
 			}
 			return ret;
+		}
+		inline std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> stdGetFiles(
+			const std::basic_string<SYSTEM_CHAR_TYPE>& directory,
+			FILEITERATEMODE fim,
+			GETFILESEMODE gfm,
+			int depth)
+		{
+			return stdGetFiles(directory.c_str(), fim, gfm, depth);
 		}
 		inline bool stdDirectoryEmpty(const SYSTEM_CHAR_TYPE* pStr)
 		{
@@ -1907,10 +1941,53 @@ namespace Ambiesoft {
 				return false;
 			if (!stdDirectoryExists(pStr))
 				return true;
-			
-			std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> ret = stdGetFiles(pStr, FILEITERATEMODE::SKIP_NONE, GETFILESEMODE::FILE_AND_DIRECTORY, 1);
+
+			std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> ret =
+				stdGetFiles(
+					pStr,
+					FILEITERATEMODE::SKIP_NONE,
+					GETFILESEMODE::FILE_AND_DIRECTORY,
+					1);
 			return ret.size() == 2;
 		}
+		inline bool stdDirectoryEmpty(const std::basic_string<SYSTEM_CHAR_TYPE>& str)
+		{
+			return stdDirectoryEmpty(str.c_str());
+		}
+
+		inline size_t stdGetFileCount(const SYSTEM_CHAR_TYPE* pStr)
+		{
+			if (pStr == nullptr || pStr[0] == 0)
+				return 0;
+			if (stdFileExists(pStr))
+				return 0;
+			if (!stdDirectoryExists(pStr))
+				return 0;
+
+			std::vector<std::basic_string<SYSTEM_CHAR_TYPE>> ret =
+				stdGetFiles(
+					pStr,
+					FILEITERATEMODE::SKIP_DOT | FILEITERATEMODE::SKIP_DOTDOT,
+					GETFILESEMODE::FILE,
+					-1);
+			return ret.size();
+		}
+		inline size_t stdGetFileCount(const std::basic_string<SYSTEM_CHAR_TYPE>& str)
+		{
+			return stdGetFileCount(str.c_str());
+		}
+		// Todo this stdGetFiles must be templated,
+// but linux implementation of FileFind is tired
+//		inline bool stdDirectoryEmpty(const std::string& path)
+//		{
+//			return stdDirectoryEmpty(path.c_str());
+//		}
+//#ifdef _WIN32
+//		inline bool stdDirectoryEmpty(const std::string& path)
+//		{
+//			return stdDirectoryEmpty(path.c_str());
+//		}
+//#endif
 
 		template<typename C>
 		inline bool stdIsSubDirectory(const C* pParent, const C* pSub)

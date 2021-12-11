@@ -30,6 +30,7 @@
 
 #include <tchar.h>
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsTextFileExtension.h"
 
 BOOL IsTextFileExtension(LPCTSTR lpcExtention)

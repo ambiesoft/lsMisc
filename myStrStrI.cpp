@@ -31,7 +31,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <string.h>
-
+#include "DebugNew.h"
 #include "myStrStrI.h"
 
 static TCHAR myToLowSimple(TCHAR t)

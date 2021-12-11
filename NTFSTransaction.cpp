@@ -26,6 +26,7 @@
 #include <ktmw32.h>
 #include <vector>
 #include <string>
+#include "DebugNew.h"
 #include "CHandle.h"
 #include "NTFSTransaction.h"
 

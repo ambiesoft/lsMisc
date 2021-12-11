@@ -31,7 +31,7 @@
 #include <Commctrl.h>
 
 #include <vector>
-
+#include "DebugNew.h"
 #include "GetSelItems.h"
 
 BOOL GetSelItems(HWND hWndList, std::vector<int>& nSelItems)

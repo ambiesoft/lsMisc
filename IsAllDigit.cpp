@@ -30,7 +30,7 @@
 
 #include <windows.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 #include "IsAllDigit.h"
 
 BOOL IsAllDigit(LPCTSTR lpText)

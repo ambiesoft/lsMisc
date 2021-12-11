@@ -31,7 +31,7 @@
 #include <tchar.h>
 #include <shlwapi.h>
 #pragma comment(lib, "shlwapi.lib")
-
+#include "DebugNew.h"
 #include "tstring.h"
 #include "GetUnexistingFile.h"
 

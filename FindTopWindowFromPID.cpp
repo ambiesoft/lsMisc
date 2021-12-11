@@ -7,7 +7,7 @@
 #include <set>
 
 #include <windows.h>
-
+#include "DebugNew.h"
 #include "FindTopWindowFromPID.h"
 
 using namespace std;

@@ -31,6 +31,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <assert.h>
+#include "DebugNew.h"
 #include "RemoveLastInValidURLChar.h"
 
 BOOL RemoveLastInValidURLChar(LPTSTR lpString)

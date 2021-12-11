@@ -49,7 +49,7 @@
 #pragma warning(disable: 4091)
 #include <ShlObj.h>
 #pragma warning(pop)
-
+#include "DebugNew.h"
 #include "GetSpecialFolderPath.h"
 #include "CreateFolderIniPath.h"
 #include "CreateCompleteDirectory.h"

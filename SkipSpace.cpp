@@ -30,7 +30,7 @@
 
 #include <tchar.h>
 #include <windows.h>
-
+#include "DebugNew.h"
 #include "SkipSpace.h"
 
 LPCTSTR SkipSpace(LPCTSTR p)

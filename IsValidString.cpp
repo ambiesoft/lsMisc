@@ -29,6 +29,7 @@
 
 
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsValidString.h"
 
 BOOL IsValidString(LPCTSTR lpsz, int nLength)

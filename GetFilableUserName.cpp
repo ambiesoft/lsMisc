@@ -30,6 +30,7 @@
 
 #include <windows.h>
 #include <tchar.h>
+#include "DebugNew.h"
 #include "GetFilableUserName.h"
 #include "MakeFilenamable.h"
 

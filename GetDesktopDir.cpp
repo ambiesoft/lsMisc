@@ -35,7 +35,7 @@
 #include <shlwapi.h>
 
 #pragma comment(lib, "shlwapi.lib")
-
+#include "DebugNew.h"
 #include "GetDesktopDir.h"
 
 BOOL GetDesktopDir(LPTSTR lpBuf, DWORD dwSize)

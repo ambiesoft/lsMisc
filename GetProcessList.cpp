@@ -31,6 +31,8 @@
 #include <windows.h>
 #include <tlhelp32.h>
 #include <vector>
+
+#include "DebugNew.h"
 #include "GetProcessList.h"
 
 

@@ -27,7 +27,7 @@
 #include <ShlObj.h>
 
 // #include "stlScopedClear.h"
-
+#include "DebugNew.h"
 #include "SetFileOntoClipboard.h"
 
 namespace Ambiesoft {

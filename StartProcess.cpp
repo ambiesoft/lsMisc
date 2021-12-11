@@ -29,6 +29,7 @@
 
 #include <windows.h>
 #include <tchar.h>
+#include "DebugNew.h"
 #include "StartProcess.h"
 
 #pragma comment(lib, "shell32.lib")

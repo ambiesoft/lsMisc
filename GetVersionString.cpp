@@ -1,6 +1,7 @@
 
 #include <string>
 #include <memory>
+#include "DebugNew.h"
 #include "tchar.h"
 #include "GetVersionString.h"
 

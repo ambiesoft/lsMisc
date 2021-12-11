@@ -31,7 +31,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <vector>
-
+#include "DebugNew.h"
 #define WAITWINDOW_CLASS _T("WaitWindowClass")
 
 namespace Ambiesoft

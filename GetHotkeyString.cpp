@@ -25,6 +25,7 @@
 
 #include <windows.h>
 #include <CommCtrl.h>
+#include "DebugNew.h"
 #include "GetHotkeyString.h"
 
 using namespace std;

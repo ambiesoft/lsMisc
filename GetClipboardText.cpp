@@ -28,6 +28,7 @@
 
 
 #include <windows.h>
+#include "DebugNew.h"
 #include "tstring.h"
 
 #include "UTF16toUTF8.h"

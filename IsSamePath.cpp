@@ -28,7 +28,7 @@
 
 
 #include <windows.h>
-
+#include "DebugNew.h"
 #include "IsSamePath.h"
 
 static BOOL isnullpath(LPCTSTR p)

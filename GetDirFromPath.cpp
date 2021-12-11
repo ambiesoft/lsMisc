@@ -38,7 +38,7 @@
 #include <malloc.h>
 #include <shlwapi.h>
 #include <tchar.h>
-
+#include "DebugNew.h"
 #include "GetDirFromPath.h"
 #pragma comment(lib,"shlwapi.lib")
 

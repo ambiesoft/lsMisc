@@ -49,7 +49,7 @@
 #ifdef _DEBUG
 #include <cassert>
 #endif
-
+#include "DebugNew.h"
 #include "UTF16toUTF8.h"
 #include "UrlEncode.h"
 

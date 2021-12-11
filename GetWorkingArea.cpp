@@ -27,7 +27,7 @@
 
 
 #include <windows.h>
-
+#include "DebugNew.h"
 BOOL GetWorkingArea(HWND h,RECT* pRetRect)
 {
 	if(!h)

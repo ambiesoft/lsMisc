@@ -28,6 +28,7 @@
 
 
 #include <windows.h>
+#include "DebugNew.h"
 #include "IsFileExists.h"
 #include "CreateWString.h"
 
