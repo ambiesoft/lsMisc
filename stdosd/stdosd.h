@@ -38,7 +38,10 @@
 #include <cstdarg>
 #include <cstdlib>
 #include <cstring>
+
 #include <wctype.h>
+#include <direct.h>
+#include <stdio.h>
 
 #ifdef _WIN32
     #include <Windows.h>
@@ -2015,6 +2018,147 @@ namespace Ambiesoft {
 			return stdIsSubDirectory(parent.c_str(), sub.c_str());
 		}
 
+		inline int stdMkDir(const char* pDir)
+		{
+			return _mkdir(pDir);
+		}
+		inline int stdMkDir(const wchar_t* pDir)
+		{
+			return _wmkdir(pDir);
+		}
+		template<class C>
+		int stdMkDir(const std::basic_string<C>& dir)
+		{
+			return stdMkDir(dir.c_str());
+		}
+
+		inline int stdRmDir(const char* pDir)
+		{
+			return _rmdir(pDir);
+		}
+		inline int stdRmDir(const wchar_t* pDir)
+		{
+			return _wrmdir(pDir);
+		}
+		template<class C>
+		int stdRmDir(const std::basic_string<C>& dir)
+		{
+			return stdRmDir(dir.c_str());
+		}
+
+		inline int stdUnlink(const char* pFile)
+		{
+			return _unlink(pFile);
+		}
+		inline int stdUnlink(const wchar_t* pFile)
+		{
+			return _wunlink(pFile);
+		}
+		template<class C>
+		int stdUnlink(const std::basic_string<C>& file)
+		{
+			return stdUnlink(file.c_str());
+		}
+
+		inline FILE* stdOpenFile(const char* pFile, const char* pMode)
+		{
+			FILE* f = nullptr;
+			if (0 != fopen_s(&f, pFile, pMode))
+				return nullptr;
+			return f;
+		}
+		inline FILE* stdOpenFile(const wchar_t* pFile, const wchar_t* pMode)
+		{
+			FILE* f = nullptr;
+			if (0 != _wfopen_s(&f, pFile, pMode))
+				return nullptr;
+			return f;
+		}
+
+		template<class C>
+		bool stdCreateCompleteDirectory(const C* pDir)
+		{
+			if (!pDir || !pDir[0])
+				return false;
+			if (stdDirectoryExists(pDir))
+				return true;
+			stdCreateCompleteDirectory(stdGetParentDirectory(pDir));
+			return stdMkDir(pDir) == 0;
+		};
+		template<class S>
+		bool stdCreateCompleteDirectory(const S& dir)
+		{
+			return stdCreateCompleteDirectory(dir.c_str());
+		}
+		template<class C>
+		inline bool stdRemoveCompleteDirectory(const C* pDir)
+		{
+			if (!pDir || !pDir[0])
+				return false;
+			if (!stdDirectoryExists(pDir))
+				return true;
+			std::vector<std::basic_string<C>> allDirs = stdGetFiles(
+				pDir,
+				FILEITERATEMODE::SKIP_DOT_AND_DOTDOT,
+				GETFILESEMODE::DIRECTORY);
+
+			int success = 0;
+			auto fRemoveAll = [&]() {
+				for (auto&& d : allDirs)
+				{
+					if (0 == stdRmDir(d))
+						++success;
+				}
+			};
+			for (;;)
+			{
+				success = 0;
+				fRemoveAll();
+				if (success == 0)
+					break;
+			}
+
+			return !stdDirectoryExists(pDir) || 0 == stdRmDir(pDir);
+		};
+		template<class S>
+		bool stdRemoveCompleteDirectory(const S& dir)
+		{
+			return stdRemoveCompleteDirectory(dir.c_str());
+		}
+
+		template<class C>
+		bool stdWriteAllText(const C* pFile, const unsigned char* pContent, size_t size,
+			bool bCreateDir = false)
+		{
+			using S = std::basic_string<C>;
+			if (!pFile || !pFile[0])
+				return false;
+			if (bCreateDir)
+			{
+				if (!stdCreateCompleteDirectory(stdGetParentDirectory(pFile)))
+					return false;
+			}
+			std::unique_ptr<FILE, std::function<int(FILE*)>> file(
+				stdOpenFile(pFile,
+					stdLiterals<C>::
+#ifdef _WIN32
+					FileModeWriteByte()
+#else
+					FileModeWrite()
+#endif
+				), fclose);
+			if (file.get() == nullptr)
+				return false;
+			size_t written = fwrite(pContent, sizeof(unsigned char), size, file.get());
+			return written == size;
+		}
+		template<class C>
+		bool stdWriteAllText(const std::basic_string<C>& file, const unsigned char* pContent, size_t size,
+			bool bCreateDir = false)
+		{
+			return stdWriteAllText(file.c_str(), pContent, size, bCreateDir);
+		}
+		// TODO: implement read
 	}
 }
 
