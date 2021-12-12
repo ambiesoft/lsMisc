@@ -2102,7 +2102,10 @@ namespace Ambiesoft {
 			return f;
 		}
 #endif
-        inline bool stdCreateCompleteDirectory(const std::basic_string<char>& dir);
+        inline bool stdCreateCompleteDirectory(const std::string& dir);
+#ifdef _WIN32
+		inline bool stdCreateCompleteDirectory(const std::wstring& dir);
+#endif
 		template<class C>
 		bool stdCreateCompleteDirectory(const C* pDir)
 		{
