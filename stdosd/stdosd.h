@@ -40,11 +40,11 @@
 #include <cstring>
 
 #include <wctype.h>
-#include <direct.h>
 #include <stdio.h>
 
 #ifdef _WIN32
     #include <Windows.h>
+    #include <direct.h>
 #endif
 #if defined(__GNUC__)
     #include <sys/types.h>
@@ -446,11 +446,12 @@ namespace Ambiesoft {
 		{
 			return stdGetParentDirectory(w.c_str(), bAddSeparator);
 		}
+#ifdef _WIN32
 		inline std::wstring stdGetParentDirectory(const std::wstring& w, bool bAddSeparator = false)
 		{
 			return stdGetParentDirectory(w.c_str(), bAddSeparator);
 		}
-
+#endif
 
 
 
@@ -2020,12 +2021,19 @@ namespace Ambiesoft {
 
 		inline int stdMkDir(const char* pDir)
 		{
-			return _mkdir(pDir);
+            return
+#ifdef _WIN32
+                    _mkdir(pDir);
+#else
+                    mkdir(pDir, 0777);
+#endif
 		}
+#ifdef _WIN32
 		inline int stdMkDir(const wchar_t* pDir)
 		{
 			return _wmkdir(pDir);
 		}
+#endif
 		template<class C>
 		int stdMkDir(const std::basic_string<C>& dir)
 		{
@@ -2034,12 +2042,19 @@ namespace Ambiesoft {
 
 		inline int stdRmDir(const char* pDir)
 		{
-			return _rmdir(pDir);
+            return
+#ifdef _WIN32
+                    _rmdir(pDir);
+#else
+                    rmdir(pDir);
+#endif
 		}
+#ifdef _WIN32
 		inline int stdRmDir(const wchar_t* pDir)
 		{
 			return _wrmdir(pDir);
 		}
+#endif
 		template<class C>
 		int stdRmDir(const std::basic_string<C>& dir)
 		{
@@ -2048,12 +2063,19 @@ namespace Ambiesoft {
 
 		inline int stdUnlink(const char* pFile)
 		{
-			return _unlink(pFile);
+            return
+#ifdef _WIN32
+                    _unlink(pFile);
+#else
+                    unlink(pFile);
+#endif
 		}
+#ifdef _WIN32
 		inline int stdUnlink(const wchar_t* pFile)
 		{
 			return _wunlink(pFile);
 		}
+#endif
 		template<class C>
 		int stdUnlink(const std::basic_string<C>& file)
 		{
@@ -2062,11 +2084,16 @@ namespace Ambiesoft {
 
 		inline FILE* stdOpenFile(const char* pFile, const char* pMode)
 		{
+#ifdef _WIN32
 			FILE* f = nullptr;
 			if (0 != fopen_s(&f, pFile, pMode))
 				return nullptr;
 			return f;
+#else
+            return fopen(pFile, pMode);
+#endif
 		}
+#ifdef _WIN32
 		inline FILE* stdOpenFile(const wchar_t* pFile, const wchar_t* pMode)
 		{
 			FILE* f = nullptr;
@@ -2074,7 +2101,8 @@ namespace Ambiesoft {
 				return nullptr;
 			return f;
 		}
-
+#endif
+        inline bool stdCreateCompleteDirectory(const std::basic_string<char>& dir);
 		template<class C>
 		bool stdCreateCompleteDirectory(const C* pDir)
 		{
@@ -2085,12 +2113,17 @@ namespace Ambiesoft {
 			stdCreateCompleteDirectory(stdGetParentDirectory(pDir));
 			return stdMkDir(pDir) == 0;
 		};
-		template<class S>
-		bool stdCreateCompleteDirectory(const S& dir)
-		{
-			return stdCreateCompleteDirectory(dir.c_str());
-		}
-		template<class C>
+        inline bool stdCreateCompleteDirectory(const std::string& dir)
+        {
+            return stdCreateCompleteDirectory(dir.c_str());
+        }
+#ifdef _WIN32
+        inline bool stdCreateCompleteDirectory(const std::wstring& dir)
+        {
+            return stdCreateCompleteDirectory(dir.c_str());
+        }
+#endif
+        template<class C>
 		inline bool stdRemoveCompleteDirectory(const C* pDir)
 		{
 			if (!pDir || !pDir[0])

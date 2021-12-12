@@ -140,34 +140,84 @@ namespace Ambiesoft {
             return bytesWritten;
         }
 #endif
+
+        class CFileIteratorInternal
+        {
+            DIR* dir_ = nullptr;
+            FILEITERATEMODE itmode_;
+        public:
+            CFileIteratorInternal(DIR* dir, FILEITERATEMODE itmode) :
+                dir_(dir), itmode_(itmode){}
+            ~CFileIteratorInternal() {
+                Close();
+            }
+            DIR* dir() const {
+                return dir_;
+            }
+            bool Close() {
+                if(!dir_)
+                    return false;
+                bool ret = closedir(dir_)==0;
+                dir_=nullptr;
+                return ret;
+            }
+            bool IsIterateDot() const {
+                return (itmode_ & FILEITERATEMODE::SKIP_DOT)==0;
+            }
+            bool IsIterateDotDot() const {
+                return (itmode_ & FILEITERATEMODE::SKIP_DOTDOT)==0;
+            }
+        };
+
         HFILEITERATOR stdCreateFileIterator(
             const std::string& directory,
             FILEITERATEMODE fim,
-            GETFILESEMODE gfm,
             int depth)
         {
-            return (HFILEITERATOR)opendir(directory.c_str());
+            DIR* dir=opendir(directory.c_str());
+            if(!dir)
+                return nullptr;
+            return (HFILEITERATOR)(new CFileIteratorInternal(dir, fim));
         }
 
 
 
 
         namespace detail {
-            bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileInfo<char>* fi)
+            bool IsDot(const char* pName)
+            {
+                if(!pName || !pName[0])
+                    return false;
+                return pName[0]=='.' && pName[1]==0;
+            }
+            bool IsDotDot(const char* pName)
+            {
+                if(!pName || !pName[0] || !pName[1])
+                    return false;
+                return pName[0]=='.' && pName[1]=='.' && pName[2]==0;
+            }
+            bool stdFileNextImpl(HFILEITERATOR hFileIterator, FileDirectoryInfo<char>* fi)
             {
                 if(hFileIterator==nullptr)
                     return false;
-                DIR* dir = (DIR*)hFileIterator;
+                CFileIteratorInternal* fit = (CFileIteratorInternal*)hFileIterator;
                 unique_ptr<struct dirent64> dirEnt(new struct dirent64);
                 struct dirent64* pResult = nullptr;
-                if(0 != readdir64_r(dir, dirEnt.get(), &pResult) || pResult==nullptr)
+                if(0 != readdir64_r(fit->dir(), dirEnt.get(), &pResult) || pResult==nullptr)
                 {
                     return false;
                 }
 
                 const bool isDir = (pResult->d_type & DT_DIR) != 0;
                 off_t size=0;
-                if(!isDir)
+                if(isDir)
+                {
+                    if(!fit->IsIterateDot() && IsDot(pResult->d_name))
+                        return stdFileNextImpl(hFileIterator, fi);
+                    if(!fit->IsIterateDotDot() && IsDotDot(pResult->d_name))
+                        return stdFileNextImpl(hFileIterator, fi);
+                }
+                else
                 {
                     struct stat64 st;
                     st.st_size = 0;
@@ -183,7 +233,12 @@ namespace Ambiesoft {
         }
         bool stdCloseFileIterator(HFILEITERATOR hFileIterator)
         {
-            return 0==closedir((DIR*)hFileIterator);
+            CFileIteratorInternal* fit = (CFileIteratorInternal*)hFileIterator;
+            if(!fit)
+                return false;
+            bool ret = fit->Close();
+            delete fit;
+            return ret;
         }
 
         namespace detail {

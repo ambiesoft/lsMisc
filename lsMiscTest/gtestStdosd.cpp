@@ -1222,12 +1222,12 @@ TEST(stdosd, stdCreateCompleteDirectoryText)
 		EXPECT_TRUE(stdDirectoryExists(pDir));
 		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
 	}
-	{
-		const SYSTEM_CHAR_TYPE* pDir = STDOSD_SYSTEM_CHAR_LITERAL("/kowa");
-		EXPECT_TRUE(stdCreateCompleteDirectory(pDir));
-		EXPECT_TRUE(stdDirectoryExists(pDir));
-		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
-	}
+//	{
+//		const SYSTEM_CHAR_TYPE* pDir = STDOSD_SYSTEM_CHAR_LITERAL("/kowa");
+//		EXPECT_TRUE(stdCreateCompleteDirectory(pDir));
+//		EXPECT_TRUE(stdDirectoryExists(pDir));
+//		EXPECT_TRUE(stdRemoveCompleteDirectory(pDir));
+//	}
 }
 TEST(stdosd, stdDirectoryEmptyTest)
 {
