@@ -286,11 +286,13 @@ namespace Ambiesoft {
 			virtual void setTrue() = 0;
 			virtual void setParsedValue(const MyS_& mys, const bool bStrict) = 0;
 			virtual void setTarget(void*) = 0;
+			virtual ~UserTargetBase() {}
 		};
 		template<class T>
 		class UserTarget : public UserTargetBase
 		{
 		public:
+
 		private:
 			static void setValue(bool* pB, const MyS_& mys, const bool bSrict)
 			{
