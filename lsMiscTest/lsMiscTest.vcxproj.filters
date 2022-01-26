@@ -495,13 +495,7 @@
     <ClInclude Include="..\BasicScopeOutHandler.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\CBool.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\ChangeDirPos.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\CInt.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\CLogger.h">
@@ -688,9 +682,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\StartProcess.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\stlScopedClear.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\stringEndwith.h">

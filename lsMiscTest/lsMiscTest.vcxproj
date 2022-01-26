@@ -956,7 +956,6 @@
     <ClInclude Include="..\AnyCloser.h" />
     <ClInclude Include="..\BasicScopeOutHandler.h" />
     <ClInclude Include="..\BrowseFolder.h" />
-    <ClInclude Include="..\CBool.h" />
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeDirPos.h" />
     <ClInclude Include="..\DebugNew.h" />
@@ -965,7 +964,6 @@
     <ClInclude Include="..\GetLocalPathFromNetPath.h" />
     <ClInclude Include="..\GetUnreparsePath.h" />
     <ClInclude Include="..\MakeFilenamable.h" />
-    <ClInclude Include="..\CInt.h" />
     <ClInclude Include="..\CLogger.h" />
     <ClInclude Include="..\CommandLineParser.h" />
     <ClInclude Include="..\CommandLineString.h" />
@@ -1060,7 +1058,6 @@
     <ClInclude Include="..\stdosd\stdosd.h" />
     <ClInclude Include="..\stdosd\stdosd_literal.h" />
     <ClInclude Include="..\stdwin32\stdwin32.h" />
-    <ClInclude Include="..\stlScopedClear.h" />
     <ClInclude Include="..\stop_watch.h" />
     <ClInclude Include="..\stringEndwith.h" />
     <ClInclude Include="..\SystemInfo.h" />
