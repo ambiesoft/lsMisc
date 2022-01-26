@@ -21,12 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-#pragma warning(disable:4786)
-#include "stdafx.h"
-#pragma warning(disable:4786)
-
-
-
 #ifndef _WINDOWS_
 #pragma message("including windows.h")
 #include <windows.h>

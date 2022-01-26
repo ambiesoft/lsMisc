@@ -1,5 +1,7 @@
 ﻿
-#include "pch.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 void showErrorAndExit(const char* pMessage, int retval = 1)
 {

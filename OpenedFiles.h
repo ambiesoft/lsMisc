@@ -1,6 +1,6 @@
 
 #pragma once
-
+#include <string>
 #include <Windows.h>
 
 #ifndef _VECTOR_

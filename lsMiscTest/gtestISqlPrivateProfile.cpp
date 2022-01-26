@@ -1,7 +1,6 @@
-﻿#include "stdafx.h"
+﻿
 
 #include <Shlwapi.h>
-
 #include <string>
 
 #include "gtest/gtest.h"

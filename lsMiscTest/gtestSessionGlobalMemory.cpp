@@ -1,8 +1,7 @@
-#include "stdafx.h"
+
 #include <string>
-
+#include <Shlwapi.h>
 #include "gtest/gtest.h"
-
 
 #include "../SessionGlobalMemory/SessionGlobalMemory.h"
 #include "../stdosd/stdosd.h"

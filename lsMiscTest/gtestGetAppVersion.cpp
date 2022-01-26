@@ -1,6 +1,6 @@
-#include "stdafx.h"
-#include <string>
 
+#include <string>
+#include <Shlwapi.h>
 #include "gtest/gtest.h"
 
 #include "../RunCommandGetResult.h"

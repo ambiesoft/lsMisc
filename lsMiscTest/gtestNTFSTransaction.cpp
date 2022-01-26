@@ -1,10 +1,10 @@
-#include "stdafx.h"
 
 #include <vector>
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <Shlwapi.h>
 
 #include "gtest/gtest.h"
 

@@ -1,8 +1,7 @@
-#include "stdafx.h"
+
 #include <string>
 
 #include "gtest/gtest.h"
-
 
 #include "../RunCommandGetResult.h"
 #include "../CloseConsoleWin.h"

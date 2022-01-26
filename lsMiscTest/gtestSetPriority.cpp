@@ -1,4 +1,5 @@
-﻿#include "stdafx.h"
+﻿
+#include <Windows.h>
 #include <tchar.h>
 #include <string>
 #include <gtest/gtest.h>

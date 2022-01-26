@@ -1,6 +1,7 @@
-﻿#include "stdafx.h"
+﻿
 #include <tchar.h>
 #include <string>
+#include <Shlwapi.h>
 #include <gtest/gtest.h>
 
 #include "../../SessionGlobalMemory/SessionGlobalMemory.h"

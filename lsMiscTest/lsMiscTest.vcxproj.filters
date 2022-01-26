@@ -323,7 +323,6 @@
     <ClCompile Include="..\GetWindowTstring.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="gtestOpParser.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
@@ -765,9 +764,6 @@
     </ClInclude>
     <ClInclude Include="..\GetWindowTstring.h">
       <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="StdAfx.h">
-      <Filter>GTest Files\Header</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>GTest Files\Header</Filter>

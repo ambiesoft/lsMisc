@@ -1,5 +1,4 @@
 
-#include "stdafx.h"
 #include <string>
 #include <limits>
 #include <gtest/gtest.h>

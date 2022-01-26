@@ -27,9 +27,6 @@
     <ClInclude Include="GetOpenFileTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\GetOpenFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>

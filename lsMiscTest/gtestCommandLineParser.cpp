@@ -1,5 +1,4 @@
-#include "stdafx.h"
-//#include <afx.h>
+
 #include <tchar.h>
 #include <iostream>
 #include <sstream>
