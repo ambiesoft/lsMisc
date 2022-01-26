@@ -3,6 +3,7 @@ Debug/
 Release/
 lsMiscTest.sdf
 TESTDIR/
+build/
 
 stdosd.pro.user.4.8-pre1
 *.aps
