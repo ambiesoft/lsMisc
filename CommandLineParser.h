@@ -73,19 +73,27 @@ namespace Ambiesoft {
 	{
 		std::wstring s_;
 		mutable std::string buff_;
+
+		std::wstring getErrorString() const {
+			std::wstringstream ss;
+			ss << s_ << L" is not " << typeid(I).name();
+			return ss.str();
+		}
 	public:
 		explicit illegal_value_type_error(const std::wstring& s)
 			: s_(s) {}
+
 
 		virtual const char* what() const
 #if defined(__MINGW32__) || defined(__GNUC__)
 			_GLIBCXX_USE_NOEXCEPT
 #endif
 		{
-			std::wstringstream ss;
-			ss << s_ << L" is not " << typeid(I).name();
-			buff_ = toStdAcpString(ss.str());
+			buff_ = toStdAcpString(getErrorString());
 			return buff_.c_str();
+		}
+		std::wstring wwhat() const {
+			return getErrorString();
 		}
 	};
 
