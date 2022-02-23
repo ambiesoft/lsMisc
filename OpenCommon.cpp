@@ -55,7 +55,7 @@ namespace Ambiesoft {
 
 	BOOL OpenCommonW(HWND hWnd,
 		LPCWSTR pApp,
-		LPCWSTR pCommand,
+		LPCWSTR pArg,
 		LPCWSTR pDirectory,
 		HANDLE* pPHandle,
 		LPCWSTR pVerb)
@@ -74,7 +74,7 @@ namespace Ambiesoft {
 
 		sei.hwnd = hWnd;
 		sei.lpFile = pApp;
-		sei.lpParameters = pCommand;
+		sei.lpParameters = pArg;
 		sei.lpDirectory = pDirectory;
 		sei.nShow = SW_SHOW;
 		sei.lpVerb = pVerb;
@@ -90,7 +90,7 @@ namespace Ambiesoft {
 
 	BOOL OpenCommonA(HWND hWnd,
 		LPCSTR pApp,
-		LPCSTR pCommand,
+		LPCSTR pArg,
 		LPCSTR pDirectory,
 		HANDLE* pPHandle,
 		LPCSTR pVerb)
@@ -107,7 +107,7 @@ namespace Ambiesoft {
 
 		sei.hwnd = hWnd;
 		sei.lpFile = pApp;
-		sei.lpParameters = pCommand;
+		sei.lpParameters = pArg;
 		sei.lpDirectory = pDirectory;
 		sei.nShow = SW_SHOW;
 		sei.lpVerb = pVerb;

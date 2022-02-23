@@ -29,14 +29,14 @@ namespace Ambiesoft {
 	BOOL OpenCommonW(
 		HWND hWnd,
 		LPCWSTR pApp,
-		LPCWSTR pCommand = NULL,
+		LPCWSTR pArg = NULL,
 		LPCWSTR pDirectory = NULL,
 		HANDLE* pPHandle = NULL,
 		LPCWSTR pVerb = NULL);
 	BOOL OpenCommonA(
 		HWND hWnd,
 		LPCSTR pApp,
-		LPCSTR pCommand = NULL,
+		LPCSTR pArg = NULL,
 		LPCSTR pDirectory = NULL,
 		HANDLE* pPHandle = NULL,
 		LPCSTR pVerb = NULL);
@@ -44,7 +44,7 @@ namespace Ambiesoft {
 	inline BOOL OpenCommon(
 		HWND hWnd,
 		LPCTSTR pApp,
-		LPCTSTR pCommand = NULL,
+		LPCTSTR pArg = NULL,
 		LPCTSTR pDirectory = NULL,
 		HANDLE* pPHandle = NULL,
 		LPCTSTR pVerb = NULL)
@@ -56,7 +56,7 @@ namespace Ambiesoft {
 #endif
 			hWnd,
 			pApp,
-			pCommand,
+			pArg,
 			pDirectory,
 			pPHandle,
 			pVerb);
