@@ -1326,3 +1326,20 @@ TEST(stdosd, stdGetFileCountTest)
 		EXPECT_TRUE(stdRemoveCompleteDirectory(stdGetParentDirectory(pFile1)));
 	}
 }
+
+TEST(stdosd, stdHasVideoFileExtension)
+{
+	EXPECT_FALSE(stdHasVideoFileExtension("mp4"));
+	EXPECT_TRUE(stdHasVideoFileExtension(".mp4"));
+	EXPECT_TRUE(stdHasVideoFileExtension("aaa.mp4"));
+	EXPECT_FALSE(stdHasVideoFileExtension(".txt"));
+	EXPECT_FALSE(stdHasVideoFileExtension("aaa.txt"));
+	EXPECT_TRUE(stdHasVideoFileExtension(".\\xxx\\aaa.mp4"));
+
+	EXPECT_FALSE(stdHasVideoFileExtension(L"mp4"));
+	EXPECT_TRUE(stdHasVideoFileExtension(L".mp4"));
+	EXPECT_TRUE(stdHasVideoFileExtension(L"aaa.mp4"));
+	EXPECT_FALSE(stdHasVideoFileExtension(L".txt"));
+	EXPECT_FALSE(stdHasVideoFileExtension(L"aaa.txt"));
+	EXPECT_TRUE(stdHasVideoFileExtension(L".\\xxx\\aaa.mp4"));
+}

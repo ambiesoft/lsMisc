@@ -205,7 +205,7 @@ namespace Ambiesoft {
 
 		inline bool isCharEqual(const char* left, const char* right, bool ignoreCase=false) {
 			// Linux GNU C dose not have _strcmpi
-			return ignoreCase ? myStrCaseCmp(left,right)==0 : strcmp(left, right) == 0;
+			return ignoreCase? myStrCaseCmp(left,right)==0 : strcmp(left, right) == 0;
 		}
 		inline bool isCharEqual(const wchar_t* left, const wchar_t* right, bool ignoreCase = false) {
 			return ignoreCase ? myStrCaseCmpW(left,right)==0 : wcscmp(left, right) == 0;
@@ -2195,6 +2195,34 @@ namespace Ambiesoft {
 			return stdWriteAllText(file.c_str(), pContent, size, bCreateDir);
 		}
 		// TODO: implement read
+
+		template<class C>
+		std::basic_string<C> stdCharToString(C c)
+		{
+			return std::basic_string<C>(1, c);
+		}
+
+		template<class C>
+		bool stdHasVideoFileExtension(const C* file)
+		{
+			using S = std::basic_string<C>;
+			S ext = stdGetFileExtension(file);
+			ext = stdTrimStart(ext, stdLiterals<C>::dotString());
+			for (auto&& e : stdSplitString(
+				stdLiterals<C>::VideoFileExtensions(),
+				stdCharToString(stdLiterals<C>::NSemiColon)))
+			{
+				if (isCharEqual(e.c_str(), ext.c_str(), true))
+					return true;
+			}
+			return false;
+		}
+		template<class C>
+		bool stdHasVideoFileExtension(std::basic_string<C>& file)
+		{
+			return stdHasVideoFileExtension(file.c_str());
+		}
+
 	}
 }
 
