@@ -931,3 +931,32 @@ TEST(CommandLineParser, BoolAsValue)
 	}
 
 }
+
+TEST(CommandLineParser, EndWithArgOne)
+{
+	CCommandLineParser parser;
+	parser.setStrict();
+
+	bool isDesktop = false;
+	parser.AddOption(L"-desktop", 0, &isDesktop,
+		ArgEncodingFlags::ArgEncodingFlags_Default,
+		L"Monitor Desktop directory");
+
+	bool isSound = false;
+	parser.AddOptionRange({ L"-s",L"--sound" },
+		ArgCount::ArgCount_One,
+		&isSound,
+		ArgEncodingFlags::ArgEncodingFlags_Default,
+		L"Plays sound on notification. '0', 'off' or 'no' to disable it.");
+
+	// EXPECT_THROW(parser.Parse(L"aaa.exe -desktop -s"), no_value_error<wstring>);
+	try
+	{
+		parser.Parse(L"aaa.exe -desktop -s");
+		EXPECT_TRUE(false);
+	}
+	catch (no_value_error<wstring>& ex)
+	{
+		EXPECT_STREQ(ex.wwhat().c_str(), L"option '-s' must have value.");
+	}
+}

@@ -97,6 +97,83 @@ namespace Ambiesoft {
 		}
 	};
 
+
+
+
+
+
+
+
+
+	template <class T>
+	class no_value_error;
+	template <>
+	class no_value_error<std::string> : public std::exception
+	{
+		std::string op_;
+		mutable std::string buff_;
+	public:
+		explicit no_value_error(const std::string& op)
+			: op_(op) {}
+
+		virtual const char* what() const
+#if defined(__MINGW32__) || defined(__GNUC__)
+			_GLIBCXX_USE_NOEXCEPT
+#endif
+		{
+			std::stringstream ss;
+			ss << "option '" << op_ << "' must have value.";
+			buff_ = ss.str();
+			return buff_.c_str();
+		}
+	};
+	template <>
+	class no_value_error<std::wstring> : public std::exception
+	{
+		std::wstring op_;
+		mutable std::string buff_;
+
+		std::wstring getErrorString() const {
+			std::wstringstream ss;
+			ss << "option '" << op_ << "' must have value.";
+			return ss.str();
+		}
+	public:
+		explicit no_value_error(const std::wstring& op)
+			: op_(op) {}
+
+
+		virtual const char* what() const
+#if defined(__MINGW32__) || defined(__GNUC__)
+			_GLIBCXX_USE_NOEXCEPT
+#endif
+		{
+			buff_ = toStdAcpString(getErrorString());
+			return buff_.c_str();
+		}
+		std::wstring wwhat() const {
+			return getErrorString();
+		}
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	inline static unsigned int AtoI(const std::string& s)
 	{
 		return atoi(s.c_str());
@@ -1281,6 +1358,10 @@ typedef BasicOption<std::string> COptionA;
 				++i;
 				if (i >= argc)
 				{
+					if (strict_)
+					{
+						throw no_value_error<MyS_>(targv[i-1]);
+					}
 					return i;
 				}
 
