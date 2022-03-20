@@ -130,4 +130,25 @@ namespace Ambiesoft {
 		return GetRealOSVersion(10, 0, false);
 	}
 
+	bool IsWindows11OrAbove()
+	{
+		HMODULE hDll = LoadLibrary(TEXT("Ntdll.dll"));
+		typedef NTSTATUS(CALLBACK* RTLGETVERSION) (PRTL_OSVERSIONINFOW lpVersionInformation);
+		RTLGETVERSION pRtlGetVersion;
+		pRtlGetVersion = (RTLGETVERSION)GetProcAddress(hDll, "RtlGetVersion");
+		if (pRtlGetVersion)
+		{
+			RTL_OSVERSIONINFOW ovi = { 0 };
+			ovi.dwOSVersionInfoSize = sizeof(ovi);
+			NTSTATUS ntStatus = pRtlGetVersion(&ovi);
+			if (ntStatus == 0)
+			{
+				//TCHAR wsBuffer[512];
+				//wsprintf(wsBuffer, TEXT("Major Version : %d - Minor Version : %d - Build Number : %d\r\n"), ovi.dwMajorVersion, ovi.dwMinorVersion, ovi.dwBuildNumber);
+				//OutputDebugString(wsBuffer);
+				return ovi.dwMajorVersion >= 10 && ovi.dwBuildNumber >= 22000;
+			}
+		}
+		return false;
+	}
 }

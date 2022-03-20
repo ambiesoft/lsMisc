@@ -283,6 +283,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\IsWindowsVersion.cpp" />
     <ClCompile Include="..\MakeFilenamable.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -867,6 +868,7 @@
     <ClCompile Include="gtestGetLocalPathFromNetPath.cpp" />
     <ClCompile Include="gtestGetUnreparsePath.cpp" />
     <ClCompile Include="gtestISqlPrivateProfile.cpp" />
+    <ClCompile Include="gtestIsWindowsVersion.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
     <ClCompile Include="gtestNTFSTransaction.cpp" />
     <ClCompile Include="gtestRunCommandGetResult.cpp" />
@@ -963,6 +965,7 @@
     <ClInclude Include="..\GetBackupFile.h" />
     <ClInclude Include="..\GetLocalPathFromNetPath.h" />
     <ClInclude Include="..\GetUnreparsePath.h" />
+    <ClInclude Include="..\IsWindowsVersion.h" />
     <ClInclude Include="..\MakeFilenamable.h" />
     <ClInclude Include="..\CLogger.h" />
     <ClInclude Include="..\CommandLineParser.h" />

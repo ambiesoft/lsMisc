@@ -37,4 +37,6 @@ namespace Ambiesoft {
 
 	bool IsWindows10OrAbove();
 	bool IsWindows10OrBelow();
+
+	bool IsWindows11OrAbove();
 }

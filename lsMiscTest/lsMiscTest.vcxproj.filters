@@ -448,6 +448,12 @@
     <ClCompile Include="..\DebugNew.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
+    <ClCompile Include="gtestIsWindowsVersion.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\IsWindowsVersion.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -827,6 +833,9 @@
     </ClInclude>
     <ClInclude Include="..\DebugNew.h">
       <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsWindowsVersion.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
