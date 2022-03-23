@@ -2166,7 +2166,6 @@ namespace Ambiesoft {
 		bool stdWriteAllText(const C* pFile, const unsigned char* pContent, size_t size,
 			bool bCreateDir = false)
 		{
-			using S = std::basic_string<C>;
 			if (!pFile || !pFile[0])
 				return false;
 			if (bCreateDir)
