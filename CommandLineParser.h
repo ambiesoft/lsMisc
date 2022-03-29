@@ -1159,17 +1159,25 @@ typedef BasicOption<std::string> COptionA;
 			assert(parsed_);
 
 			MyS_ ret;
-                        
 			for (typename POPTIONARRAY::const_iterator it = unknowns_.begin(); it != unknowns_.end(); ++it)
 			{
+				if (!ret.empty())
+					addspace(ret);
 				ret += (*it)->getFirstOption();
 				if ((*it)->hadValue())
 				{
-					ret += TEXT(" ");
+					addspace(ret);
 					ret += (*it)->getValueStrings();
 				}
 			}
 			return ret;
+		}
+		MyS_ getFirstUnknowOptionString() const
+		{
+			assert(parsed_);
+			if (unknowns_.empty())
+				return MyS_();
+			return unknowns_[0]->getFirstOption();
 		}
 		bool hadUnknownOption() const
 		{

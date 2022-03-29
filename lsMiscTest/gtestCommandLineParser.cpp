@@ -960,3 +960,49 @@ TEST(CommandLineParser, EndWithArgOne)
 		EXPECT_STREQ(ex.wwhat().c_str(), L"option '-s' must have value.");
 	}
 }
+
+TEST(CommandLineParser, UnknowOptions)
+{
+	{
+		const wchar_t* const argv[] = {
+			L"exe.exe",
+			L"-h",
+			NULL
+		};
+
+		CCommandLineParser parser;
+
+		bool bV = false;
+		parser.AddOption(L"-v", ArgCount::ArgCount_Zero, &bV);
+
+		size_t argc = _countof(argv) - 1;
+
+		parser.Parse(argc, argv);
+		EXPECT_TRUE(parser.hadUnknownOption());
+		EXPECT_STREQ(L"-h", parser.getUnknowOptionStrings().c_str());
+	}
+	{
+		const wchar_t* const argv[] = {
+			L"exe.exe",
+			L"-v",
+			L"-wait",
+			L"3",
+			NULL
+		};
+
+		CCommandLineParser parser;
+
+		bool bV = false;
+		parser.AddOption(L"-v", ArgCount::ArgCount_Zero, &bV);
+
+		int nWait = 0;
+		parser.AddOption(L"--wait", ArgCount::ArgCount_One, &nWait);
+
+		size_t argc = _countof(argv) - 1;
+
+		parser.Parse(argc, argv);
+		EXPECT_TRUE(parser.hadUnknownOption());
+		EXPECT_STREQ(L"-wait", parser.getFirstUnknowOptionString().c_str());
+		EXPECT_STREQ(L"-wait 3", parser.getUnknowOptionStrings().c_str());
+	}
+}
