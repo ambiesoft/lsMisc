@@ -164,6 +164,9 @@ namespace Ambiesoft {
 		std::string getName() const {
 			return m_pName;
 		}
+		std::string getMapName() const {
+			return m_pNameFileMap;
+		}
 	protected:
 
 		void init(const char* pName) {
