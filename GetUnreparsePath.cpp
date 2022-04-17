@@ -33,8 +33,8 @@ namespace Ambiesoft {
 
         if (dwFileSizeLo == 0 && dwFileSizeHi == 0)
         {
-            _tprintf(TEXT("Cannot map a file with a length of zero.\n"));
-            return FALSE;
+            // _tprintf(TEXT("Cannot map a file with a length of zero.\n"));
+            return wstring();
         }
 
         // Create a file mapping object.
@@ -128,7 +128,7 @@ namespace Ambiesoft {
             return path;
         }
         wstring ret = GetUnreparsePath(file);
-        return ret.empty() ? path : ret;
+        return ret.empty() || !PathFileExists(ret.c_str()) ? path : ret;
     }
     vector<wstring> GetUnreparsePath(const vector<wstring>& paths)
     {
