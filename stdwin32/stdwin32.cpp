@@ -248,60 +248,60 @@ namespace Ambiesoft {
 
 
 
-		std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath)
-		{
-			std::vector<std::wstring> ret;
+		//std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath)
+		//{
+		//	std::vector<std::wstring> ret;
 
-			LPCWSTR p = pPath;
-			std::wstring cur;
-			bool inq = false;
-			for (; *p; ++p)
-			{
-				if (inq)
-				{
-					if (*p == '\"')
-					{
-						if (!cur.empty())
-						{
-							ret.push_back(cur);
-							cur = L"";
-						}
-						inq = false;
-					}
-					else
-					{
-						cur += *p;
-					}
-				}
-				else
-				{ // not inq
-					if (*p == '\"')
-					{
-						inq = true;
-					}
-					else if (*p == L';')
-					{
-						if (!cur.empty())
-						{
-							ret.push_back(cur);
-							cur = L"";
-						}
-					}
-					else
-					{
-						cur += *p;
-					}
-				}
-			}
+		//	LPCWSTR p = pPath;
+		//	std::wstring cur;
+		//	bool inq = false;
+		//	for (; *p; ++p)
+		//	{
+		//		if (inq)
+		//		{
+		//			if (*p == '\"')
+		//			{
+		//				if (!cur.empty())
+		//				{
+		//					ret.push_back(cur);
+		//					cur = L"";
+		//				}
+		//				inq = false;
+		//			}
+		//			else
+		//			{
+		//				cur += *p;
+		//			}
+		//		}
+		//		else
+		//		{ // not inq
+		//			if (*p == '\"')
+		//			{
+		//				inq = true;
+		//			}
+		//			else if (*p == L';')
+		//			{
+		//				if (!cur.empty())
+		//				{
+		//					ret.push_back(cur);
+		//					cur = L"";
+		//				}
+		//			}
+		//			else
+		//			{
+		//				cur += *p;
+		//			}
+		//		}
+		//	}
 
-			if (!cur.empty())
-			{
-				ret.push_back(cur);
-				cur = L"";
-			}
+		//	if (!cur.empty())
+		//	{
+		//		ret.push_back(cur);
+		//		cur = L"";
+		//	}
 
-			return ret;
-		}
+		//	return ret;
+		//}
 
 
 

@@ -63,23 +63,24 @@ namespace Ambiesoft {
 
 #endif // _WIN32 __GNUC__
 
-
-
 #if defined(_MSC_VER) || defined(__MINGW32__)
-    #define STDOSD_DEFAULTSEPARATOR "\\"
-    #define STDOSD_PATHSEPARATORS "/\\"
-    #define STDOSD_NEWLINE "\r\n"
-    #define STDOSD_ENVPATHSEPARATORS ";"
+	#define STDOSD_DEFAULTSEPARATOR "\\"
+	#define STDOSD_PATHSEPARATORS "/\\"
+	#define STDOSD_NEWLINE "\r\n"
+	#define STDOSD_ENVPATHSEPARATORS ";"
+	#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
+	#define STDOSD_IS_CASESENSITIVE false
 #else
-    #define STDOSD_DEFAULTSEPARATOR "/"
-    #define STDOSD_PATHSEPARATORS "/"
-    #define STDOSD_NEWLINE "\n"
-    #define STDOSD_ENVPATHSEPARATORS ":"
+	#define STDOSD_DEFAULTSEPARATOR "/"
+	#define STDOSD_PATHSEPARATORS "/"
+	#define STDOSD_NEWLINE "\n"
+	#define STDOSD_ENVPATHSEPARATORS ":"
+	#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
+	#define STDOSD_IS_CASESENSITIVE true
 #endif
 
         template<typename C>
 		struct stdLiterals;
-
 
 #define STRUCT_STDLITERALS(CHTYPE) template<>								\
 		struct stdLiterals<CHTYPE>											\

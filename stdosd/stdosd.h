@@ -45,6 +45,8 @@
 #ifdef _WIN32
     #include <Windows.h>
     #include <direct.h>
+	#include <tchar.h>
+	#include <mbstring.h>
 #endif
 #if defined(__GNUC__)
     #include <sys/types.h>
@@ -95,60 +97,44 @@
 #define stdosd_min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
 
-
-
-#if defined(_MSC_VER) || defined(__MINGW32__)
-#define STDOSD_DEFAULTSEPARATOR "\\"
-#define STDOSD_PATHSEPARATORS "/\\"
-#define STDOSD_NEWLINE "\r\n"
-#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
-#define STDOSD_IS_CASESENSITIVE false
-#else
-#define STDOSD_DEFAULTSEPARATOR "/"
-#define STDOSD_PATHSEPARATORS "/"
-#define STDOSD_NEWLINE "\n"
-#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
-#define STDOSD_IS_CASESENSITIVE true
-#endif
-
 namespace Ambiesoft {
-    namespace stdosd {
+	namespace stdosd {
 
 #ifdef _WIN32
-        using SYSTEM_CHAR_TYPE = wchar_t;
+		using SYSTEM_CHAR_TYPE = wchar_t;
 #else
-        using SYSTEM_CHAR_TYPE = char;
+		using SYSTEM_CHAR_TYPE = char;
 #endif
-        using osdstring = std::basic_string<SYSTEM_CHAR_TYPE>;
+		using osdstring = std::basic_string<SYSTEM_CHAR_TYPE>;
 
-        typedef void* HFILEITERATOR;
+		typedef void* HFILEITERATOR;
 		template<typename C>
-        class FileDirectoryInfo
-        {
-            unsigned long long size_ = 0;
-            std::basic_string<C> name_;
+		class FileDirectoryInfo
+		{
+			unsigned long long size_ = 0;
+			std::basic_string<C> name_;
 			std::basic_string<C> path_;
-            bool isDir_ = false;
-        public:
-            unsigned long long size() const {
-                return size_;
-            }
+			bool isDir_ = false;
+		public:
+			unsigned long long size() const {
+				return size_;
+			}
 			std::basic_string<C> name() const {
-                return name_;
-            }
-            bool isDirectory() const {
-                return isDir_;
-            }
+				return name_;
+			}
+			bool isDirectory() const {
+				return isDir_;
+			}
 
-            void setAll(bool isDir,
-                        const std::basic_string<C>& name,
-                        const unsigned long long& size)
-            {
-                isDir_ = isDir;
-                name_ = name;
-                size_=size;
-            }
-        };
+			void setAll(bool isDir,
+				const std::basic_string<C>& name,
+				const unsigned long long& size)
+			{
+				isDir_ = isDir;
+				name_ = name;
+				size_ = size;
+			}
+		};
 
 		// Use in for loop
 		class IsBetweenLoop
@@ -203,12 +189,12 @@ namespace Ambiesoft {
 		}
 #endif
 
-		inline bool isCharEqual(const char* left, const char* right, bool ignoreCase=false) {
+		inline bool isCharEqual(const char* left, const char* right, bool ignoreCase = false) {
 			// Linux GNU C dose not have _strcmpi
-			return ignoreCase? myStrCaseCmp(left,right)==0 : strcmp(left, right) == 0;
+			return ignoreCase ? myStrCaseCmp(left, right) == 0 : strcmp(left, right) == 0;
 		}
 		inline bool isCharEqual(const wchar_t* left, const wchar_t* right, bool ignoreCase = false) {
-			return ignoreCase ? myStrCaseCmpW(left,right)==0 : wcscmp(left, right) == 0;
+			return ignoreCase ? myStrCaseCmpW(left, right) == 0 : wcscmp(left, right) == 0;
 		}
 
 		inline bool isCharEqualN(const char* left, const char* right, size_t len, bool ignoreCase = false) {
@@ -234,7 +220,7 @@ namespace Ambiesoft {
 			if (isEmptyString(str, len))
 				return false;
 
-            if (len == static_cast<size_t>(-1))
+			if (len == static_cast<size_t>(-1))
 				len = stdStringLength(str);
 
 			for (size_t i = 0; i < len; ++i)
@@ -271,7 +257,7 @@ namespace Ambiesoft {
 			if (isEmptyString(str, len))
 				return false;
 
-            if (len == static_cast<size_t>(-1))
+			if (len == static_cast<size_t>(-1))
 				len = stdStringLength(str);
 
 			for (size_t i = 0; i < len; ++i)
@@ -290,7 +276,37 @@ namespace Ambiesoft {
 			return stdIsTdigit(s.c_str(), s.size());
 		}
 
-	
+#if defined(_MSC_VER) || defined(__MINGW32__)
+		inline char* stdIncCharPtr(const char* p)
+		{
+			return (char*)_mbsinc((const unsigned char*)p);
+		}
+		inline wchar_t* stdIncCharPtr(const wchar_t* p)
+		{
+			return _wcsinc(p);
+		}
+		
+		inline bool stdIsLeadChar(const char* p)
+		{
+			return _ismbslead((const unsigned char*)p, (const unsigned char*)p) == -1;
+		}
+		inline bool stdIsLeadChar(const wchar_t* p)
+		{
+			return false;
+		}
+#else
+		template<typename C>
+		C* stdIncCharPtr(const C* p)
+		{
+			return ++p;
+		}
+
+		template<typename C>
+		bool stdIsLeadChar(const C* p)
+		{
+			return false;
+		}
+#endif
 
 		inline const wchar_t* getRChar(const wchar_t* p, wchar_t c)
 		{
@@ -2222,6 +2238,74 @@ namespace Ambiesoft {
 			return stdHasVideoFileExtension(file.c_str());
 		}
 
+		template<class C>
+		std::vector<std::basic_string<C>> stdSplitEnvPath(const C* pPaths, const C sep)
+		{
+			std::vector<std::basic_string<C>> ret;
+
+			const C* p = pPaths;
+			std::basic_string<C> cur;
+			bool inq = false;
+			for (; *p; ++p)
+			{
+				if (stdIsLeadChar(p))
+				{
+					cur += *p;
+					++p;
+					cur += *p;
+					continue;
+				}
+
+				if (inq)
+				{
+					if (*p == stdLiterals<C>::NDoubleQuote)
+					{
+						if (!cur.empty())
+						{
+							ret.push_back(cur);
+							cur = std::basic_string<C>();
+						}
+						inq = false;
+					}
+					else
+					{
+						cur += *p;
+					}
+				}
+				else
+				{ // not inq
+					if (*p == stdLiterals<C>::NDoubleQuote)
+					{
+						inq = true;
+					}
+					else if (*p == sep)
+					{
+						if (!cur.empty())
+						{
+							ret.push_back(cur);
+							cur = std::basic_string<C>();
+						}
+					}
+					else
+					{
+						cur += *p;
+					}
+				}
+			}
+
+			if (!cur.empty())
+			{
+				ret.push_back(cur);
+				cur = std::basic_string<C>();
+			}
+
+			return ret;
+		}
+		template<class C>
+		std::vector<std::basic_string<C>> stdSplitEnvPath(const std::basic_string<C>& paths, const C sep)
+		{
+			return stdSplitEnvPath(paths.c_str(), sep);
+		}
 	}
 }
 

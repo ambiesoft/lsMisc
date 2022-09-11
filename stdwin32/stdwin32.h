@@ -116,7 +116,8 @@ namespace Ambiesoft {
 		//std::wstring stdGetFileExtension(LPCWSTR pPath);
 		//std::wstring stdGetFileExtension(const std::wstring& w);
 
-		std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
+		// moved to stdosd::stdSplitEnvPath
+		//std::vector<std::wstring> stdSplitSCedPath(LPCWSTR pPath);
 
 
 
