@@ -290,7 +290,7 @@ namespace Ambiesoft {
 		{
 			return _ismbslead((const unsigned char*)p, (const unsigned char*)p) == -1;
 		}
-		inline bool stdIsLeadChar(const wchar_t* p)
+		inline bool stdIsLeadChar(const wchar_t*)
 		{
 			return false;
 		}
