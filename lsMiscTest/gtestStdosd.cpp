@@ -1345,14 +1345,33 @@ TEST(stdosd, stdHasVideoFileExtension)
 
 TEST(stdosd, stdSplitEnvPath)
 {
-	{
-		const char* p = "C:\\aaa\\bbb\\ccc;S:\\xxx\\yyy\\zzz";
-		vector<string> ret = stdSplitEnvPath(p, ';');
+    {
+        const char* p = "C:\\aaa\\bbb\\ccc;S:\\xxx\\yyy\\zzz";
+        vector<string> ret = stdSplitEnvPath(p, ';');
         EXPECT_EQ(ret.size(), 2U);
-		EXPECT_STREQ(ret[0].c_str(), "C:\\aaa\\bbb\\ccc");
-		EXPECT_STREQ(ret[1].c_str(), "S:\\xxx\\yyy\\zzz");
-	}
+        EXPECT_STREQ(ret[0].c_str(), "C:\\aaa\\bbb\\ccc");
+        EXPECT_STREQ(ret[1].c_str(), "S:\\xxx\\yyy\\zzz");
+    }
 
+    // double quoted
+    {
+        const char* p = "C:\\aaa\\bbb\\ccc;\"D:\\a a a\\b b b\\ c c c\";S:\\xxx\\yyy\\zzz";
+        vector<string> ret = stdSplitEnvPath(p, ';');
+        EXPECT_EQ(ret.size(), 3U);
+        EXPECT_STREQ(ret[0].c_str(), "C:\\aaa\\bbb\\ccc");
+        EXPECT_STREQ(ret[1].c_str(), "D:\\a a a\\b b b\\ c c c");
+        EXPECT_STREQ(ret[2].c_str(), "S:\\xxx\\yyy\\zzz");
+    }
+    {
+        const char* p = ".:/bin:/usr/bin";
+        vector<string> ret = stdSplitEnvPath(p, ':');
+        EXPECT_EQ(ret.size(), 3U);
+        EXPECT_STREQ(ret[0].c_str(), ".");
+        EXPECT_STREQ(ret[1].c_str(), "/bin");
+        EXPECT_STREQ(ret[2].c_str(), "/usr/bin");
+    }
+
+#ifdef _WIN32
 	if (GetACP() == 932)
 	{
 		const char* p = "C:\\" "\x82\xA0\x82\xA0" "bbb\\ccc;S:\\xxx\\yyy\\zzz";
@@ -1361,6 +1380,7 @@ TEST(stdosd, stdSplitEnvPath)
 		EXPECT_STREQ(ret[0].c_str(), "C:\\" "\x82\xA0\x82\xA0" "bbb\\ccc");
 		EXPECT_STREQ(ret[1].c_str(), "S:\\xxx\\yyy\\zzz");
 	}
+#endif
 	{
 		const wchar_t* p = L"C:\\aaa\\bbb\\ccc;S:\\xxx\\yyy\\zzz";
 		vector<wstring> ret = stdSplitEnvPath(p, L';');
