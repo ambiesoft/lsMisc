@@ -1275,7 +1275,6 @@ TEST(stdosd, stdDirectoryEmptyTest)
 }
 TEST(stdosd, stdGetFileCountTest)
 {
-	using S = std::basic_string<SYSTEM_CHAR_TYPE>;
 	const SYSTEM_CHAR_TYPE* pFile1 = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/file1.txt");
 	const SYSTEM_CHAR_TYPE* pFile2 = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/dir2/file2.txt");
 	const SYSTEM_CHAR_TYPE* pFile3 = STDOSD_SYSTEM_CHAR_LITERAL("./mytestdir/dir2/file3.txt");
@@ -1288,14 +1287,14 @@ TEST(stdosd, stdGetFileCountTest)
 
 		// check file creation
 		EXPECT_TRUE(stdFileExists(pFile1));
-		EXPECT_EQ(1, stdGetFileCount(stdGetParentDirectory(pFile1)));
+        EXPECT_EQ(1U, stdGetFileCount(stdGetParentDirectory(pFile1)));
 
 		// delete file
 		EXPECT_EQ(0, stdUnlink(pFile1));
 
 		// check
-		EXPECT_EQ(0, stdGetFileCount(stdGetParentDirectory(pFile1)));
-		EXPECT_EQ(0, stdRmDir(stdGetParentDirectory(pFile1)));
+        EXPECT_EQ(0U, stdGetFileCount(stdGetParentDirectory(pFile1)));
+        EXPECT_EQ(0, stdRmDir(stdGetParentDirectory(pFile1)));
 	}
 	// depth = 2
 	{
@@ -1314,7 +1313,7 @@ TEST(stdosd, stdGetFileCountTest)
 		EXPECT_TRUE(stdFileExists(pFile2));
 		EXPECT_TRUE(stdFileExists(pFile3));
 		
-		EXPECT_EQ(3, stdGetFileCount(stdGetParentDirectory(pFile1)));
+        EXPECT_EQ(3U, stdGetFileCount(stdGetParentDirectory(pFile1)));
 
 		// delete file
 		EXPECT_EQ(0, stdUnlink(pFile1));
@@ -1322,7 +1321,7 @@ TEST(stdosd, stdGetFileCountTest)
 		EXPECT_EQ(0, stdUnlink(pFile3));
 		
 		// check
-		EXPECT_EQ(0, stdGetFileCount(stdGetParentDirectory(pFile1)));
+        EXPECT_EQ(0U, stdGetFileCount(stdGetParentDirectory(pFile1)));
 		EXPECT_TRUE(stdRemoveCompleteDirectory(stdGetParentDirectory(pFile1)));
 	}
 }
@@ -1349,7 +1348,7 @@ TEST(stdosd, stdSplitEnvPath)
 	{
 		const char* p = "C:\\aaa\\bbb\\ccc;S:\\xxx\\yyy\\zzz";
 		vector<string> ret = stdSplitEnvPath(p, ';');
-		EXPECT_EQ(ret.size(), 2);
+        EXPECT_EQ(ret.size(), 2U);
 		EXPECT_STREQ(ret[0].c_str(), "C:\\aaa\\bbb\\ccc");
 		EXPECT_STREQ(ret[1].c_str(), "S:\\xxx\\yyy\\zzz");
 	}
@@ -1358,14 +1357,14 @@ TEST(stdosd, stdSplitEnvPath)
 	{
 		const char* p = "C:\\" "\x82\xA0\x82\xA0" "bbb\\ccc;S:\\xxx\\yyy\\zzz";
 		vector<string> ret = stdSplitEnvPath(p, ';');
-		EXPECT_EQ(ret.size(), 2);
+        EXPECT_EQ(ret.size(), 2U);
 		EXPECT_STREQ(ret[0].c_str(), "C:\\" "\x82\xA0\x82\xA0" "bbb\\ccc");
 		EXPECT_STREQ(ret[1].c_str(), "S:\\xxx\\yyy\\zzz");
 	}
 	{
 		const wchar_t* p = L"C:\\aaa\\bbb\\ccc;S:\\xxx\\yyy\\zzz";
 		vector<wstring> ret = stdSplitEnvPath(p, L';');
-		EXPECT_EQ(ret.size(), 2);
+        EXPECT_EQ(ret.size(), 2U);
 		EXPECT_STREQ(ret[0].c_str(), L"C:\\aaa\\bbb\\ccc");
 		EXPECT_STREQ(ret[1].c_str(), L"S:\\xxx\\yyy\\zzz");
 	}
