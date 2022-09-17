@@ -12,6 +12,7 @@ INCLUDEPATH += \
 
 SOURCES += \
     ../stdQt/stdQt.cpp \
+    ../stdosd/DetectVM.cpp \
     gtestStdQt.cpp \
     gtestStdosd_literal.cpp \
         main.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     ../stdQt/stdQt.h \
+    ../stdosd/DetectVM.h \
     ../stdosd/OpParser.h \
     ../stdosd/PathUtil.h \
     ../stdosd/stdosd.h \

@@ -19,6 +19,7 @@
 #include "../stdosd/stdosd.h"
 #include "../stdosd/CBool.h"
 #include "../stdosd/CNativeValue.h"
+#include "../stdosd/DetectVM.h"
 
 // Don't do this
 // #include "../stdwin32/stdwin32.h"
@@ -1388,4 +1389,12 @@ TEST(stdosd, stdSplitEnvPath)
 		EXPECT_STREQ(ret[0].c_str(), L"C:\\aaa\\bbb\\ccc");
 		EXPECT_STREQ(ret[1].c_str(), L"S:\\xxx\\yyy\\zzz");
 	}
+}
+
+TEST(stdosd, DetectVM)
+{
+    bool isVMWare = IsInsideVMWare();
+    bool isVPC = IsInsideVPC();
+
+    EXPECT_FALSE(isVMWare && isVPC);
 }
