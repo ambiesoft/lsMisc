@@ -271,12 +271,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\GetDlgItemText.cpp" />
     <ClCompile Include="..\GetLocalPathFromNetPath.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\GetShortPath.cpp" />
     <ClCompile Include="..\GetUnreparsePath.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -758,6 +760,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\stdosd\DetectVM.cpp" />
     <ClCompile Include="..\stdosd\PathUtil_win.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -782,7 +785,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\stdwin32\stdwin32.cpp" />
     <ClCompile Include="..\stringEndwith.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -885,7 +887,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="gtestStdwin32.cpp" />
     <ClCompile Include="gtestStdosd.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -963,7 +964,9 @@
     <ClInclude Include="..\DebugNew.h" />
     <ClInclude Include="..\FindTopWindowFromPID.h" />
     <ClInclude Include="..\GetBackupFile.h" />
+    <ClInclude Include="..\GetDlgItemText.h" />
     <ClInclude Include="..\GetLocalPathFromNetPath.h" />
+    <ClInclude Include="..\GetShortPath.h" />
     <ClInclude Include="..\GetUnreparsePath.h" />
     <ClInclude Include="..\IsWindowsVersion.h" />
     <ClInclude Include="..\MakeFilenamable.h" />
@@ -1054,13 +1057,13 @@
     <ClInclude Include="..\StartProcess.h" />
     <ClInclude Include="..\stdosd\CBool.h" />
     <ClInclude Include="..\stdosd\CNativeValue.h" />
+    <ClInclude Include="..\stdosd\DetectVM.h" />
     <ClInclude Include="..\stdosd\OpParser.h" />
     <ClInclude Include="..\stdosd\PathString.h" />
     <ClInclude Include="..\stdosd\PathUtil.h" />
     <ClInclude Include="..\stdosd\SetPrority.h" />
     <ClInclude Include="..\stdosd\stdosd.h" />
     <ClInclude Include="..\stdosd\stdosd_literal.h" />
-    <ClInclude Include="..\stdwin32\stdwin32.h" />
     <ClInclude Include="..\stop_watch.h" />
     <ClInclude Include="..\stringEndwith.h" />
     <ClInclude Include="..\SystemInfo.h" />

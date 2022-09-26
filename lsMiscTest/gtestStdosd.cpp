@@ -1393,8 +1393,10 @@ TEST(stdosd, stdSplitEnvPath)
 
 TEST(stdosd, DetectVM)
 {
+#if defined(_M_IX86)
     bool isVMWare = IsInsideVMWare();
     bool isVPC = IsInsideVPC();
 
     EXPECT_FALSE(isVMWare && isVPC);
+#endif
 }

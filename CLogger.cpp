@@ -24,7 +24,7 @@
 #include <tchar.h>
 #include <string>
 #include <time.h>
-#include "stdwin32/stdwin32.h"
+
 #include "stdosd/stdosd.h"
 #include "../lsMisc/UTF16toUTF8.h"
 
@@ -36,7 +36,6 @@
 namespace Ambiesoft {
 
 	using namespace Ambiesoft::stdosd;
-	using namespace stdwin32;
 	using namespace std;
 
 	HANDLE CLogger::m_hLog;

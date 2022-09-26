@@ -1,13 +1,11 @@
 
 #include "gtest/gtest.h"
 
-#include "../stdwin32/stdwin32.h"
 #include "../stdosd/stdosd.h"
 #include "../GetProcessList.h"
 
 using namespace Ambiesoft::stdosd;
 using namespace std;
-using namespace Ambiesoft::stdwin32;
 
 TEST(GetProcessList, Basic)
 {

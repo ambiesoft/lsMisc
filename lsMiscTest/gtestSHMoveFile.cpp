@@ -9,7 +9,6 @@
 
 #include "gtest/gtest.h"
 
-#include "../stdwin32/stdwin32.h"
 #include "../stdosd/stdosd.h"
 #include "../SHMoveFile.h"
 #include "../CreateCompleteDirectory.h"
@@ -19,7 +18,6 @@
 using namespace std;
 using namespace Ambiesoft;
 using namespace Ambiesoft::stdosd;
-using namespace stdwin32;
 
 #pragma comment(lib,"Rpcrt4.lib")
 

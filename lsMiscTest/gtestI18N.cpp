@@ -10,18 +10,14 @@
 #include <ostream>
 #include <fstream>
 
-#include "../stdwin32/stdwin32.h"
-using namespace Ambiesoft::stdwin32;
-
 #include "../UTF16toUTF8.h"
 #include "../I18N.h"
-using namespace Ambiesoft;
-
 #include "../stdosd/stdosd.h"
+
+using namespace Ambiesoft;
 using namespace Ambiesoft::stdosd;
 
 using namespace std;
-
 
 static void prepareLang()
 {

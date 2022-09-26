@@ -338,12 +338,6 @@
     <ClCompile Include="..\stdosd\stdosd.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
-    <ClCompile Include="..\stdwin32\stdwin32.cpp">
-      <Filter>stdwin32</Filter>
-    </ClCompile>
-    <ClCompile Include="gtestStdwin32.cpp">
-      <Filter>GTest Files</Filter>
-    </ClCompile>
     <ClCompile Include="prepare_vc.cpp" />
     <ClCompile Include="..\stdosd\SetPrority_win.cpp">
       <Filter>lsMisc\2 Source</Filter>
@@ -452,6 +446,15 @@
       <Filter>GTest Files</Filter>
     </ClCompile>
     <ClCompile Include="..\IsWindowsVersion.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\stdosd\DetectVM.cpp">
+      <Filter>stdosd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetShortPath.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetDlgItemText.cpp">
       <Filter>lsMisc</Filter>
     </ClCompile>
   </ItemGroup>
@@ -768,9 +771,6 @@
     <ClInclude Include="..\stdosd\stdosd.h">
       <Filter>stdosd</Filter>
     </ClInclude>
-    <ClInclude Include="..\stdwin32\stdwin32.h">
-      <Filter>stdwin32</Filter>
-    </ClInclude>
     <ClInclude Include="..\stdosd\SetPrority.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -835,6 +835,15 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\IsWindowsVersion.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\stdosd\DetectVM.h">
+      <Filter>stdosd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetShortPath.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetDlgItemText.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
@@ -865,9 +874,6 @@
     </Filter>
     <Filter Include="stdosd">
       <UniqueIdentifier>{a39e5bc3-9df5-4df4-a3da-c20d510600c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="stdwin32">
-      <UniqueIdentifier>{b4a4d252-35f6-4b84-ba17-5ecf1ab4cb99}</UniqueIdentifier>
     </Filter>
     <Filter Include="GTest Files\Header">
       <UniqueIdentifier>{47986b19-0e7d-47cc-9aa7-9fe4641e7537}</UniqueIdentifier>

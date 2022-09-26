@@ -35,6 +35,9 @@
 
 */
 
+
+#if defined(_M_IX86)
+
 #include <windows.h>
 
 // IsInsideVPC's exception filter
@@ -206,3 +209,5 @@ bool IsInsideVMWare()
   }
 }
 */
+
+#endif // #if defined(_M_IX86)

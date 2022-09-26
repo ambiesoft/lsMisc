@@ -3,12 +3,10 @@
 
 #include "gtest/gtest.h"
 
-#include "../stdwin32/stdwin32.h"
 #include "../OpenCommon.h"
 
 #include "../stdosd/stdosd.h"
 using namespace std;
-using namespace Ambiesoft::stdwin32;
 using namespace Ambiesoft::stdosd;
 using namespace Ambiesoft;
 
