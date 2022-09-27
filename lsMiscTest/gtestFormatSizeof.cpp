@@ -9,6 +9,7 @@
 #endif
 
 using namespace std;
+using namespace Ambiesoft;
 
 TEST(FormatSizeof, Basic)
 {

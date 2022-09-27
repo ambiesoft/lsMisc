@@ -285,6 +285,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\GetVolumeInfo.cpp" />
     <ClCompile Include="..\IsWindowsVersion.cpp" />
     <ClCompile Include="..\MakeFilenamable.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -869,6 +870,7 @@
     <ClCompile Include="gtestGetAppVersion.cpp" />
     <ClCompile Include="gtestGetLocalPathFromNetPath.cpp" />
     <ClCompile Include="gtestGetUnreparsePath.cpp" />
+    <ClCompile Include="gtestGetVolumeInfo.cpp" />
     <ClCompile Include="gtestISqlPrivateProfile.cpp" />
     <ClCompile Include="gtestIsWindowsVersion.cpp" />
     <ClCompile Include="gtestLocker.cpp" />
@@ -968,6 +970,7 @@
     <ClInclude Include="..\GetLocalPathFromNetPath.h" />
     <ClInclude Include="..\GetShortPath.h" />
     <ClInclude Include="..\GetUnreparsePath.h" />
+    <ClInclude Include="..\GetVolumeInfo.h" />
     <ClInclude Include="..\IsWindowsVersion.h" />
     <ClInclude Include="..\MakeFilenamable.h" />
     <ClInclude Include="..\CLogger.h" />

@@ -451,11 +451,17 @@
     <ClCompile Include="..\stdosd\DetectVM.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetShortPath.cpp">
+    <ClCompile Include="..\GetVolumeInfo.cpp">
       <Filter>lsMisc</Filter>
     </ClCompile>
     <ClCompile Include="..\GetDlgItemText.cpp">
-      <Filter>lsMisc</Filter>
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetShortPath.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGetVolumeInfo.cpp">
+      <Filter>GTest Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -840,11 +846,14 @@
     <ClInclude Include="..\stdosd\DetectVM.h">
       <Filter>stdosd</Filter>
     </ClInclude>
-    <ClInclude Include="..\GetShortPath.h">
+    <ClInclude Include="..\GetVolumeInfo.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
+    <ClInclude Include="..\GetShortPath.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
     <ClInclude Include="..\GetDlgItemText.h">
-      <Filter>lsMisc</Filter>
+      <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
