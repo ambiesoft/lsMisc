@@ -21,48 +21,55 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <Windows.h>
 #include <string>
 #include "DebugNew.h"
 #include "FormatSizeof.h"
 
-std::wstring FormatSizeof(double num)
-{
-	static LPCWSTR units[] = { L"", L"K", L"M", L"G", L"T", L"P", L"E", L"Z" };
-
-	std::wstring ret;
-	wchar_t szT[64];
-	for (int i = 0; i < _countof(units); ++i)
+namespace Ambiesoft {
+	std::wstring FormatSizeof(double num)
 	{
-		LPCWSTR pUnit = units[i];
-		if (abs(num) < 1024.0)
+		static LPCWSTR units[] = { L"", L"K", L"M", L"G", L"T", L"P", L"E", L"Z" };
+
+		std::wstring ret;
+		wchar_t szT[64];
+		for (int i = 0; i < _countof(units); ++i)
 		{
-			swprintf_s(szT, L"%3.1f%s", num, pUnit);
-			ret = szT;
-			return ret;
+			LPCWSTR pUnit = units[i];
+			if (abs(num) < 1024.0)
+			{
+				swprintf_s(szT, L"%3.1f%s", num, pUnit);
+				ret = szT;
+				return ret;
+			}
+			num /= 1024.0;
 		}
-		num /= 1024.0;
-	}
 
-	// TODO(this looks not corrent)
-	_snwprintf_s(szT, _countof(szT), _countof(szT)-1, L"%.1f%s", num, L"Y");
-	ret = szT;
-	return ret;
-}
-std::wstring FormatSizeof(long long ll)
-{
-	if (ll < 1024)
+		// TODO(this looks not corrent)
+		_snwprintf_s(szT, _countof(szT), _countof(szT) - 1, L"%.1f%s", num, L"Y");
+		ret = szT;
+		return ret;
+	}
+	std::wstring FormatSizeof(long long ll)
 	{
-		wchar_t buff[32] = { 0 };
-		_i64tow_s(ll, buff, _countof(buff), 10);
-		return buff;
-	}
+		if (ll < 1024)
+		{
+			wchar_t buff[32] = { 0 };
+			_i64tow_s(ll, buff, _countof(buff), 10);
+			return buff;
+		}
 
-	return FormatSizeof((double)ll);
+		return FormatSizeof((double)ll);
+	}
+	std::wstring FormatSizeof(unsigned long long ll)
+	{
+		if (ll < 1024)
+		{
+			wchar_t buff[32] = { 0 };
+			_i64tow_s(ll, buff, _countof(buff), 10);
+			return buff;
+		}
+
+		return FormatSizeof((double)ll);
+	}
 }

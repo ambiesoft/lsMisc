@@ -22,5 +22,9 @@
 //SUCH DAMAGE.
 
 #pragma once
-std::wstring FormatSizeof(double num);
-std::wstring FormatSizeof(long long num);
+
+namespace Ambiesoft {
+	std::wstring FormatSizeof(double num);
+	std::wstring FormatSizeof(long long num);
+	std::wstring FormatSizeof(unsigned long long num);
+}
