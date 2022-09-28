@@ -283,7 +283,8 @@ namespace Ambiesoft {
 		}
 		inline wchar_t* stdIncCharPtr(const wchar_t* p)
 		{
-            return (wchar_t*)_wcsinc(p);
+			// _wcsinc is not defined unless _UNICODE
+			return (wchar_t*)(p + 1);
 		}
 		
 		inline bool stdIsLeadChar(const char* p)
