@@ -69,12 +69,12 @@
 #define STDOSD_UNUSED(x) (void)x;
 
 #if __GNUC__
-
     #define STDOSD_CONSTEXPR const constexpr
     #define CHAR16T_AVAILABLE
     #define STDOSD_ATTR_UNUSED __attribute__((unused))
+	#define STDOSD_IS_CASESENSITIVE true
+	#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
 #elif _WIN32 // not __GNUC__ but _WIN32
-
     #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
     #define STDOSD_CONSTEXPR const
     #else
@@ -86,6 +86,8 @@
     #endif
 
     #define STDOSD_ATTR_UNUSED
+	#define STDOSD_IS_CASESENSITIVE false
+	#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
 #endif // _WIN32 __GNUC__
 
 
@@ -339,7 +341,7 @@ namespace Ambiesoft {
 		{
 			if (!pPath)
 				return nullptr;
-			const C* pSeparator = getOneofRChar(pPath, stdLiterals<C>::pathSeparators());
+			const C* pSeparator = getOneofRChar(pPath, stdLiterals<C>::defaultPathSeparatorStrings());
 			if (!pSeparator)
 				return pPath;
 
@@ -421,7 +423,7 @@ namespace Ambiesoft {
 				return false;
 
 			C lastChar = s[s.length() - 1];
-			for (const C* p = stdLiterals<C>::pathSeparators(); *p; ++p)
+			for (const C* p = stdLiterals<C>::defaultPathSeparatorStrings(); *p; ++p)
 			{
 				if (lastChar == *p)
 					return true;
@@ -446,7 +448,7 @@ namespace Ambiesoft {
 			}
 
 			const C* pStart = s.c_str();
-			const C* pSeparator = getOneofRChar(s.c_str(), stdLiterals<C>::pathSeparators());
+			const C* pSeparator = getOneofRChar(s.c_str(), stdLiterals<C>::defaultPathSeparatorStrings());
 			if (!pSeparator)
 			{
 				return mys();
@@ -530,7 +532,7 @@ namespace Ambiesoft {
 
 			myS ret = pD1;
 			if (!isEndwithSeparator(ret))
-				ret += stdLiterals<C>::defaultSeparator(); // '\\'; // TODO to make this template
+				ret += stdLiterals<C>::defaultPathSeparatorString(); // '\\'; // TODO to make this template
 
 			ret += pD2;
 			return ret;
@@ -551,11 +553,11 @@ namespace Ambiesoft {
 		{
 			using myS = std::basic_string<C, std::char_traits<C>, std::allocator<C>>;
 			if (!pD || !pD[0])
-				return stdLiterals<C>::defaultSeparator();
+				return stdLiterals<C>::defaultPathSeparatorString();
 
 			myS ret = pD;
 			if (!isEndwithSeparator(ret))
-				ret += stdLiterals<C>::defaultSeparator();
+				ret += stdLiterals<C>::defaultPathSeparatorString();
 
 			return ret;
 		}
@@ -1683,7 +1685,7 @@ namespace Ambiesoft {
 		inline std::basic_string<C> stdGetFullPathExecutable(const C* path)
 		{
 			std::basic_string<C> envpath = stdGetenv(stdLiterals<C>::PATH());
-            std::vector<std::basic_string<C>> vPaths = stdSplitString(envpath, stdLiterals<C>::envPathSeparators());
+            std::vector<std::basic_string<C>> vPaths = stdSplitString(envpath, stdLiterals<C>::defaultEnvPathSeparatorString());
 			for (auto&& onepath : vPaths)
 			{
 				std::basic_string<C> full = stdCombinePath(onepath, path);
@@ -1727,8 +1729,8 @@ namespace Ambiesoft {
 			std::basic_string<C> full1 = stdGetFullPathName(path1);
 			std::basic_string<C> full2 = stdGetFullPathName(path2);
 
-			std::basic_string<C> trimmed1 = stdTrimEnd(full1, stdLiterals<C>::pathSeparators());
-			std::basic_string<C> trimmed2 = stdTrimEnd(full2, stdLiterals<C>::pathSeparators());
+			std::basic_string<C> trimmed1 = stdTrimEnd(full1, stdLiterals<C>::defaultPathSeparatorStrings());
+			std::basic_string<C> trimmed2 = stdTrimEnd(full2, stdLiterals<C>::defaultPathSeparatorStrings());
 
 			return stdStrCmp(trimmed1.c_str(), trimmed2.c_str(),
 				!stdIsFileSystemCaseSensitive())==0;
@@ -2239,11 +2241,20 @@ namespace Ambiesoft {
 			return stdHasVideoFileExtension(file.c_str());
 		}
 
+		enum class SplitEnvSeparator
+		{
+			SEPARATOR_OS_DEFAULT,
+			SEPARATOR_COLON,
+			SEPARATOR_SEMICOLON,
+		};
 		template<class C>
-		std::vector<std::basic_string<C>> stdSplitEnvPath(const C* pPaths, const C sep)
+		std::vector<std::basic_string<C>> stdSplitEnvPath(const C* pPaths, 
+			const SplitEnvSeparator sep = SplitEnvSeparator::SEPARATOR_OS_DEFAULT)
 		{
 			std::vector<std::basic_string<C>> ret;
 
+			const C sepchar = sep == SplitEnvSeparator::SEPARATOR_OS_DEFAULT ? stdLiterals<C>::NDefaultEnvPathSeparator :
+				(sep == SplitEnvSeparator::SEPARATOR_COLON ? stdLiterals<C>::NColon : stdLiterals<C>::NSemiColon);
 			const C* p = pPaths;
 			std::basic_string<C> cur;
 			bool inq = false;
@@ -2279,7 +2290,7 @@ namespace Ambiesoft {
 					{
 						inq = true;
 					}
-					else if (*p == sep)
+					else if (*p == sepchar)
 					{
 						if (!cur.empty())
 						{

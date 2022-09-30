@@ -63,20 +63,19 @@ namespace Ambiesoft {
 
 #endif // _WIN32 __GNUC__
 
+// undef these at the end of this file
 #if defined(_MSC_VER) || defined(__MINGW32__)
-	#define STDOSD_DEFAULTSEPARATOR "\\"
-	#define STDOSD_PATHSEPARATORS "/\\"
+	#define STDOSD_DEFAULTSEPARATORSTRING "\\"
+	#define STDOSD_PATHSEPARATORSTRINGS "/\\"
 	#define STDOSD_NEWLINE "\r\n"
-	#define STDOSD_ENVPATHSEPARATORS ";"
-	#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
-	#define STDOSD_IS_CASESENSITIVE false
+	#define STDOSD_ENVPATHSEPARATOR ';'
+	#define STDOSD_ENVPATHSEPARATORSTRING ";"
 #else
-	#define STDOSD_DEFAULTSEPARATOR "/"
-	#define STDOSD_PATHSEPARATORS "/"
+	#define STDOSD_DEFAULTSEPARATORSTRING "/"
+	#define STDOSD_PATHSEPARATORSTRINGS "/"
 	#define STDOSD_NEWLINE "\n"
-	#define STDOSD_ENVPATHSEPARATORS ":"
-	#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
-	#define STDOSD_IS_CASESENSITIVE true
+	#define STDOSD_ENVPATHSEPARATOR ':'
+	#define STDOSD_ENVPATHSEPARATORSTRING ":"
 #endif
 
         template<typename C>
@@ -172,9 +171,11 @@ namespace Ambiesoft {
 																			\
 			STDOSD_DEFINE_CHAR(NVerticalBar,		'|');					\
 																			\
-			STDOSD_DEFINE_STRINGFUNCTION(defaultSeparator, STDOSD_DEFAULTSEPARATOR);	\
-            STDOSD_DEFINE_STRINGFUNCTION(pathSeparators, STDOSD_PATHSEPARATORS);		\
-            STDOSD_DEFINE_STRINGFUNCTION(envPathSeparators, STDOSD_ENVPATHSEPARATORS);	\
+			STDOSD_DEFINE_CHAR(NDefaultEnvPathSeparator, STDOSD_ENVPATHSEPARATOR);					\
+																			\
+			STDOSD_DEFINE_STRINGFUNCTION(defaultPathSeparatorString, STDOSD_DEFAULTSEPARATORSTRING);	\
+            STDOSD_DEFINE_STRINGFUNCTION(defaultPathSeparatorStrings, STDOSD_PATHSEPARATORSTRINGS);		\
+            STDOSD_DEFINE_STRINGFUNCTION(defaultEnvPathSeparatorString, STDOSD_ENVPATHSEPARATORSTRING);	\
             STDOSD_DEFINE_STRINGFUNCTION(nulString, "");								\
 			STDOSD_DEFINE_STRINGFUNCTION(spaceString, " ");								\
 			STDOSD_DEFINE_STRINGFUNCTION(semicolonString, ";");							\
@@ -245,8 +246,11 @@ namespace Ambiesoft {
 #undef STDOSD_DEFINE_CHAR
 #undef STDOSD_DEFINE_STRINGFUNCTION
 
-		
-
+#undef STDOSD_DEFAULTSEPARATORSTRING
+#undef STDOSD_PATHSEPARATORSTRINGS
+#undef STDOSD_NEWLINE
+#undef STDOSD_ENVPATHSEPARATOR
+#undef STDOSD_ENVPATHSEPARATORSTRING
 	}
 }
 
