@@ -14,61 +14,62 @@ using namespace std;
 
 TEST(IsWindowVersion, Basic)
 {
-	EXPECT_TRUE(IsWindowsXPOrAbove() || IsWindowsXPOrBelow());
-	EXPECT_TRUE(IsWindowsVistaOrAbove() || IsWindowsVistaOrBelow());
-	EXPECT_TRUE(IsWindows7OrAbove() || IsWindows7OrBelow());
-	EXPECT_TRUE(IsWindows8OrAbove() || IsWindows8OrBelow());
-	EXPECT_TRUE(IsWindows10OrAbove() || IsWindows10OrBelow());
-
-	int vercheckCount = 0;
-	if (IsWindows10OrAbove() && IsWindows10OrBelow())
+	if (IsWindows11OrAbove())
 	{
-		// This OS is Windows 10
-		++vercheckCount;
-		EXPECT_FALSE(IsWindows8OrBelow());
-		EXPECT_FALSE(IsWindows7OrBelow());
-		EXPECT_FALSE(IsWindowsVistaOrBelow());
-		EXPECT_FALSE(IsWindowsXPOrBelow());
-	}
-	if (IsWindows8OrAbove() && IsWindows8OrBelow())
-	{
-		// This OS is Windows 8
-		++vercheckCount;
-		EXPECT_FALSE(IsWindows10OrAbove());
-		EXPECT_TRUE(IsWindows10OrBelow());
-
+		EXPECT_TRUE(IsWindows11OrAbove());
+		EXPECT_TRUE(IsWindows10OrAbove());
+		EXPECT_TRUE(IsWindows8OrAbove());
 		EXPECT_TRUE(IsWindows7OrAbove());
-		EXPECT_FALSE(IsWindows7OrBelow());
-
 		EXPECT_TRUE(IsWindowsVistaOrAbove());
-		EXPECT_FALSE(IsWindowsVistaOrBelow());
-
 		EXPECT_TRUE(IsWindowsXPOrAbove());
-		EXPECT_FALSE(IsWindowsXPOrBelow());
 	}
-	if (IsWindows7OrAbove() && IsWindows7OrBelow())
+	else if (IsWindows10OrAbove())
 	{
-		// This OS is Windows 7
-		++vercheckCount;
+		EXPECT_FALSE(IsWindows11OrAbove());
+		EXPECT_TRUE(IsWindows10OrAbove());
+		EXPECT_TRUE(IsWindows8OrAbove());
+		EXPECT_TRUE(IsWindows7OrAbove());
+		EXPECT_TRUE(IsWindowsVistaOrAbove());
+		EXPECT_TRUE(IsWindowsXPOrAbove());
+	}
+	else if (IsWindows8OrAbove())
+	{
+		EXPECT_FALSE(IsWindows11OrAbove());
 		EXPECT_FALSE(IsWindows10OrAbove());
-		EXPECT_TRUE(IsWindows10OrBelow());
-
-		EXPECT_FALSE(IsWindows8OrAbove());
-		EXPECT_TRUE(IsWindows8OrBelow());
-
+		EXPECT_TRUE(IsWindows8OrAbove());
+		EXPECT_TRUE(IsWindows7OrAbove());
 		EXPECT_TRUE(IsWindowsVistaOrAbove());
-		EXPECT_FALSE(IsWindowsVistaOrBelow());
-
 		EXPECT_TRUE(IsWindowsXPOrAbove());
-		EXPECT_FALSE(IsWindowsXPOrBelow());
 	}
-	if (IsWindowsVistaOrAbove() && IsWindowsVistaOrBelow())
+	else if (IsWindows7OrAbove())
 	{
-		++vercheckCount;
+		EXPECT_FALSE(IsWindows11OrAbove());
+		EXPECT_FALSE(IsWindows10OrAbove());
+		EXPECT_FALSE(IsWindows8OrAbove());
+		EXPECT_TRUE(IsWindows7OrAbove());
+		EXPECT_TRUE(IsWindowsVistaOrAbove());
+		EXPECT_TRUE(IsWindowsXPOrAbove());
 	}
-	if (IsWindowsXPOrAbove() && IsWindowsXPOrBelow())
+	else if (IsWindowsVistaOrAbove())
 	{
-		++vercheckCount;
+		EXPECT_FALSE(IsWindows11OrAbove());
+		EXPECT_FALSE(IsWindows10OrAbove());
+		EXPECT_FALSE(IsWindows8OrAbove());
+		EXPECT_FALSE(IsWindows7OrAbove());
+		EXPECT_TRUE(IsWindowsVistaOrAbove());
+		EXPECT_TRUE(IsWindowsXPOrAbove());
 	}
-	EXPECT_EQ(vercheckCount, 1);
+	else if (IsWindowsXPOrAbove())
+	{
+		EXPECT_FALSE(IsWindows11OrAbove());
+		EXPECT_FALSE(IsWindows10OrAbove());
+		EXPECT_FALSE(IsWindows8OrAbove());
+		EXPECT_FALSE(IsWindows7OrAbove());
+		EXPECT_FALSE(IsWindowsVistaOrAbove());
+		EXPECT_TRUE(IsWindowsXPOrAbove());
+	}
+	else
+	{
+		EXPECT_TRUE(false);
+	}
 }

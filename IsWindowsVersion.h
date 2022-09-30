@@ -24,19 +24,22 @@
 #pragma once
 namespace Ambiesoft {
 	bool IsWindowsXPOrAbove();
-	bool IsWindowsXPOrBelow();
+	// bool IsWindowsXPOrBelow();
 	
 	bool IsWindowsVistaOrAbove();
-	bool IsWindowsVistaOrBelow();
+	// bool IsWindowsVistaOrBelow();
 
 	bool IsWindows7OrAbove();
-	bool IsWindows7OrBelow();
+	// bool IsWindows7OrBelow();
 
 	bool IsWindows8OrAbove();
-	bool IsWindows8OrBelow();
+	// bool IsWindows8OrBelow();
 
 	bool IsWindows10OrAbove();
-	bool IsWindows10OrBelow();
+	// Todo: Implement this
+	// bool IsWindows10OrBelow();
 
 	bool IsWindows11OrAbove();
+	// Todo: Implement this
+	// bool IsWindows11OrBelow();
 }
