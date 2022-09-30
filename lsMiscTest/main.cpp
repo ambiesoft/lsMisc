@@ -4,6 +4,7 @@
 // #include "stdafx.h"
 
 #include <memory>
+#include <conio.h>
 #ifdef _WIN32
 #include <Windows.h>
 #include <mbctype.h>
@@ -115,6 +116,9 @@ int main(int argc, char* argv[])
 	mysandbox();
 
     testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int ret = RUN_ALL_TESTS();
+	//if (argc == 1)
+	//	_getch();
+	return ret;
 }
 
