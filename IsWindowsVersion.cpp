@@ -26,18 +26,13 @@
 
 #include <Windows.h>
 
-
-
 #include "IsWindowsVersion.h"
 
-
-
 namespace Ambiesoft {
-	static bool IsWindowsXXXOrAboveOrBelow(DWORD ma, DWORD mi, bool bAbove)
+	static bool IsWindowsXXXOrAboveOrBelow(DWORD maCheck, DWORD miCheck, bool bAbove)
 	{
-		static DWORD major = (DWORD)-1;
-		static DWORD minor = (DWORD)-1;
-		if (major == -1)
+		static ULARGE_INTEGER thisVer = { 0 };
+		if (thisVer.QuadPart == 0)
 		{
 			OSVERSIONINFOA osvi = { 0 };
 			osvi.dwOSVersionInfoSize = sizeof(osvi);
@@ -46,11 +41,16 @@ namespace Ambiesoft {
 			if (GetVersionExA(&osvi))
 #pragma warning(pop)
 			{
-				major = osvi.dwMajorVersion;
-				minor = osvi.dwMinorVersion;
+				thisVer.HighPart = osvi.dwMajorVersion;
+				thisVer.LowPart = osvi.dwMinorVersion;
 			}
 		}
-		return bAbove ? (major >= ma && minor >= mi) : (major <= ma && minor <= mi);
+		ULARGE_INTEGER uliCheck;
+		uliCheck.HighPart = maCheck;
+		uliCheck.LowPart = miCheck;
+		return bAbove ?
+			thisVer.QuadPart >= uliCheck.QuadPart :
+			thisVer.QuadPart <= uliCheck.QuadPart;
 	}
 	bool IsWindowsXPOrAbove()
 	{
@@ -91,16 +91,20 @@ namespace Ambiesoft {
 #ifndef STATUS_SUCCESS
 #define STATUS_SUCCESS (0x00000000)
 #endif
-	static bool GetRealOSVersion(DWORD ma, DWORD mi, bool bAbove)
+	static bool GetRealOSVersion(DWORD maCheck, DWORD miCheck, bool bAbove)
 	{
-		static DWORD major = (DWORD)-1;
-		static DWORD minor = (DWORD)-1;
-		if (major == -1)
+		static ULARGE_INTEGER thisVer = { 0 };
+		static bool ok = true;
+		if (!ok)
 		{
-			major = minor = 0;
-			// typedef NTSTATUS (WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
+			// This OS does not have functions for check Windows 10
+			// and this function is used as to check if Windows 10
+			return bAbove ? false : true;
+		}
+		if (thisVer.QuadPart == 0)
+		{
+			ok = false;
 			typedef LONG(WINAPI* RtlGetVersionPtr)(PRTL_OSVERSIONINFOW);
-
 			HMODULE hMod = ::GetModuleHandleA("ntdll.dll");
 			if (hMod)
 			{
@@ -111,13 +115,19 @@ namespace Ambiesoft {
 					rovi.dwOSVersionInfoSize = sizeof(rovi);
 					if (STATUS_SUCCESS == fxPtr(&rovi))
 					{
-						major = rovi.dwMajorVersion;
-						minor = rovi.dwMinorVersion;
+						ok = true;
+						thisVer.HighPart = rovi.dwMajorVersion;
+						thisVer.LowPart = rovi.dwMinorVersion;
 					}
 				}
 			}
 		}
-		return bAbove ? (major >= ma && minor >= mi) : (major <= ma && minor <= mi);
+		ULARGE_INTEGER uliCheck;
+		uliCheck.HighPart = maCheck;
+		uliCheck.LowPart = miCheck;
+		return bAbove ? 
+			thisVer.QuadPart >= uliCheck.QuadPart :
+			thisVer.QuadPart <= uliCheck.QuadPart;
 	}
 
 
