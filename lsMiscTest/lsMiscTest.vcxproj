@@ -235,6 +235,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\BringWinTop.cpp" />
     <ClCompile Include="..\BrowseFolder.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
@@ -960,6 +961,7 @@
     <ClInclude Include="..\AddCharset.h" />
     <ClInclude Include="..\AnyCloser.h" />
     <ClInclude Include="..\BasicScopeOutHandler.h" />
+    <ClInclude Include="..\BringWinTop.h" />
     <ClInclude Include="..\BrowseFolder.h" />
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeDirPos.h" />

@@ -23,23 +23,25 @@
 
 
 #include <windows.h>
-#include "DebugNew.h"
-#include "GetTopParent.h"
+#include "BringWinTop.h"
 
 namespace Ambiesoft {
-	HWND GetTopParent(HWND h)
+	bool BringWinTop(HWND hWnd)
 	{
-		if (!IsWindow(h))
-			return NULL;
+		// from http://techtips.belution.com/ja/vc/0012/
+		int nTargetID, nForegroundID;
+		PVOID sp_time;
 
-		HWND hDesktop = GetDesktopWindow();
-		HWND parent = h;
-		do
-		{
-			h = parent;
-			parent = GetParent(h);
-		} while (hDesktop != parent && parent != NULL && parent != h);
+		nForegroundID = GetWindowThreadProcessId(GetForegroundWindow(), NULL);
+		nTargetID = GetWindowThreadProcessId(hWnd, NULL);
+		AttachThreadInput(nTargetID, nForegroundID, TRUE);
+		SystemParametersInfo(SPI_GETFOREGROUNDLOCKTIMEOUT, 0, &sp_time, 0);
+		SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (LPVOID)0, 0);
+		SetForegroundWindow(hWnd);
+		SystemParametersInfo(SPI_SETFOREGROUNDLOCKTIMEOUT, 0, (PVOID)sp_time, 0);
+		AttachThreadInput(nTargetID, nForegroundID, FALSE);
 
-		return h;
+		return true;
 	}
+
 }

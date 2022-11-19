@@ -451,9 +451,6 @@
     <ClCompile Include="..\stdosd\DetectVM.cpp">
       <Filter>stdosd</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetVolumeInfo.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="..\GetDlgItemText.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -462,6 +459,12 @@
     </ClCompile>
     <ClCompile Include="gtestGetVolumeInfo.cpp">
       <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BringWinTop.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetVolumeInfo.cpp">
+      <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -846,13 +849,16 @@
     <ClInclude Include="..\stdosd\DetectVM.h">
       <Filter>stdosd</Filter>
     </ClInclude>
-    <ClInclude Include="..\GetVolumeInfo.h">
-      <Filter>lsMisc</Filter>
-    </ClInclude>
     <ClInclude Include="..\GetShortPath.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\GetDlgItemText.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\BringWinTop.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetVolumeInfo.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>

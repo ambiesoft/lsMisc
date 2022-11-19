@@ -22,5 +22,5 @@
 //SUCH DAMAGE.
 
 namespace Ambiesoft {
-	HWND GetTopParent(HWND h);
+	bool BringWinTop(HWND hWnd);
 }
