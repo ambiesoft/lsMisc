@@ -8,6 +8,9 @@
 #include <windows.h>
 #include <tchar.h>
 #include <tlhelp32.h>
+
+#include <string>
+
 #include "DebugNew.h"
 #include "GetFileNameFromHwnd.h"
 
@@ -184,5 +187,13 @@ namespace Ambiesoft {
 #endif
 
 		return bResult;
+	}
+	std::wstring GetFileNameFromHwndAsWstring(HWND hWnd)
+	{
+		wchar_t buff[MAX_PATH];
+		buff[0] = 0;
+		if (GetFileNameFromHwnd(hWnd, buff, MAX_PATH))
+			return buff;
+		return std::wstring();
 	}
 }
