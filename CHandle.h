@@ -167,7 +167,7 @@ namespace Ambiesoft {
 		}
 		const CHandleBase& operator=(CHandleBase& that) = delete;
 		CHandleBase& operator=(CHandleBase&& that) {
-			if (addressof(*this) != addressof(that)) {
+			if (std::addressof(*this) != std::addressof(that)) {
 				Close();
 				this->h_ = that.h_;
 				Trait::SetInvalid(&that.h_);
