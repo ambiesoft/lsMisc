@@ -460,11 +460,17 @@
     <ClCompile Include="gtestGetVolumeInfo.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\BringWinTop.cpp">
-      <Filter>lsMisc</Filter>
-    </ClCompile>
     <ClCompile Include="..\GetVolumeInfo.cpp">
       <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\CheckMessageBox.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\BringWinTop.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestCheckMessageBox.cpp">
+      <Filter>GTest Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -855,10 +861,13 @@
     <ClInclude Include="..\GetDlgItemText.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\BringWinTop.h">
+    <ClInclude Include="..\GetVolumeInfo.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CheckMessageBox.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
-    <ClInclude Include="..\GetVolumeInfo.h">
+    <ClInclude Include="..\BringWinTop.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
   </ItemGroup>
