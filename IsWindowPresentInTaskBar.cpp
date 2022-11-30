@@ -31,14 +31,13 @@ namespace Ambiesoft {
 		if (!IsWindow(hWnd))
 			return false;
 
-		const LONG Style = GetWindowLong(hWnd, GWL_STYLE);
-		const LONG ExStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
-
-		if (ExStyle & WS_EX_APPWINDOW)
-			return true;
+		const LONG_PTR Style = GetWindowLongPtr(hWnd, GWL_STYLE);
+		const LONG_PTR ExStyle = GetWindowLongPtr(hWnd, GWL_EXSTYLE);
 
 		if ((Style & WS_VISIBLE) == 0)
 			return false;
+		if (ExStyle & WS_EX_APPWINDOW)
+			return true;
 		if (ExStyle & WS_EX_TOOLWINDOW)
 			return false;
 		if (Style & WS_CHILD)
