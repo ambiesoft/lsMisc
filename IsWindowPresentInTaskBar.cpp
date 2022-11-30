@@ -30,32 +30,35 @@ namespace Ambiesoft {
 	{
 		if (!IsWindow(hWnd))
 			return false;
+
+		const LONG Style = GetWindowLong(hWnd, GWL_STYLE);
+		const LONG ExStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
+
+		if (ExStyle & WS_EX_APPWINDOW)
+			return true;
+
+		if ((Style & WS_VISIBLE) == 0)
+			return false;
+		if (ExStyle & WS_EX_TOOLWINDOW)
+			return false;
+		if (Style & WS_CHILD)
+			return false;
+		if (Style & WS_POPUP)
+			return false;
+		if (ExStyle & WS_EX_CLIENTEDGE)
+			return false;
+		if (ExStyle & WS_EX_DLGMODALFRAME)
+			return false;
+
 		if (GetParent(hWnd) != nullptr)
 			return false;
 		if (GetWindow(hWnd, GW_OWNER) != nullptr)
 			return false;
 
-		LONG Style = GetWindowLong(hWnd, GWL_STYLE);
-		LONG ExStyle = GetWindowLong(hWnd, GWL_EXSTYLE);
-
-		if ((Style & WS_VISIBLE) == 0)
-			return false;
-		if (ExStyle & WS_EX_APPWINDOW)
-			return true;
-		if (ExStyle & WS_EX_TOOLWINDOW)
-			return false;
-		if (Style & WS_CHILD)
-			return false;
 		if (Style & WS_OVERLAPPEDWINDOW)
 			return true;
-		if (Style & WS_POPUP)
-			return false;
 		if (ExStyle & WS_EX_OVERLAPPEDWINDOW)
 			return true;
-		if (ExStyle & WS_EX_CLIENTEDGE)
-			return false;
-		if (ExStyle & WS_EX_DLGMODALFRAME)
-			return false;
 
 		return false;
 	}
