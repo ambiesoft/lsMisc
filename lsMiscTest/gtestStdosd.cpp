@@ -1400,3 +1400,18 @@ TEST(stdosd, DetectVM)
     EXPECT_FALSE(isVMWare && isVPC);
 #endif
 }
+
+TEST(stdosd, stdGetHexString)
+{
+	EXPECT_STREQ(stdGetHexString(0).c_str(), L"0");
+	EXPECT_STREQ(stdGetHexString(1).c_str(), L"1");
+	EXPECT_STREQ(stdGetHexString(10).c_str(), L"a");
+	EXPECT_STREQ(stdGetHexString(0x12345).c_str(), L"12345");
+	EXPECT_STREQ(stdGetHexString(0x12345abcdef).c_str(), L"12345abcdef");
+
+	EXPECT_STREQ(stdGetHexString<char>(0).c_str(), "0");
+	EXPECT_STREQ(stdGetHexString<char>(1).c_str(), "1");
+	EXPECT_STREQ(stdGetHexString<char>(10).c_str(), "a");
+	EXPECT_STREQ(stdGetHexString<char>(0x12345).c_str(), "12345");
+	EXPECT_STREQ(stdGetHexString<char>(0x12345abcdef).c_str(), "12345abcdef");
+}

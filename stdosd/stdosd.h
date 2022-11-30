@@ -32,6 +32,7 @@
 #include <regex>
 #include <functional>
 #include <set>
+#include <iomanip>
 
 #include <cassert>
 #include <cstdio>
@@ -2317,6 +2318,16 @@ namespace Ambiesoft {
 		std::vector<std::basic_string<C>> stdSplitEnvPath(const std::basic_string<C>& paths, const C sep)
 		{
 			return stdSplitEnvPath(paths.c_str(), sep);
+		}
+
+
+		template<class C = SYSTEM_CHAR_TYPE, class T>
+		std::basic_string<C> stdGetHexString(const T& value, std::streamsize keta = 1)
+		{
+			std::basic_stringstream<C> ss;
+			ss << std::setfill(stdLiterals<C>::N0) << std::setw(keta) << std::right << std::hex << value;
+
+			return ss.str();
 		}
 	}
 }
