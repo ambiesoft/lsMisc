@@ -42,12 +42,12 @@ namespace Ambiesoft {
 			return false;
 		if (Style & WS_CHILD)
 			return false;
-		if (Style & WS_POPUP)
-			return false;
+		//if (Style & WS_POPUP)
+		//	return false;
 		if (ExStyle & WS_EX_CLIENTEDGE)
 			return false;
-		if (ExStyle & WS_EX_DLGMODALFRAME)
-			return false;
+		//if (ExStyle & WS_EX_DLGMODALFRAME)
+		//	return false;
 
 		if (GetParent(hWnd) != nullptr)
 			return false;
