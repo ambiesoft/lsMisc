@@ -23,6 +23,8 @@
 
 
 #include <windows.h>
+
+#include "GetFileNameFromHwnd.h"
 #include "IsWindowPresentInTaskBar.h"
 
 namespace Ambiesoft {
@@ -48,6 +50,29 @@ namespace Ambiesoft {
 			return false;
 		//if (ExStyle & WS_EX_DLGMODALFRAME)
 		//	return false;
+
+		// Special case for explorer.exe
+		if (GetWindowTextLength(hWnd) == 0)
+		{
+			std::wstring exe = GetFileNameFromHwndAsWstring(hWnd);
+			wchar_t windir[MAX_PATH];
+			DWORD dwRet = ExpandEnvironmentStrings(L"%windir%\\explorer.exe", windir, _countof(windir));
+			if (0 < dwRet && dwRet < (_countof(windir) - 1))
+			{
+				if (lstrcmpi(exe.c_str(), windir) == 0)
+				{
+					wchar_t szClassName[256];
+					int iRet = GetClassName(hWnd, szClassName, _countof(szClassName));
+					if (0 < iRet && iRet < (_countof(szClassName) - 1))
+					{
+						if (lstrcmp(szClassName, L"ApplicationFrameWindow") == 0)
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
 
 		if (GetParent(hWnd) != nullptr)
 			return false;
