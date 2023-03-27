@@ -562,11 +562,11 @@ namespace Ambiesoft {
 
 			return ret;
 		}
-		inline std::wstring stdAddPathSeparator(const std::wstring& d)
+		inline std::wstring stdAddPathSeparator(const std::wstring& d = stdLiterals<wchar_t>::defaultPathSeparatorStrings())
 		{
 			return stdAddPathSeparator(d.c_str());
 		}
-		inline std::string stdAddPathSeparator(const std::string& d)
+		inline std::string stdAddPathSeparator(const std::string& d = stdLiterals<char>::defaultPathSeparatorStrings())
 		{
 			return stdAddPathSeparator(d.c_str());
 		}

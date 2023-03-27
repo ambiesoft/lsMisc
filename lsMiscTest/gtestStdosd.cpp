@@ -1415,3 +1415,22 @@ TEST(stdosd, stdGetHexString)
 	EXPECT_STREQ(stdGetHexString<char>(0x12345).c_str(), "12345");
 	EXPECT_STREQ(stdGetHexString<char>(0x12345abcdef).c_str(), "12345abcdef");
 }
+
+TEST(stdosd, stdAddPathSeparator)
+{
+	string s;
+	wstring ws;
+
+	s = stdAddPathSeparator("");
+	EXPECT_TRUE(s == "/" || s == "\\");
+
+	s = stdAddPathSeparator("C:\\aaa");
+	EXPECT_TRUE(s == "C:\\aaa/" || s == "C:\\aaa\\");
+
+	s = stdAddPathSeparator("C:\\aaa\\");
+	EXPECT_TRUE(s == "C:\\aaa/" || s == "C:\\aaa\\");
+
+	ws = L"C:\\aaa";
+	ws = stdAddPathSeparator(ws);
+	EXPECT_TRUE(ws == L"C:\\aaa/" || ws == L"C:\\aaa\\");
+}
