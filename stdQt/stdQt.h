@@ -49,6 +49,7 @@ QString ToAsciiLower(const QString& s);
 bool fileExists(const QString& path);
 bool fileEmpty(const QString& path);
 bool isRootDriveExists(const QString& path);
+QChar getFirstCharcter(const QString& text, const QChar c = '_');
 
 } // namespace AmbiesoftQt
 

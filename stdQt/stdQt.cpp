@@ -294,7 +294,12 @@ bool fileEmpty(const QString& path)
 
     return false;
 }
-
+QChar getFirstCharcter(const QString& text, const QChar c)
+{
+    if(text.isEmpty())
+        return c;
+    return text[0];
+}
 
 
 } // namespace AmbiesoftQt
