@@ -1194,7 +1194,32 @@ TEST(stdosd, stdGetUnittedSize)
 
 TEST(stdosd, stdGetenv)
 {
+	char szT[32];
+
 	EXPECT_TRUE(stdGetenv("PATH").size() != 0);
+
+	_putenv("AAA=XXX");
+	EXPECT_STREQ(stdGetenv("AAA").c_str(), "XXX");
+#ifdef _WIN32
+	GetEnvironmentVariableA("AAA", szT, sizeof(szT));
+	EXPECT_STREQ(szT, "XXX");
+#endif
+
+#ifdef _WIN32
+	SetEnvironmentVariableA("BBB", "YYY");
+	GetEnvironmentVariableA("BBB", szT, sizeof(szT));
+	EXPECT_STREQ(szT, "YYY");
+
+	EXPECT_STREQ(stdGetenv("BBB").c_str(), "YYY");
+	EXPECT_STREQ(stdGetenv(L"BBB").c_str(), L"YYY");
+
+	SetEnvironmentVariableW(L"CCC", L"ZZZ");
+	EXPECT_STREQ(stdGetenv("CCC").c_str(), "ZZZ");
+	EXPECT_STREQ(stdGetenv(L"CCC").c_str(), L"ZZZ");
+
+	EXPECT_STREQ(stdGetenv("fewfjoweajfoiewjaofwe").c_str(), "");
+	EXPECT_STREQ(stdGetenv(L"fewfjoweajfoiewjaofwe").c_str(), L"");
+#endif
 }
 
 TEST(stdosd, stdIsSubDirectoryTest)

@@ -1575,31 +1575,13 @@ namespace Ambiesoft {
 		}
 
 #if defined(_MSC_VER)
-		inline errno_t stdDupEnv(char** ppValue, size_t* pLen, const char* varname)
-		{
-			return _dupenv_s(ppValue, pLen, varname);
-		}
-		inline errno_t stdDupEnv(wchar_t** ppValue, size_t* pLen, const wchar_t* varname)
-		{
-			return _wdupenv_s(ppValue, pLen, varname);
-		}
+		std::string stdGetenvImpl(const char* varname);
+		std::wstring stdGetenvImpl(const wchar_t* varname);
 
 		template<typename C>
 		inline std::basic_string<C> stdGetenv(const C* varname)
 		{
-			C* pValue = nullptr;
-			size_t dummy;
-			errno_t err = stdDupEnv(&pValue, &dummy, varname);
-			if (err)
-			{
-				assert(pValue == nullptr);
-				return std::basic_string<C>();
-			}
-			if (!pValue)
-				return std::basic_string<C>();
-			std::basic_string<C> ret{ pValue };
-			free(pValue);
-			return ret;
+			return stdGetenvImpl(varname);
 		}
 #elif defined(__MINGW32__)
         inline std::string stdGetenv(const char* varname)

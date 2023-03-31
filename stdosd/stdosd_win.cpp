@@ -645,5 +645,25 @@ namespace Ambiesoft {
 			return !!SetWindowTextW(hWindow, text.c_str());
 		}
 
+		template<class C>
+		std::basic_string<C> stdGetenvImplCommon(const C* varname, std::function<DWORD WINAPI(const C*, C*,DWORD)> func)
+		{
+			DWORD size = func(varname, nullptr, 0);
+			if (size == 0)
+				return std::basic_string<C>();
+			std::vector<C> v;
+			v.reserve(size);
+			func(varname, v.data(), size);
+			return v.data();
+		}
+		std::string stdGetenvImpl(const char* varname)
+		{
+			return stdGetenvImplCommon(varname, std::function<decltype(GetEnvironmentVariableA)>{GetEnvironmentVariableA});
+		}
+		std::wstring stdGetenvImpl(const wchar_t* varname)
+		{
+			return stdGetenvImplCommon(varname, std::function<decltype(GetEnvironmentVariableW)>{GetEnvironmentVariableW});
+		}
+
 	}
 }
