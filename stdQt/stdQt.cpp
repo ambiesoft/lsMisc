@@ -5,6 +5,7 @@
 #include <QProcess>
 #include <QTextCodec>
 #include <QStorageInfo>
+#include <QScreen>
 
 #include "stdQt.h"
 
