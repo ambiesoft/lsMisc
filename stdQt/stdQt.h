@@ -50,7 +50,7 @@ bool fileExists(const QString& path);
 bool fileEmpty(const QString& path);
 bool isRootDriveExists(const QString& path);
 QChar getFirstCharcter(const QString& text, const QChar c = '_');
-
+void CenterWidgets(QWidget *widget, QWidget *host = Q_NULLPTR) ;
 } // namespace AmbiesoftQt
 
 #endif // STDQT_H
