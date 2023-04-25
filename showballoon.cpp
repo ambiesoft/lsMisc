@@ -21,13 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
-
 #define WIN32_LEAN_AND_MEAN		// Windows
 #include <windows.h>
 #include <tchar.h>
