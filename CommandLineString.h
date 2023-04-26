@@ -65,7 +65,7 @@ namespace Ambiesoft {
 		{
 			for (size_t i = 0; i < s.size(); ++i)
 			{
-				if (stdosd::stdIsSpace(s[i]))
+				if (stdosd::stdIsAsciiSpace(s[i]))
 					return true;
 			}
 			return false;
@@ -123,7 +123,7 @@ namespace Ambiesoft {
 				const typename T::value_type* p = s.c_str();
 				for (; *p; ++p)
 				{
-					if (stdosd::stdIsSpace(*p))
+					if (stdosd::stdIsAsciiSpace(*p))
 						break;
 					prevEq += *p;
 					if (myIsLead(*p))
@@ -152,7 +152,7 @@ namespace Ambiesoft {
 		template<typename T>
 		static const T* mySkipWS(const T* p)
 		{
-			while (*p && stdosd::stdIsSpace(*p))
+			while (*p && stdosd::stdIsAsciiSpace(*p))
 				++p;
 			return p;
 		}
@@ -278,7 +278,7 @@ namespace Ambiesoft {
 					if (myIsDQ(*p))
 					{
 						// DQ not in DQ
-						if (stdosd::stdIsSpace(prev) || prev == 0)
+						if (stdosd::stdIsAsciiSpace(prev) || prev == 0)
 						{
 							inDQGroup = true;
 							continue;
@@ -297,7 +297,7 @@ namespace Ambiesoft {
 							continue;
 						}
 					}
-					else if (stdosd::stdIsSpace(*p))
+					else if (stdosd::stdIsAsciiSpace(*p))
 					{
 						// SPACE not in DQ
 						if (!now.empty())
@@ -329,7 +329,7 @@ namespace Ambiesoft {
 					}
 					if (myIsDQ(*p))
 					{
-						if (now.empty() && (stdosd::stdIsSpace(next) || next == 0))
+						if (now.empty() && (stdosd::stdIsAsciiSpace(next) || next == 0))
 						{
 							offsets_.push_back(pStart - pCommandLine);
 							args_.push_back(now);
