@@ -21,5 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-BOOL stringEndwith(LPCTSTR pString, LPCTSTR pEnd);
-BOOL stringEndwithI(LPCTSTR pString, LPCTSTR pEnd);
+// use stdEndWith in stdosd.h
+//BOOL stringEndwith(LPCTSTR pString, LPCTSTR pEnd);
+//BOOL stringEndwithI(LPCTSTR pString, LPCTSTR pEnd);
