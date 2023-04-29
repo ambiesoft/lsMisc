@@ -2311,6 +2311,91 @@ namespace Ambiesoft {
 
 			return ss.str();
 		}
+
+		template<class C = SYSTEM_CHAR_TYPE, class T>
+		bool stdStartWith(const T* pString, const T* pEnd)
+		{
+			if (!pString)
+				return false;
+
+			if (!pEnd || pEnd[0] == 0)
+				return true;
+
+			size_t psize = stdStringLength(pString);
+			size_t endlen = stdStringLength(pEnd);
+			if (psize < endlen)
+				return false;
+
+			while (*pEnd)
+			{
+				if (*pString != *pEnd)
+					return false;
+
+				++pString;
+				++pEnd;
+			}
+			return true;
+		}
+		template<class C>
+		bool stdStartWith(const C* ps, const std::basic_string<C>& end)
+		{
+			return stdStartWith(ps, end.c_str());
+		}
+		template<class C>
+		bool stdStartWith(const std::basic_string<C>& s, const C* pEnd)
+		{
+			return stdStartWith(s.c_str(), pEnd);
+		}
+		template<class C>
+		bool stdStartWith(const std::basic_string<C>& s, const std::basic_string<C>& end)
+		{
+			return stdStartWith(s.c_str(), end.c_str());
+		}
+
+
+
+		template<class C = SYSTEM_CHAR_TYPE, class T>
+		bool stdEndWith(const T* pString, const T* pEnd)
+		{
+			if (!pString)
+				return false;
+
+			if (!pEnd || pEnd[0] == 0)
+				return true;
+
+			size_t psize = stdStringLength(pString);
+			size_t endlen = stdStringLength(pEnd);
+			if (psize < endlen)
+				return false;
+
+			const T* pS = pString;
+			const T* pSS = pS + psize - endlen;
+			while (*pEnd)
+			{
+				if (*pSS != *pEnd)
+					return false;
+
+				++pSS;
+				++pEnd;
+			}
+			return true;
+		}
+		template<class C>
+		bool stdEndWith(const C* ps, const std::basic_string<C>& end)
+		{
+			return stdEndWith(ps, end.c_str());
+		}
+		template<class C>
+		bool stdEndWith(const std::basic_string<C>& s, const C* pEnd)
+		{
+			return stdEndWith(s.c_str(), pEnd);
+		}
+		template<class C>
+		bool stdEndWith(const std::basic_string<C>& s, const std::basic_string<C>& end)
+		{
+			return stdEndWith(s.c_str(), end.c_str());
+		}
+
 	}
 }
 

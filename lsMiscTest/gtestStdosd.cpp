@@ -1459,3 +1459,33 @@ TEST(stdosd, stdAddPathSeparator)
 	ws = stdAddPathSeparator(ws);
 	EXPECT_TRUE(ws == L"C:\\aaa/" || ws == L"C:\\aaa\\");
 }
+
+TEST(stdosd, stdStartWith)
+{
+	{
+		EXPECT_TRUE(stdStartWith("", string("")));
+
+		string s = "abc123";
+		EXPECT_TRUE(stdStartWith(s, string("abc")));
+		EXPECT_TRUE(stdStartWith(s, "abc"));
+		EXPECT_TRUE(stdStartWith("abc", "abc"));
+
+		EXPECT_FALSE(stdStartWith("", "abc"));
+		EXPECT_FALSE(stdStartWith((const char*)nullptr, "abc"));
+	}
+}
+
+TEST(stdosd, stdEndWith)
+{
+	{
+		EXPECT_TRUE(stdEndWith("", string("")));
+
+		string s = "abc123";
+		EXPECT_TRUE(stdEndWith(s, string("123")));
+		EXPECT_TRUE(stdEndWith(s, "123"));
+		EXPECT_TRUE(stdEndWith("123", "123"));
+
+		EXPECT_FALSE(stdEndWith("", "abc"));
+		EXPECT_FALSE(stdEndWith((const char*)nullptr, "abc"));
+	}
+}
