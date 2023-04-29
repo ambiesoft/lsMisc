@@ -21,4 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-tstring getWindowTstring(HWND h);
+#include <string>
+std::wstring getWindowTitle(HWND h);
+std::wstring getWindowClassName(HWND h);

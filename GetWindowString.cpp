@@ -21,20 +21,20 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #include <windows.h>
 #include <tchar.h>
-#include "DebugNew.h"
-#include "tstring.h"
+#include <memory>
+#include <cassert>
 
-tstring getWindowTstring(HWND h)
+#include "DebugNew.h"
+
+#include "GetWindowString.h"
+
+using namespace std;
+
+wstring getWindowTitle(HWND h)
 {
-	tstring ret;
+	wstring ret;
 	int len = GetWindowTextLength(h);
 	if(len <= 0)
 		return ret;
@@ -56,5 +56,28 @@ tstring getWindowTstring(HWND h)
 		return ret;
 
 	ret = p;
+	return ret;
+}
+
+wstring getWindowClassName(HWND h)
+{
+	wstring ret;
+	const size_t startSize = 64;
+	size_t memlen = startSize;
+	unique_ptr<wchar_t[]> p;
+	for (; memlen < (startSize * 1024); )
+	{
+		p.reset(new wchar_t[memlen]);
+		int retlen = GetClassName(h, p.get(), memlen);
+		if (retlen <= 0)
+			return ret;
+
+		if ((retlen + 1) != memlen)
+			return p.get();
+
+		// not enough buffer
+		memlen *= 2;
+	}
+	assert(false);
 	return ret;
 }
