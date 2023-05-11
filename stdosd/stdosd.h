@@ -110,6 +110,12 @@ namespace Ambiesoft {
 #endif
 		using osdstring = std::basic_string<SYSTEM_CHAR_TYPE>;
 
+        template <typename T, std::size_t N>
+        constexpr std::size_t stdCountOf(T const (&)[N]) noexcept
+        {
+            return N;
+        }
+
 		typedef void* HFILEITERATOR;
 		template<typename C>
 		class FileDirectoryInfo
@@ -2432,7 +2438,7 @@ namespace Ambiesoft {
 			const unsigned char* pByte = reinterpret_cast<const unsigned char*>(pData);
 			size_t pos = 0;
 			do {
-				size_t red = fread(buff, sizeof(buff[0]), _countof(buff), f.get());
+                size_t red = fread(buff, sizeof(buff[0]), stdCountOf(buff), f.get());
 				if (red == 0)
 					return false;
 				if (0 != memcmp(buff, pByte + pos, red))

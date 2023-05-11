@@ -1194,9 +1194,9 @@ TEST(stdosd, stdGetenv)
 
 	EXPECT_TRUE(stdGetenv("PATH").size() != 0);
 
-	_putenv("AAA=XXX");
-	EXPECT_STREQ(stdGetenv("AAA").c_str(), "XXX");
 #ifdef _WIN32
+    _putenv("AAA=XXX");
+    EXPECT_STREQ(stdGetenv("AAA").c_str(), "XXX");
 	GetEnvironmentVariableA("AAA", szT, sizeof(szT));
 	EXPECT_STREQ(szT, "XXX");
 #endif
@@ -1424,11 +1424,13 @@ TEST(stdosd, DetectVM)
 
 TEST(stdosd, stdGetHexString)
 {
+#ifdef _WIN32
 	EXPECT_STREQ(stdGetHexString(0).c_str(), L"0");
 	EXPECT_STREQ(stdGetHexString(1).c_str(), L"1");
 	EXPECT_STREQ(stdGetHexString(10).c_str(), L"a");
 	EXPECT_STREQ(stdGetHexString(0x12345).c_str(), L"12345");
 	EXPECT_STREQ(stdGetHexString(0x12345abcdef).c_str(), L"12345abcdef");
+#endif
 
 	EXPECT_STREQ(stdGetHexString<char>(0).c_str(), "0");
 	EXPECT_STREQ(stdGetHexString<char>(1).c_str(), "1");
@@ -1449,7 +1451,7 @@ TEST(stdosd, stdAddPathSeparator)
 	EXPECT_TRUE(s == "C:\\aaa/" || s == "C:\\aaa\\");
 
 	s = stdAddPathSeparator("C:\\aaa\\");
-	EXPECT_TRUE(s == "C:\\aaa/" || s == "C:\\aaa\\");
+    EXPECT_TRUE(s == "C:\\aaa/" || s == "C:\\aaa\\" || s == "C:\\aaa\\/");
 
 	ws = L"C:\\aaa";
 	ws = stdAddPathSeparator(ws);
@@ -1500,7 +1502,11 @@ TEST(stdosd, stdGetFileSize)
 	}
 	
 	EXPECT_EQ(stdGetFileSize(filename.c_str()), 3);
+
+#ifdef _WIN32
 	EXPECT_EQ(stdGetFileSize(wfilename.c_str()), 3);
+#endif
+
 #undef STR
 }
 

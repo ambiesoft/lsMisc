@@ -4,10 +4,11 @@
 // #include "stdafx.h"
 
 #include <memory>
-#include <conio.h>
+
 #ifdef _WIN32
 #include <Windows.h>
 #include <mbctype.h>
+#include <conio.h>
 #endif
 #include "../DebugNew.h"
 #include "gtest/gtest.h"
