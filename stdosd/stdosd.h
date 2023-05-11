@@ -163,6 +163,10 @@ namespace Ambiesoft {
 		inline size_t stdStringLength(const wchar_t* p) {
 			return wcslen(p);
 		}
+		template<typename C>
+		inline size_t stdStringLength(const std::basic_string<C>& str) {
+			return str.size();
+		}
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
 		inline static int myStrCaseCmp(const char* left, const char* right) {
@@ -2396,6 +2400,53 @@ namespace Ambiesoft {
 			return stdEndWith(s.c_str(), end.c_str());
 		}
 
+
+		inline long stdGetFileSize(const char* pFile)
+		{
+			struct stat stat_buf;
+			int rc = stat(pFile, &stat_buf);
+			return rc == 0 ? stat_buf.st_size : -1;
+		}
+#ifdef _WIN32
+		inline long stdGetFileSize(const wchar_t* pFile)
+		{
+			struct _stat  stat_buf;
+			int rc = _wstat(pFile, &stat_buf);
+			return rc == 0 ? stat_buf.st_size : -1;
+		}
+#endif
+
+		// Compare memory and file content
+		template<typename C = SYSTEM_CHAR_TYPE>
+		inline bool stdIsFileSameWithMemory(const C* pFileName, const void* pData, const size_t size)
+		{
+			if (stdGetFileSize(pFileName) != size)
+				return false;
+
+			std::unique_ptr<FILE, std::function<int(FILE*)>> f(stdOpenFile(pFileName, stdLiterals<C>::FileModeReadByte()),
+				fclose);
+			if (!f)
+				return false;
+
+			unsigned char buff[256];
+			const unsigned char* pByte = reinterpret_cast<const unsigned char*>(pData);
+			size_t pos = 0;
+			do {
+				size_t red = fread(buff, sizeof(buff[0]), _countof(buff), f.get());
+				if (red == 0)
+					return false;
+				if (0 != memcmp(buff, pByte + pos, red))
+					return false;
+				pos += red;
+			} while (pos < size);
+
+			return true;
+		}
+		template<typename C = SYSTEM_CHAR_TYPE>
+		inline bool stdIsFileSameWithMemory(const std::basic_string<C> file, const void* pData, const size_t size)
+		{
+			return stdIsFileSameWithMemory(file.c_str(), pData, size);
+		}
 	}
 }
 

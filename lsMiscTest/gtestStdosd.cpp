@@ -13,6 +13,8 @@
 
 #include <inttypes.h>
 #include <limits>
+#include <iostream>
+#include <fstream>
 
 #include "gtest/gtest.h"
 
@@ -21,15 +23,9 @@
 #include "../stdosd/CNativeValue.h"
 #include "../stdosd/DetectVM.h"
 
-// Don't do this
-// #include "../stdwin32/stdwin32.h"
-
-
-
 using namespace Ambiesoft::stdosd;
 // using namespace Ambiesoft::stdwin32;
 using namespace std;
-
 
 TEST(stdosd, stdIsDigitTest)
 {
@@ -1487,5 +1483,89 @@ TEST(stdosd, stdEndWith)
 
 		EXPECT_FALSE(stdEndWith("", "abc"));
 		EXPECT_FALSE(stdEndWith((const char*)nullptr, "abc"));
+	}
+}
+
+
+
+
+TEST(stdosd, stdGetFileSize)
+{
+#define STR "test_stdGetFileSize"
+	string filename = STR;
+	wstring wfilename = STDOSD_WCHARLITERAL(STR);
+	{
+		ofstream ofs(filename, std::ios::binary);
+		ofs << "aaa";
+	}
+	
+	EXPECT_EQ(stdGetFileSize(filename.c_str()), 3);
+	EXPECT_EQ(stdGetFileSize(wfilename.c_str()), 3);
+#undef STR
+}
+
+
+TEST(stdosd, stdIsFileSameWithMemory)
+{
+#define STR "test_stdIsFileSameWithMemory"
+	string filename = STR;
+	wstring wfilename = STDOSD_WCHARLITERAL(STR);
+#undef STR
+	{
+		const char* data = "abc";
+		{
+			ofstream ofs(filename, std::ios::binary);
+			ofs << data;
+		}
+
+		EXPECT_TRUE(stdIsFileSameWithMemory(filename, data, stdStringLength(data)));
+		EXPECT_FALSE(stdIsFileSameWithMemory(filename, nullptr, 0));
+		EXPECT_FALSE(stdIsFileSameWithMemory("notexistantfile", data, stdStringLength(data)));
+	}
+	{
+		string data;
+		for (int i = 0; i < 256; ++i)
+			data += "d";
+		{
+			ofstream ofs(filename, std::ios::binary);
+			ofs << data;
+		}
+
+		EXPECT_TRUE(stdIsFileSameWithMemory(filename, data.c_str(), stdStringLength(data)));
+		EXPECT_FALSE(stdIsFileSameWithMemory(filename, nullptr, 0));
+		EXPECT_FALSE(stdIsFileSameWithMemory("notexistantfile", data.c_str(), stdStringLength(data)));
+	}
+	{
+		string data;
+		for (int i = 0; i < 257; ++i)
+			data += "d";
+		{
+			ofstream ofs(filename, std::ios::binary);
+			ofs << data;
+		}
+
+		EXPECT_TRUE(stdIsFileSameWithMemory(filename, data.c_str(), stdStringLength(data)));
+		EXPECT_FALSE(stdIsFileSameWithMemory(filename, nullptr, 0));
+		EXPECT_FALSE(stdIsFileSameWithMemory("notexistantfile", data.c_str(), stdStringLength(data)));
+	}
+	{
+		const char* data = R"(abc
+fewwwwwwwwwwwwwwwwwwwwwwwww fjweo fw efjwaoj fow fwejfoiewajf
+fjwoej  jwoejfwe
+jfojaweofjeowjfoijewaoifjawjf
+
+
+fjewojafawoijfoiewajfowjeaofweij
+fjffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffwejfoewjfoiewior23487320497237423740237402387fuaufeuwafuewaajdfjajfewa:fewa3904832947238974203978fajsv,,c,ajlkfjaenvnvakjerjaw34983725892375043759afhasfhdsahfdsafsad
+efwefweafhewa
+)";
+		{
+			ofstream ofs(filename, std::ios::binary);
+			ofs << data;
+		}
+
+		EXPECT_TRUE(stdIsFileSameWithMemory(filename, data, stdStringLength(data)));
+		EXPECT_FALSE(stdIsFileSameWithMemory(filename, nullptr, 0));
+		EXPECT_FALSE(stdIsFileSameWithMemory("notexistantfile", data, stdStringLength(data)));
 	}
 }

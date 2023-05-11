@@ -218,9 +218,6 @@
     <ClCompile Include="..\StartProcess.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\stringEndwith.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\UnHtmlEntity.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -318,9 +315,6 @@
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="..\PragmaShowVersions.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\GetWindowTstring.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
     <ClCompile Include="gtestOpParser.cpp">
@@ -708,9 +702,6 @@
     <ClInclude Include="..\StartProcess.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\stringEndwith.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\tlsMap.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -775,9 +766,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\GetFromHtmlLikeDataW.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GetWindowTstring.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">

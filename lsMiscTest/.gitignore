@@ -8,3 +8,5 @@ build/
 stdosd.pro.user.4.8-pre1
 *.aps
 
+test_stdGetFileSize
+test_stdIsFileSameWithMemory

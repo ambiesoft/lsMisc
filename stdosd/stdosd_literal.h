@@ -215,6 +215,8 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(commandlinetwotoinfiniteargs, "Arg1 Arg2 [Arg3 [...]]");\
 			STDOSD_DEFINE_STRINGFUNCTION(Arg,"Arg");									\
 			STDOSD_DEFINE_STRINGFUNCTION(OptionPrefix,"-/");							\
+			STDOSD_DEFINE_STRINGFUNCTION(FileModeRead,"r");								\
+			STDOSD_DEFINE_STRINGFUNCTION(FileModeReadByte,"rb");						\
 			STDOSD_DEFINE_STRINGFUNCTION(FileModeWrite,"w");							\
 			STDOSD_DEFINE_STRINGFUNCTION(FileModeWriteByte,"wb");						\
 			STDOSD_DEFINE_STRINGFUNCTION(VideoFileExtensions,"3g2;3gp;amv;asf;avi;avs;divx;drc;f4a;f4b;f4p;f4v;flv;m2v;m4p;m4v;mkv;mng;mov;mp2;mp4;mpe;mpeg;mpg;mpv;mxf;nsv;ogm;ogv;qt;rm;rmvb;roq;svi;swf;vob;webm;wmv;yuv");						\
