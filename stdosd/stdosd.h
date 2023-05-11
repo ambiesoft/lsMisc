@@ -116,6 +116,19 @@ namespace Ambiesoft {
             return N;
         }
 
+		// https://stackoverflow.com/a/15208908
+		template<typename T, typename U>
+		bool stdIsAllEqual(T&& t, U&& u)
+		{
+			return (t == u);
+		}
+
+		template<typename T, typename U, typename... Ts>
+		bool stdIsAllEqual(T&& t, U&& u, Ts&&... args)
+		{
+			return (t == u) && stdIsAllEqual(u, std::forward<Ts>(args)...);
+		}
+
 		typedef void* HFILEITERATOR;
 		template<typename C>
 		class FileDirectoryInfo

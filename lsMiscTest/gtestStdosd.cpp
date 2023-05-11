@@ -1584,3 +1584,14 @@ TEST(stdosd, stdCountOf)
 	char cr[] = { 1,2,3 };
 	EXPECT_EQ(stdCountOf(cr), 3);
 }
+
+TEST(stdosd, stdIsAllEqual)
+{
+	EXPECT_TRUE(stdIsAllEqual(1, 1));
+	EXPECT_TRUE(stdIsAllEqual(1, 1,1,1));
+	EXPECT_TRUE(stdIsAllEqual(1, 1, 1, 1, 1));
+
+	EXPECT_FALSE(stdIsAllEqual(1, 1, 1, 1, 0));
+	EXPECT_FALSE(stdIsAllEqual(0, 1, 1, 1, 0));
+	EXPECT_FALSE(stdIsAllEqual(0, 2));
+}
