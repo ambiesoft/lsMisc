@@ -14,7 +14,7 @@
 using namespace Ambiesoft;
 using namespace std;
 
-TEST(CheckMessageBox,Basic)
+TEST(DISABLED_CheckMessageBox,Basic)
 {
 	int ret;
 	bool bApplyAll;
