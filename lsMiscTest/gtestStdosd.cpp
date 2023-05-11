@@ -1575,3 +1575,12 @@ efwefweafhewa
 		EXPECT_FALSE(stdIsFileSameWithMemory("notexistantfile", data, stdStringLength(data)));
 	}
 }
+
+TEST(stdosd, stdCountOf)
+{
+	int ar[10];
+	EXPECT_EQ(stdCountOf(ar), 10);
+
+	char cr[] = { 1,2,3 };
+	EXPECT_EQ(stdCountOf(cr), 3);
+}
