@@ -232,16 +232,16 @@ namespace Ambiesoft {
 
 
 
-		inline bool isAsciiDigit(char c) {
+		inline bool stdIsAsciiDigit(char c) {
 			return ('0' <= c) && (c <= '9');
 		}
-		inline bool isAsciiDigit(wchar_t c) {
+		inline bool stdIsAsciiDigit(wchar_t c) {
 			return (L'0' <= c) && (c <= L'9');
 		}
 
 
 		template<typename C>
-		inline bool stdIsAsciiDigit(const C* str, size_t len = -1)
+		inline bool stdIsAsciiDigitString(const C* str, size_t len = -1)
 		{
 			if (isEmptyString(str, len))
 				return false;
@@ -251,34 +251,34 @@ namespace Ambiesoft {
 
 			for (size_t i = 0; i < len; ++i)
 			{
-				if (!isAsciiDigit(str[i]))
+				if (!stdIsAsciiDigit(str[i]))
 					return false;
 			}
 			return true;
 		}
-		inline bool stdIsAsciiDigit(const std::wstring& s)
+		inline bool stdIsAsciiDigitString(const std::wstring& s)
 		{
-			return stdIsAsciiDigit(s.c_str(), s.size());
+			return stdIsAsciiDigitString(s.c_str(), s.size());
 		}
-		inline bool stdIsAsciiDigit(const std::string& s)
+		inline bool stdIsAsciiDigitString(const std::string& s)
 		{
-			return stdIsAsciiDigit(s.c_str(), s.size());
+			return stdIsAsciiDigitString(s.c_str(), s.size());
 		}
 
 
 
 
 
-		inline bool isTdigit(char c)
+		inline bool stdIsDigit(char c)
 		{
 			return !!isdigit(c);
 		}
-		inline bool isTdigit(wchar_t c)
+		inline bool stdIsDigit(wchar_t c)
 		{
 			return !!iswdigit(c);
 		}
 		template<typename C>
-		inline bool stdIsTdigit(const C* str, size_t len = -1)
+		inline bool stdIsDigitString(const C* str, size_t len = -1)
 		{
 			if (isEmptyString(str, len))
 				return false;
@@ -288,18 +288,18 @@ namespace Ambiesoft {
 
 			for (size_t i = 0; i < len; ++i)
 			{
-				if (!isTdigit(str[i]))
+				if (!stdIsDigit(str[i]))
 					return false;
 			}
 			return true;
 		}
-		inline bool stdIsTdigit(const std::wstring& s)
+		inline bool stdIsDigitString(const std::wstring& s)
 		{
-			return stdIsTdigit(s.c_str(), s.size());
+			return stdIsDigitString(s.c_str(), s.size());
 		}
-		inline bool stdIsTdigit(const std::string& s)
+		inline bool stdIsDigitString(const std::string& s)
 		{
-			return stdIsTdigit(s.c_str(), s.size());
+			return stdIsDigitString(s.c_str(), s.size());
 		}
 
 #if defined(_MSC_VER) || defined(__MINGW32__)
@@ -334,6 +334,32 @@ namespace Ambiesoft {
 			return false;
 		}
 #endif
+
+		template<class C>
+		const C* stdSkipSpace(const C* p)
+		{
+			while (*p)
+			{
+				if (stdIsAsciiSpace(*p))
+					++p;
+				else
+					return p;
+			}
+			return p;
+		}
+
+		template<class C>
+		const C* stdSkipUntillSpace(const C* p)
+		{
+			while (*p)
+			{
+				if (!stdIsAsciiSpace(*p))
+					p++;
+				else
+					return p;
+			}
+			return p;
+		}
 
 		inline const wchar_t* getRChar(const wchar_t* p, wchar_t c)
 		{

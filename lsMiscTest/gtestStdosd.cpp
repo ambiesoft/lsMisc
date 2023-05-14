@@ -33,25 +33,25 @@ TEST(stdosd, stdIsDigitTest)
     const wchar_t* zenNum = L"１２３";
     // const char16_t* t16 = u"１２３";
 
-    EXPECT_TRUE(stdIsAsciiDigit(L"123"));
-	EXPECT_TRUE(stdIsAsciiDigit("0993"));
-	EXPECT_TRUE(stdIsAsciiDigit(wstring(L"123")));
-	EXPECT_TRUE(stdIsAsciiDigit(string("09")));
-	EXPECT_FALSE(stdIsAsciiDigit(zenNum));
-	EXPECT_FALSE(stdIsAsciiDigit(wstring(zenNum)));
+    EXPECT_TRUE(stdIsAsciiDigitString(L"123"));
+	EXPECT_TRUE(stdIsAsciiDigitString("0993"));
+	EXPECT_TRUE(stdIsAsciiDigitString(wstring(L"123")));
+	EXPECT_TRUE(stdIsAsciiDigitString(string("09")));
+	EXPECT_FALSE(stdIsAsciiDigitString(zenNum));
+	EXPECT_FALSE(stdIsAsciiDigitString(wstring(zenNum)));
 
-	EXPECT_TRUE(stdIsTdigit(L"123"));
-	EXPECT_TRUE(stdIsTdigit("0993"));
-	EXPECT_TRUE(stdIsTdigit(wstring(L"123")));
-	EXPECT_TRUE(stdIsTdigit(string("09")));
+	EXPECT_TRUE(stdIsDigitString(L"123"));
+	EXPECT_TRUE(stdIsDigitString("0993"));
+	EXPECT_TRUE(stdIsDigitString(wstring(L"123")));
+	EXPECT_TRUE(stdIsDigitString(string("09")));
 #if defined(_MSC_VER) || defined(__MINGW32__)
-    EXPECT_TRUE(stdIsTdigit(zenNum));
-    EXPECT_TRUE(stdIsTdigit(wstring(zenNum)));
+    EXPECT_TRUE(stdIsDigitString(zenNum));
+    EXPECT_TRUE(stdIsDigitString(wstring(zenNum)));
 #else
-    EXPECT_TRUE(!stdIsTdigit(zenNum));
-    EXPECT_TRUE(!stdIsTdigit(wstring(zenNum)));
+    EXPECT_TRUE(!stdIsDigitString(zenNum));
+    EXPECT_TRUE(!stdIsDigitString(wstring(zenNum)));
 #endif
-    // EXPECT_TRUE(stdIsTdigit(t16));
+    // EXPECT_TRUE(stdIsDigitString(t16));
 }
 
 TEST(stdosd, GetFileName)
