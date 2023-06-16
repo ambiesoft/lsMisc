@@ -46,10 +46,17 @@
 
 namespace Ambiesoft {
 
+	// Our root exception class
+	class CCommandLineParserException : public std::exception
+	{
+	public:
+		virtual std::wstring wwhat() const = 0;
+	};
+
 	template <class T, class I>
 	class illegal_value_type_error;
 	template <class I>
-	class illegal_value_type_error<std::string, I> : public std::exception
+	class illegal_value_type_error<std::string, I> : public CCommandLineParserException
 	{
 		std::string s_;
 		mutable std::string buff_;
@@ -69,7 +76,7 @@ namespace Ambiesoft {
 		}
 	};
 	template <class I>
-	class illegal_value_type_error<std::wstring,I> : public std::exception
+	class illegal_value_type_error<std::wstring,I> : public CCommandLineParserException
 	{
 		std::wstring s_;
 		mutable std::string buff_;
@@ -92,7 +99,7 @@ namespace Ambiesoft {
 			buff_ = toStdAcpString(getErrorString());
 			return buff_.c_str();
 		}
-		std::wstring wwhat() const {
+		virtual std::wstring wwhat() const {
 			return getErrorString();
 		}
 	};
@@ -108,7 +115,7 @@ namespace Ambiesoft {
 	template <class T>
 	class no_value_error;
 	template <>
-	class no_value_error<std::string> : public std::exception
+	class no_value_error<std::string> : public CCommandLineParserException
 	{
 		std::string op_;
 		mutable std::string buff_;
@@ -128,7 +135,7 @@ namespace Ambiesoft {
 		}
 	};
 	template <>
-	class no_value_error<std::wstring> : public std::exception
+	class no_value_error<std::wstring> : public CCommandLineParserException
 	{
 		std::wstring op_;
 		mutable std::string buff_;
@@ -151,7 +158,7 @@ namespace Ambiesoft {
 			buff_ = toStdAcpString(getErrorString());
 			return buff_.c_str();
 		}
-		std::wstring wwhat() const {
+		virtual std::wstring wwhat() const {
 			return getErrorString();
 		}
 	};
@@ -1046,9 +1053,13 @@ typedef BasicOption<std::string> COptionA;
 			for (auto&& op : unknowns_)
 				delete op;
 		}
-			void setStrict() {
+		
+		// Call after the instanciation
+		// if 'strict_' is true, Pasre() will throw CCommandLineParserException
+		void setStrict() {
 			strict_ = true;
 		}
+
 		MyS_ getHelpMessage() const {
 			return getHelpMessage(std::vector<const Elem*>());
 		}
