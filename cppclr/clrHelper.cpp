@@ -20,12 +20,13 @@
 //LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
-#include "stdafx.h"
+
+#ifdef __cplusplus_cli
 #include <Windows.h>
 #include <vcclr.h>
 #include "clrHelper.h"
 
-#ifdef __cplusplus_cli
+#pragma comment(lib,"Shell32.lib")
 
 using namespace System;
 using namespace System::Windows::Forms;
