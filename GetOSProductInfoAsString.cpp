@@ -26,6 +26,10 @@
 
 #include "GetOSProductInfoAsString.h"
 
+#ifndef PRODUCT_XBOX_KEYSTONE
+#define PRODUCT_XBOX_KEYSTONE                       0x000000C6
+#endif
+
 namespace Ambiesoft {
 
 	std::wstring GetOSProductInfoAsString()
