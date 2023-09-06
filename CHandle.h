@@ -23,7 +23,7 @@
 
 #pragma once
 #include <cassert>
-#include <xstddef>  // for 'addressof'
+//#include <xstddef>  // for 'addressof'
 #include <Windows.h>
 
 #ifndef NDEBUG
