@@ -436,7 +436,7 @@ namespace Ambiesoft {
 
 		template<typename C>
 		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>> 
-			stdGetFileNameWitoutExtension(const C* pPath)
+			stdGetFileNameWithoutExtension(const C* pPath)
 		{
 			if (!pPath)
                 return std::basic_string<C>();
@@ -454,13 +454,13 @@ namespace Ambiesoft {
             ret.assign(pFilename, len);
 			return ret;
 		}
-		inline std::string stdGetFileNameWitoutExtension(const std::string& w)
+		inline std::string stdGetFileNameWithoutExtension(const std::string& w)
 		{
-			return stdGetFileNameWitoutExtension(w.c_str());
+			return stdGetFileNameWithoutExtension(w.c_str());
 		}
-		inline std::wstring stdGetFileNameWitoutExtension(const std::wstring& w)
+		inline std::wstring stdGetFileNameWithoutExtension(const std::wstring& w)
 		{
-			return stdGetFileNameWitoutExtension(w.c_str());
+			return stdGetFileNameWithoutExtension(w.c_str());
 		}
 
 

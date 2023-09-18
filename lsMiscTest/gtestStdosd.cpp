@@ -101,21 +101,21 @@ TEST(stdosd, GetFileExtension)
 
 TEST(stdosd, GetFileNameWitoutExtension)
 {
-	EXPECT_STREQ(stdGetFileNameWitoutExtension((char*)nullptr).c_str(), "");
-	EXPECT_STREQ(stdGetFileNameWitoutExtension("").c_str(), "");
-	EXPECT_STREQ(stdGetFileNameWitoutExtension(L"").c_str(), L"");
-	EXPECT_EQ(stdGetFileNameWitoutExtension(string("")), string(""));
-	EXPECT_EQ(stdGetFileNameWitoutExtension(wstring(L"")), wstring(L""));
+	EXPECT_STREQ(stdGetFileNameWithoutExtension((char*)nullptr).c_str(), "");
+	EXPECT_STREQ(stdGetFileNameWithoutExtension("").c_str(), "");
+	EXPECT_STREQ(stdGetFileNameWithoutExtension(L"").c_str(), L"");
+	EXPECT_EQ(stdGetFileNameWithoutExtension(string("")), string(""));
+	EXPECT_EQ(stdGetFileNameWithoutExtension(wstring(L"")), wstring(L""));
 
-	EXPECT_STREQ(stdGetFileNameWitoutExtension("aaa.exe").c_str(), "aaa");
-	EXPECT_STREQ(stdGetFileNameWitoutExtension(L"aaa.exe").c_str(), L"aaa");
-	EXPECT_EQ(stdGetFileNameWitoutExtension(string("aaa.exe")), string("aaa"));
-	EXPECT_EQ(stdGetFileNameWitoutExtension(wstring(L"aaa.exe")), wstring(L"aaa"));
+	EXPECT_STREQ(stdGetFileNameWithoutExtension("aaa.exe").c_str(), "aaa");
+	EXPECT_STREQ(stdGetFileNameWithoutExtension(L"aaa.exe").c_str(), L"aaa");
+	EXPECT_EQ(stdGetFileNameWithoutExtension(string("aaa.exe")), string("aaa"));
+	EXPECT_EQ(stdGetFileNameWithoutExtension(wstring(L"aaa.exe")), wstring(L"aaa"));
 
-	EXPECT_STREQ(stdGetFileNameWitoutExtension("S:/zzz/eee/ff fee/iii/\\/fff.txt").c_str(), "fff");
-	EXPECT_STREQ(stdGetFileNameWitoutExtension(L"S:/zzz/eee/ff fee/iii/\\/fff.txt").c_str(), L"fff");
-	EXPECT_EQ(stdGetFileNameWitoutExtension(string("S:/zzz/eee/ff fee/iii/\\/fff.txt")), string("fff"));
-	EXPECT_EQ(stdGetFileNameWitoutExtension(wstring(L"S:/zzz/eee/ff fee/iii/\\/fff.txt")), wstring(L"fff"));
+	EXPECT_STREQ(stdGetFileNameWithoutExtension("S:/zzz/eee/ff fee/iii/\\/fff.txt").c_str(), "fff");
+	EXPECT_STREQ(stdGetFileNameWithoutExtension(L"S:/zzz/eee/ff fee/iii/\\/fff.txt").c_str(), L"fff");
+	EXPECT_EQ(stdGetFileNameWithoutExtension(string("S:/zzz/eee/ff fee/iii/\\/fff.txt")), string("fff"));
+	EXPECT_EQ(stdGetFileNameWithoutExtension(wstring(L"S:/zzz/eee/ff fee/iii/\\/fff.txt")), wstring(L"fff"));
 }
 
 TEST(stdosd, SplitStringA)

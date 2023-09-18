@@ -46,7 +46,7 @@ namespace Ambiesoft
 	CProfiler::CProfiler()
 	{
 		tick_ = GetTickCount();
-		string name = stdGetFileNameWitoutExtension(stdGetModuleFileNameA()) + ".profile";
+		string name = stdGetFileNameWithoutExtension(stdGetModuleFileNameA()) + ".profile";
 		fopen_s(&file_, name.c_str(), "w");
 	}
 	CProfiler::~CProfiler()

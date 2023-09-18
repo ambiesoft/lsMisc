@@ -16,7 +16,7 @@ using namespace std;
 static wstring GetIniFile()
 {
 	return stdCombinePath(stdGetParentDirectory(stdGetModuleFileName<wchar_t>()),
-		stdGetFileNameWitoutExtension(stdGetModuleFileName<wchar_t>()) + L".sqlite");
+		stdGetFileNameWithoutExtension(stdGetModuleFileName<wchar_t>()) + L".sqlite");
 }
 static wstring GetTestIniFile()
 {
