@@ -164,7 +164,7 @@ namespace Ambiesoft {
 
         std::basic_string<::Ambiesoft::stdosd::SYSTEM_CHAR_TYPE> stdGetProgramName()
 		{
-            return stdGetFileNameWitoutExtension(stdGetModuleFileName<Ambiesoft::stdosd::SYSTEM_CHAR_TYPE>());
+            return stdGetFileNameWithoutExtension(stdGetModuleFileName<Ambiesoft::stdosd::SYSTEM_CHAR_TYPE>());
 		}
 
 		template<typename C>

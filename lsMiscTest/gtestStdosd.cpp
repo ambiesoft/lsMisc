@@ -118,6 +118,25 @@ TEST(stdosd, GetFileNameWitoutExtension)
 	EXPECT_EQ(stdGetFileNameWithoutExtension(wstring(L"S:/zzz/eee/ff fee/iii/\\/fff.txt")), wstring(L"fff"));
 }
 
+TEST(stdosd, stdRemoveExtension)
+{
+	EXPECT_STREQ(stdRemoveExtension((char*)nullptr).c_str(), "");
+	EXPECT_STREQ(stdRemoveExtension("").c_str(), "");
+	EXPECT_STREQ(stdRemoveExtension(L"").c_str(), L"");
+	EXPECT_EQ(stdRemoveExtension(string("")), string(""));
+	EXPECT_EQ(stdRemoveExtension(wstring(L"")), wstring(L""));
+
+	EXPECT_STREQ(stdRemoveExtension("aaa.exe").c_str(), "aaa");
+	EXPECT_STREQ(stdRemoveExtension(L"aaa.exe").c_str(), L"aaa");
+	EXPECT_EQ(stdRemoveExtension(string("aaa.exe")), string("aaa"));
+	EXPECT_EQ(stdRemoveExtension(wstring(L"aaa.exe")), wstring(L"aaa"));
+
+	EXPECT_STREQ(stdRemoveExtension("S:/zzz/eee/ff fee/iii/\\/fff.txt").c_str(), "S:/zzz/eee/ff fee/iii/\\/fff");
+	EXPECT_STREQ(stdRemoveExtension(L"S:/zzz/eee/ff fee/iii/\\/fff.txt").c_str(), L"S:/zzz/eee/ff fee/iii/\\/fff");
+	EXPECT_EQ(stdRemoveExtension(string("S:/zzz/eee/ff fee/iii/\\/fff.txt")), string("S:/zzz/eee/ff fee/iii/\\/fff"));
+	EXPECT_EQ(stdRemoveExtension(wstring(L"S:/zzz/eee/ff fee/iii/\\/fff.txt")), wstring(L"S:/zzz/eee/ff fee/iii/\\/fff"));
+}
+
 TEST(stdosd, SplitStringA)
 {
 	vector<string> v;

@@ -464,6 +464,34 @@ namespace Ambiesoft {
 		}
 
 
+		template<typename C>
+		inline std::basic_string<C, std::char_traits<C>, std::allocator<C>>
+			stdRemoveExtension(const C* pPath)
+		{
+			if (!pPath)
+				return std::basic_string<C>();
+
+			const C* pExt = getRChar(pPath, stdLiterals<C>::period);
+			if (!pExt)
+				return pPath;
+
+			std::basic_string<C> ret;
+			size_t len = (pExt - pPath);
+			ret.assign(pPath, len);
+			return ret;
+		}
+		inline std::string stdRemoveExtension(const std::string& w)
+		{
+			return stdRemoveExtension(w.c_str());
+		}
+		inline std::wstring stdRemoveExtension(const std::wstring& w)
+		{
+			return stdRemoveExtension(w.c_str());
+		}
+
+
+
+
 
 
 		template<typename C>
