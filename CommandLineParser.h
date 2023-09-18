@@ -50,7 +50,7 @@ namespace Ambiesoft {
 	class CCommandLineParserException : public std::exception
 	{
 	public:
-		virtual std::wstring wwhat() const = 0;
+		virtual std::wstring wwhat() const { return std::wstring(); };
 	};
 
 	template <class T, class I>
