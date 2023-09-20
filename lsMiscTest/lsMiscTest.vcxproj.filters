@@ -466,6 +466,12 @@
     <ClCompile Include="gtestCheckMessageBox.cpp">
       <Filter>GTest Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\IsDuplicateInstance.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestIsDuplicateInstance.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -857,6 +863,9 @@
     </ClInclude>
     <ClInclude Include="..\BringWinTop.h">
       <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\IsDuplicateInstance.h">
+      <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

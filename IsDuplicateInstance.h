@@ -23,15 +23,9 @@
 
 #pragma once
 #include <Windows.h>
-#include <shellapi.h>
 
 namespace Ambiesoft {
-	BOOL AddTrayIcon(HWND hWnd, UINT dwIDandCallbackMessage, HICON hIcon, LPCTSTR pszTip);
-	BOOL PopupTrayIcon(HWND hWnd, 
-		UINT dwIDandCallbackMessage, 
-		HICON hIcon, 
-		LPCTSTR pAppName,
-		LPCTSTR pszTip,
-		DWORD dwInfoFlags = NIIF_INFO);
-	BOOL RemoveTrayIcon(HWND hWnd, UINT dwIDandCallbackMessage);
-}
+
+	bool IsDuplicateInstance(LPCWSTR pMutexName);
+
+} // namespace

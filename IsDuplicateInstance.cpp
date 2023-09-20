@@ -22,70 +22,29 @@
 //SUCH DAMAGE.
 
 
-
-
-
-
-
-
-#ifndef _WINDOWS_
-#pragma message("including windows.h")
-#include <windows.h>
+// In MFC project, define AFX_INCLUDE_FILE="stdafx.h" which will be included here
+#if defined(AFX_INCLUDE_FILE)
+#include AFX_INCLUDE_FILE
 #endif
+
+
+#include <windows.h>
+
+#include "CHandle.h"
+#include "IsDuplicateInstance.h"
 #include "DebugNew.h"
-#include <shellapi.h>
 
 namespace Ambiesoft {
 
-
-	BOOL AddTrayIcon(HWND hWnd, UINT dwIDandCallbackMessage, HICON hIcon, LPCTSTR pszTip)
+	bool IsDuplicateInstance(LPCWSTR pMutexName)
 	{
-		NOTIFYICONDATA tnd = { 0 };
-		tnd.cbSize = sizeof(tnd);
-		tnd.hWnd = hWnd;
-		tnd.uID = dwIDandCallbackMessage;
-		tnd.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
-		tnd.uCallbackMessage = dwIDandCallbackMessage;
-		tnd.hIcon = hIcon;
-		if (pszTip)
-			lstrcpyn(tnd.szTip, pszTip, _countof(tnd.szTip) - 1);
-
-		return Shell_NotifyIcon(NIM_ADD, &tnd);
-	}
-
-	BOOL PopupTrayIcon(HWND hWnd, 
-		UINT dwIDandCallbackMessage, 
-		HICON hIcon,
-		LPCTSTR pAppName,
-		LPCTSTR pszTip,
-		DWORD dwInfoFlags)
-	{
-		NOTIFYICONDATA tnd = { 0 };
-		tnd.cbSize = sizeof(tnd);
-		tnd.hWnd = hWnd;
-		tnd.uID = dwIDandCallbackMessage;
-		tnd.uFlags = NIF_ICON | NIF_INFO;
-		tnd.hIcon = hIcon;
-		if (pszTip)
-		{
-			lstrcpyn(tnd.szInfo, pszTip, _countof(tnd.szTip) - 1);
+		static CKernelHandle hDupCheck;
+		if (hDupCheck) {
+			// Second call from same instance
+			return false;
 		}
-		lstrcpyn(tnd.szInfoTitle, pAppName, _countof(tnd.szInfoTitle) - 1);
-		tnd.dwInfoFlags = dwInfoFlags;
-
-		return Shell_NotifyIcon(NIM_MODIFY, &tnd);
-	}
-
-	BOOL RemoveTrayIcon(HWND hWnd, UINT dwIDandCallbackMessage)
-	{
-		NOTIFYICONDATA tnd = { 0 };
-		tnd.cbSize = sizeof(tnd);
-		tnd.hWnd = hWnd;
-		tnd.uID = dwIDandCallbackMessage;
-		tnd.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
-		tnd.uCallbackMessage = dwIDandCallbackMessage;
-
-		return Shell_NotifyIcon(NIM_DELETE, &tnd);
+		hDupCheck = CreateMutex(NULL, TRUE, pMutexName);
+		return GetLastError() == ERROR_ALREADY_EXISTS;
 	}
 
 } // namespace
