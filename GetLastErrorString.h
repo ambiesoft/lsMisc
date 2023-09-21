@@ -23,7 +23,6 @@
 
 #pragma once
 #include <Windows.h>
-#include "tstring.h"
 
 namespace Ambiesoft {
 	std::string GetLastErrorStringA(DWORD dwErrorNo, BOOL* pSeikou = NULL);
