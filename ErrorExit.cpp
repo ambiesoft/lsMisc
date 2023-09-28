@@ -18,7 +18,7 @@ namespace Ambiesoft {
 	{
 		MessageBox(NULL, 
 			pMessage, 
-			stdGetFileNameWitoutExtension(stdGetModuleFileName()).c_str(),
+			stdGetFileNameWithoutExtension(stdGetModuleFileName()).c_str(),
 			MB_ICONERROR);
 		ExitProcess(1);
 	}
