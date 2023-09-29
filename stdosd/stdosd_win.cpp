@@ -665,5 +665,41 @@ namespace Ambiesoft {
 			return stdGetenvImplCommon(varname, std::function<decltype(GetEnvironmentVariableW)>{GetEnvironmentVariableW});
 		}
 
+		std::basic_string<SYSTEM_CHAR_TYPE> stdGetLocalAppDirectory(
+			const std::basic_string<SYSTEM_CHAR_TYPE>& organization,
+			const std::basic_string<SYSTEM_CHAR_TYPE>& appName,
+			bool bCreate)
+		{
+			using S = std::basic_string<SYSTEM_CHAR_TYPE>;
+			wchar_t t[MAX_PATH];
+			if (FAILED(SHGetFolderPathW(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, t)))
+				return S();
+			if (!stdDirectoryExists(t))
+				return S();
+
+			S ret = stdCombinePath(t, organization);
+			if (bCreate)
+			{
+				stdMkDir(ret);
+				if (!stdDirectoryExists(ret))
+					return S();
+			}
+			ret = stdCombinePath(ret, appName);
+			if (bCreate)
+			{
+				stdMkDir(ret);
+				if (!stdDirectoryExists(ret))
+					return S();
+			}
+			return ret;
+		}
+
+		std::basic_string<SYSTEM_CHAR_TYPE> stdGetHomeDirectory()
+		{
+			return stdCombinePath(
+				stdGetenv(L"HOMEDRIVE"),
+				stdGetenv(stdLiterals<SYSTEM_CHAR_TYPE>::HomeEnvKey()));
+		}
+
 	}
 }

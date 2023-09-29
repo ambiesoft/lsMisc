@@ -1614,3 +1614,25 @@ TEST(stdosd, stdIsAllEqual)
 	EXPECT_FALSE(stdIsAllEqual(0, 1, 1, 1, 0));
 	EXPECT_FALSE(stdIsAllEqual(0, 2));
 }
+
+TEST(stdosd, stdGetLocalAppDirectory)
+{
+	basic_string<wchar_t> s;
+	
+	s = stdGetLocalAppDirectory(
+		STDOSD_SYSTEM_CHAR_LITERAL("Ambiesoft"),
+		STDOSD_SYSTEM_CHAR_LITERAL("lsMiscTest"),
+		false);
+	EXPECT_NE(s.length(), 0);
+
+	s = stdGetLocalAppDirectory(
+		STDOSD_SYSTEM_CHAR_LITERAL("Ambiesoft"),
+		STDOSD_SYSTEM_CHAR_LITERAL("lsMiscTest"),
+		true);
+	EXPECT_TRUE(stdIsSubDirectory(stdGetHomeDirectory(), s));
+}
+
+TEST(stdosd, stdGetHomeDirectory)
+{
+	EXPECT_TRUE(stdDirectoryExists(stdGetHomeDirectory()));
+}

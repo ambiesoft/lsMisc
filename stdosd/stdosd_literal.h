@@ -70,12 +70,14 @@ namespace Ambiesoft {
 	#define STDOSD_NEWLINE "\r\n"
 	#define STDOSD_ENVPATHSEPARATOR ';'
 	#define STDOSD_ENVPATHSEPARATORSTRING ";"
+	#define STDOSD_HOME_ENVKEY "HOMEPATH"
 #else
 	#define STDOSD_DEFAULTSEPARATORSTRING "/"
 	#define STDOSD_PATHSEPARATORSTRINGS "/"
 	#define STDOSD_NEWLINE "\n"
 	#define STDOSD_ENVPATHSEPARATOR ':'
 	#define STDOSD_ENVPATHSEPARATORSTRING ":"
+	#define STDOSD_HOME_ENVKEY "home"
 #endif
 
         template<typename C>
@@ -220,6 +222,7 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(FileModeWrite,"w");							\
 			STDOSD_DEFINE_STRINGFUNCTION(FileModeWriteByte,"wb");						\
 			STDOSD_DEFINE_STRINGFUNCTION(VideoFileExtensions,"3g2;3gp;amv;asf;avi;avs;divx;drc;f4a;f4b;f4p;f4v;flv;m2v;m4p;m4v;mkv;mng;mov;mp2;mp4;mpe;mpeg;mpg;mpv;mxf;nsv;ogm;ogv;qt;rm;rmvb;roq;svi;swf;vob;webm;wmv;yuv");						\
+			STDOSD_DEFINE_STRINGFUNCTION(HomeEnvKey,STDOSD_HOME_ENVKEY);						\
 		}
 
 #define STDOSD_DEFINE_CHAR(name, chara) static STDOSD_CONSTEXPR CHART name = LITEL(chara)
@@ -253,6 +256,7 @@ namespace Ambiesoft {
 #undef STDOSD_NEWLINE
 #undef STDOSD_ENVPATHSEPARATOR
 #undef STDOSD_ENVPATHSEPARATORSTRING
+#undef STDOSD_HOME_ENVKEY
 	}
 }
 

@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QSet>
+#include <QTextCodec>
 
 namespace AmbiesoftQt {
 

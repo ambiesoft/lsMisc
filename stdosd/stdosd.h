@@ -2520,6 +2520,15 @@ namespace Ambiesoft {
 		{
 			return stdIsFileSameWithMemory(file.c_str(), pData, size);
 		}
+
+
+        
+		std::basic_string<SYSTEM_CHAR_TYPE> stdGetLocalAppDirectory(
+			const std::basic_string<SYSTEM_CHAR_TYPE>& organization,
+			const std::basic_string<SYSTEM_CHAR_TYPE>& appName,
+			bool bCreate = false);
+
+		std::basic_string<SYSTEM_CHAR_TYPE> stdGetHomeDirectory();
 	}
 }
 

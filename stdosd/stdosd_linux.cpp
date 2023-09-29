@@ -263,5 +263,20 @@ namespace Ambiesoft {
                 return 0;
             }
         }
+
+        std::basic_string<SYSTEM_CHAR_TYPE> stdGetLocalAppDirectory(
+            const std::basic_string<SYSTEM_CHAR_TYPE>& organization,
+            const std::basic_string<SYSTEM_CHAR_TYPE>& appName,
+            bool bCreate)
+        {
+            using S = std::basic_string<SYSTEM_CHAR_TYPE>;
+            static_assert(false, "IMPLEMENT IT");
+        }
+
+        std::basic_string<SYSTEM_CHAR_TYPE> stdGetHomeDirectory()
+        {
+            return stdGetenv(stdLiterals<SYSTEM_CHAR_TYPE>::HomeEnvKey());
+        }
+
 	}
 }
