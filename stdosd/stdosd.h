@@ -1183,7 +1183,7 @@ namespace Ambiesoft {
         {
             return stdIsAsciiAlphaString(s.c_str(), s.size());
         }
-        inline bool stdIsAsciiDistdIsAsciiAlphaStringgitString(const std::string& s)
+        inline bool stdIsAsciiAlphaString(const std::string& s)
         {
             return stdIsAsciiAlphaString(s.c_str(), s.size());
         }
