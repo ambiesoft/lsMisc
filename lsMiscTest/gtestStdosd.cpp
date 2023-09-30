@@ -1636,3 +1636,48 @@ TEST(stdosd, stdGetHomeDirectory)
 {
 	EXPECT_TRUE(stdDirectoryExists(stdGetHomeDirectory()));
 }
+
+TEST(stdosd, stdIsAscii)
+{
+	EXPECT_TRUE(stdIsAscii('a'));
+	EXPECT_TRUE(stdIsAscii(L'a'));
+	EXPECT_TRUE(stdIsAscii(1));
+	EXPECT_TRUE(stdIsAscii(' '));
+
+	EXPECT_FALSE(stdIsAscii(-1));
+	EXPECT_FALSE(stdIsAscii(128));
+
+	// Must be Compile-error
+	// EXPECT_FALSE(stdIsAscii(""));
+	// EXPECT_FALSE(stdIsAscii(nullptr));
+	// struct ST {} st;
+	// EXPECT_FALSE(stdIsAscii(st));
+	// EXPECT_FALSE(stdIsAscii(0.0));
+	// EXPECT_FALSE(stdIsAscii(0.1));
+	// EXPECT_FALSE(stdIsAscii(true));
+
+	EXPECT_TRUE(stdIsAsciiString("123"));
+	EXPECT_TRUE(stdIsAsciiString(L"123"));
+	EXPECT_TRUE(stdIsAsciiString(L" "));
+	EXPECT_TRUE(stdIsAsciiString(L"-"));
+
+	const char* pA = u8"あいうえお";
+	const wchar_t* pW = L"あいうえお";
+	EXPECT_FALSE(stdIsAsciiString(pA));
+	EXPECT_FALSE(stdIsAsciiString(pW));
+}
+
+
+TEST(stdosd, stdAddToPATHEnvString)
+{
+	const char* dir = "C:\\vjoewjrjkaljfwejrjewkljrklajrerar\\bin";
+	{
+		string newPATH = stdAddToPATHEnvString(dir);
+		EXPECT_TRUE(stdGetenv("PATH").size() < newPATH.size());
+	}
+	{
+		string newPATH = stdAddToPATHEnvString(dir, TO_TOP);
+		EXPECT_TRUE(stdGetenv("PATH").size() < newPATH.size());
+		EXPECT_STREQ(dir, newPATH.substr(0, stdStringLength(dir)).c_str());
+	}
+}

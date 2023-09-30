@@ -232,13 +232,78 @@ namespace Ambiesoft {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		template<typename T, typename = std::enable_if_t<
+			std::is_arithmetic<T>::value &&
+			!std::is_floating_point<T>::value &&
+			!std::is_same<T, bool>::value>
+		>
+		inline bool stdIsAscii(T c) {
+			return (0 <= c) && (c <= 127);
+		}
+
+		template<typename C>
+		inline bool stdIsAsciiString(const C* str, size_t len = -1)
+		{
+			if (isEmptyString(str, len))
+				return false;
+
+			if (len == static_cast<size_t>(-1))
+				len = stdStringLength(str);
+
+			for (size_t i = 0; i < len; ++i)
+			{
+				if (!stdIsAscii(str[i]))
+					return false;
+			}
+			return true;
+		}
+		inline bool stdIsAsciiString(const std::wstring& s)
+		{
+			return stdIsAsciiString(s.c_str(), s.size());
+		}
+		inline bool stdIsAsciiString(const std::string& s)
+		{
+			return stdIsAsciiString(s.c_str(), s.size());
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		inline bool stdIsAsciiDigit(char c) {
 			return ('0' <= c) && (c <= '9');
 		}
 		inline bool stdIsAsciiDigit(wchar_t c) {
 			return (L'0' <= c) && (c <= L'9');
 		}
-
 
 		template<typename C>
 		inline bool stdIsAsciiDigitString(const C* str, size_t len = -1)
@@ -1100,6 +1165,33 @@ namespace Ambiesoft {
 			return false;
 		}
 
+        template<typename C>
+        inline bool stdIsAsciiAlphaString(const C* str, size_t len = -1)
+        {
+            if (isEmptyString(str, len))
+                return false;
+
+            if (len == static_cast<size_t>(-1))
+                len = stdStringLength(str);
+
+            for (size_t i = 0; i < len; ++i)
+            {
+                if (!stdIsAsciiAlpha(str[i]))
+                    return false;
+            }
+            return true;
+        }
+        inline bool stdIsAsciiAlphaString(const std::wstring& s)
+        {
+            return stdIsAsciiAlphaString(s.c_str(), s.size());
+        }
+        inline bool stdIsAsciiDistdIsAsciiAlphaStringgitString(const std::string& s)
+        {
+            return stdIsAsciiAlphaString(s.c_str(), s.size());
+        }
+
+
+
 		template<typename C>
 		inline bool stdIsAsciiSpace(const C c) {
 			return c == stdLiterals<C>::NSpace;
@@ -1671,6 +1763,29 @@ namespace Ambiesoft {
             return secure_getenv(varname);
         }
 #endif
+
+		enum ADD_TO_WHERE {
+			TO_TOP,
+			TO_TAIL,
+		};
+		template<typename C>
+		inline std::basic_string<C> stdAddToPATHEnvString(const C* addingPath, ADD_TO_WHERE toWhere = TO_TAIL)
+		{
+			using S = std::basic_string<C>;
+			S s = stdGetenv(stdLiterals<C>::PathEnvKey());
+			if (s.empty())
+				return addingPath;
+
+			if (toWhere == TO_TOP)
+			{
+				s = S() + addingPath + stdLiterals<C>::defaultEnvPathSeparatorString() + s;
+			}
+			else if (toWhere == TO_TAIL)
+			{
+				s = s + stdLiterals<C>::defaultEnvPathSeparatorString() + addingPath;
+			}
+			return s;
+		}
 
 
         inline bool stdFileExistsFromMode(unsigned short mode)

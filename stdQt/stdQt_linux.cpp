@@ -185,4 +185,8 @@ bool isRootDriveExists(const QString& path)
     Q_UNUSED(path);
     return true;
 }
+std::string QStringToStdString(const QString& inQ)
+{
+    return inQ.toStdString();
+}
 } // namespace

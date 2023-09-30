@@ -52,6 +52,12 @@ bool fileEmpty(const QString& path);
 bool isRootDriveExists(const QString& path);
 QChar getFirstCharcter(const QString& text, const QChar c = '_');
 void CenterWidgets(QWidget *widget, QWidget *host = Q_NULLPTR) ;
+
+#ifdef _WIN32
+std::wstring QStringToStdString(const QString& inQ);
+#else
+std::string QStringToStdString(const QString& inQ);
+#endif
 } // namespace AmbiesoftQt
 
 #endif // STDQT_H

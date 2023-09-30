@@ -223,6 +223,7 @@ namespace Ambiesoft {
 			STDOSD_DEFINE_STRINGFUNCTION(FileModeWriteByte,"wb");						\
 			STDOSD_DEFINE_STRINGFUNCTION(VideoFileExtensions,"3g2;3gp;amv;asf;avi;avs;divx;drc;f4a;f4b;f4p;f4v;flv;m2v;m4p;m4v;mkv;mng;mov;mp2;mp4;mpe;mpeg;mpg;mpv;mxf;nsv;ogm;ogv;qt;rm;rmvb;roq;svi;swf;vob;webm;wmv;yuv");						\
 			STDOSD_DEFINE_STRINGFUNCTION(HomeEnvKey,STDOSD_HOME_ENVKEY);						\
+			STDOSD_DEFINE_STRINGFUNCTION(PathEnvKey,"PATH");						\
 		}
 
 #define STDOSD_DEFINE_CHAR(name, chara) static STDOSD_CONSTEXPR CHART name = LITEL(chara)

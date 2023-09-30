@@ -443,4 +443,8 @@ bool isRootDriveExists(const QString& path)
         return true;
     return QDir(getRoot(path)).exists();
 }
+std::wstring QStringToStdString(const QString& inQ)
+{
+    return inQ.toStdWString();
+}
 }
