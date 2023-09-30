@@ -77,7 +77,7 @@ namespace Ambiesoft {
 	#define STDOSD_NEWLINE "\n"
 	#define STDOSD_ENVPATHSEPARATOR ':'
 	#define STDOSD_ENVPATHSEPARATORSTRING ":"
-	#define STDOSD_HOME_ENVKEY "home"
+    #define STDOSD_HOME_ENVKEY "HOME"
 #endif
 
         template<typename C>

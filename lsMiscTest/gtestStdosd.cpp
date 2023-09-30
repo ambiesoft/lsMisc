@@ -1617,13 +1617,13 @@ TEST(stdosd, stdIsAllEqual)
 
 TEST(stdosd, stdGetLocalAppDirectory)
 {
-	basic_string<wchar_t> s;
+    basic_string<SYSTEM_CHAR_TYPE> s;
 	
 	s = stdGetLocalAppDirectory(
 		STDOSD_SYSTEM_CHAR_LITERAL("Ambiesoft"),
 		STDOSD_SYSTEM_CHAR_LITERAL("lsMiscTest"),
 		false);
-	EXPECT_NE(s.length(), 0);
+    EXPECT_NE(s.length(), 0);
 
 	s = stdGetLocalAppDirectory(
 		STDOSD_SYSTEM_CHAR_LITERAL("Ambiesoft"),
