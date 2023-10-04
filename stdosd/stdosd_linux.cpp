@@ -320,12 +320,48 @@ std::basic_string<SYSTEM_CHAR_TYPE> resolveLink(const std::basic_string<SYSTEM_C
 }
 STDOSD_PID stdGetCurrentProcessId()
 {
-    // implement
     return getpid();
 }
 std::vector<STDOSD_PID> stdGetAllProcesses(const SYSTEM_CHAR_TYPE* pExecutable)
 {
-    // implement
+    DIR* dir;
+    struct dirent* ent;
+    char path[PATH_MAX];
+    std::vector<STDOSD_PID> ret;
+    const bool bIsFullPath = pExecutable ? stdIsFullPath(pExecutable) : false;
+    if ((dir = opendir("/proc")) != NULL) {
+        while ((ent = readdir(dir)) != NULL) {
+            sprintf(path, "%s\n", ent->d_name);
+            if (stdIsDigitString(ent->d_name)) {
+                if(pExecutable==nullptr || *pExecutable==0) {
+                    ret.push_back(stoi(ent->d_name));
+                } else {
+                    snprintf(path, sizeof(path), "/proc/%s/cmdline", ent->d_name);
+                    FILE* cmdline = fopen(path, "r");
+                    if (cmdline) {
+                        char buffer[PATH_MAX];
+                        size_t bytesRead = fread(buffer, 1, sizeof(buffer), cmdline);
+                        fclose(cmdline);
+                        if (bytesRead > 0) {
+                            if(bIsFullPath) {
+                                if(strcmp(pExecutable, buffer)==0) {
+                                    ret.push_back(stoi(ent->d_name));
+                                }
+                            } else {
+                                string name = stdGetFileName(buffer);
+                                if(name==pExecutable) {
+                                    ret.push_back(stoi(ent->d_name));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        closedir(dir);
+    }
+    return ret;
 }
 
-}
+}  // namespace stdosd
+}  // namespace Ambiesoft

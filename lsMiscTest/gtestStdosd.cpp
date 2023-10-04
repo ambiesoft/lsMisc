@@ -1209,7 +1209,9 @@ TEST(stdosd, stdGetUnittedSize)
 
 TEST(stdosd, stdGetenv)
 {
+#ifdef _WIN32
 	char szT[32];
+#endif
 
 	EXPECT_TRUE(stdGetenv("PATH").size() != 0);
 
@@ -1684,7 +1686,7 @@ TEST(stdosd, stdAddToPATHEnvString)
 
 TEST(stdosd, stdGetAllProcesses)
 {
-	vector<DWORD> pids = stdGetAllProcesses();
+    vector<STDOSD_PID> pids = stdGetAllProcesses();
 	EXPECT_TRUE(!pids.empty());
 
 	pids = stdGetAllProcesses(stdGetModuleFileName());
@@ -1694,5 +1696,4 @@ TEST(stdosd, stdGetAllProcesses)
 	pids = stdGetAllProcesses(stdGetFileName(stdGetModuleFileName()));
 	EXPECT_TRUE(!pids.empty());
 	EXPECT_NE(pids.end(), std::find(pids.begin(), pids.end(), stdGetCurrentProcessId()));
-
 }
