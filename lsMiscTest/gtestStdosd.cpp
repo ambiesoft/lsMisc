@@ -1681,3 +1681,18 @@ TEST(stdosd, stdAddToPATHEnvString)
 		EXPECT_STREQ(dir, newPATH.substr(0, stdStringLength(dir)).c_str());
 	}
 }
+
+TEST(stdosd, stdGetAllProcesses)
+{
+	vector<DWORD> pids = stdGetAllProcesses();
+	EXPECT_TRUE(!pids.empty());
+
+	pids = stdGetAllProcesses(stdGetModuleFileName());
+	EXPECT_TRUE(!pids.empty());
+	EXPECT_NE(pids.end(), std::find(pids.begin(), pids.end(), stdGetCurrentProcessId()));
+
+	pids = stdGetAllProcesses(stdGetFileName(stdGetModuleFileName()));
+	EXPECT_TRUE(!pids.empty());
+	EXPECT_NE(pids.end(), std::find(pids.begin(), pids.end(), stdGetCurrentProcessId()));
+
+}

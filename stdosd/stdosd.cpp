@@ -227,6 +227,5 @@ namespace Ambiesoft {
 #ifdef _WIN32
         template bool stdGetUnittedSize(const wchar_t* pStr, size_t len, int* nSign, int64_t* lResult, int* pUnit);
 #endif
-
 	}
 }

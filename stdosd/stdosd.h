@@ -75,6 +75,7 @@
     #define STDOSD_ATTR_UNUSED __attribute__((unused))
 	#define STDOSD_IS_CASESENSITIVE true
 	#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
+	using STDOSD_PID = pid_t;
 #elif _WIN32 // not __GNUC__ but _WIN32
     #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
     #define STDOSD_CONSTEXPR const
@@ -89,6 +90,7 @@
     #define STDOSD_ATTR_UNUSED
 	#define STDOSD_IS_CASESENSITIVE false
 	#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
+	using STDOSD_PID = DWORD;
 #endif // _WIN32 __GNUC__
 
 
@@ -2642,6 +2644,21 @@ namespace Ambiesoft {
 			bool bCreate = false);
 
 		std::basic_string<SYSTEM_CHAR_TYPE> stdGetHomeDirectory();
+
+		
+		STDOSD_PID stdGetCurrentProcessId();
+
+		std::vector<STDOSD_PID> stdGetAllProcesses(const SYSTEM_CHAR_TYPE* pExecutable);
+		inline std::vector<STDOSD_PID> stdGetAllProcesses(const std::basic_string<SYSTEM_CHAR_TYPE>& executable)
+		{
+			return stdGetAllProcesses(executable.c_str());
+		}
+		inline std::vector<STDOSD_PID> stdGetAllProcesses()
+		{
+			return stdGetAllProcesses(nullptr);
+		}
+
+		
 	}
 }
 

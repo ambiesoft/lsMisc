@@ -318,6 +318,14 @@ std::basic_string<SYSTEM_CHAR_TYPE> resolveLink(const std::basic_string<SYSTEM_C
         return resolvedPath;
     return std::string();
 }
-
+STDOSD_PID stdGetCurrentProcessId()
+{
+    // implement
+    return getpid();
 }
+std::vector<STDOSD_PID> stdGetAllProcesses(const SYSTEM_CHAR_TYPE* pExecutable)
+{
+    // implement
+}
+
 }

@@ -40,9 +40,12 @@ Generating Code...
 
 #include <Shlwapi.h>
 // #pragma comment(lib, "Shlwapi.lib")
+
 #include <winioctl.h>
 #include <Shlobj.h>
 // #pragma comment(lib, "Shell32.lib")
+#include <Psapi.h>
+
 
 #include <regex>
 #include <locale>
@@ -701,5 +704,61 @@ namespace Ambiesoft {
 				stdGetenv(stdLiterals<SYSTEM_CHAR_TYPE>::HomeEnvKey()));
 		}
 
+		STDOSD_PID stdGetCurrentProcessId()
+		{
+			return GetCurrentProcessId();
+		}
+		std::vector<STDOSD_PID> stdGetAllProcesses(const SYSTEM_CHAR_TYPE* pExecutable)
+		{
+			DWORD pidList[1024], cbNeeded, numProcesses;
+			std::vector<STDOSD_PID> ret;
+			if (EnumProcesses(pidList, sizeof(pidList), &cbNeeded))
+			{
+				numProcesses = cbNeeded / sizeof(DWORD);
+				if (pExecutable == nullptr || *pExecutable == 0)
+				{
+					for (DWORD i = 0; i < numProcesses; i++)
+					{
+						ret.push_back(pidList[i]);
+					}
+				}
+				else
+				{
+					const bool bInputIsFullPath = stdIsFullPath(pExecutable);
+
+					for (DWORD i = 0; i < numProcesses; i++)
+					{
+						HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pidList[i]);
+						if (hProcess != NULL)
+						{
+							TCHAR szProcessName[MAX_PATH];
+							if (bInputIsFullPath)
+							{
+								DWORD size = sizeof(szProcessName) / sizeof(TCHAR);
+								if (QueryFullProcessImageName(hProcess, 0, szProcessName, &size))
+								{
+									if (lstrcmpi(szProcessName, pExecutable) == 0)
+									{
+										ret.push_back(pidList[i]);
+									}
+								}
+							}
+							else
+							{
+								if (GetModuleBaseName(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(TCHAR)))
+								{
+									if (lstrcmpi(szProcessName, pExecutable) == 0)
+									{
+										ret.push_back(pidList[i]);
+									}
+								}
+							}
+							CloseHandle(hProcess);
+						}
+					}
+				}
+			}
+			return ret;
+		}
 	}
 }
