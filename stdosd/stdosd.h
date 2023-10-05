@@ -84,7 +84,7 @@
     #define STDOSD_IS_CASESENSITIVE false
     #define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
     using STDOSD_PID = DWORD;
-#elif
+#else
     #define STDOSD_CONSTEXPR const constexpr
     #define CHAR16T_AVAILABLE
     #define STDOSD_ATTR_UNUSED __attribute__((unused))
