@@ -23,9 +23,15 @@
 
 
 // #include "StdAfx.h"
+#include <dirent.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <sys/inotify.h>
+#include <fcntl.h>
+
 #include <regex>
 #include <cassert>
-#include <dirent.h>
+
 #include "stdosd.h"
 
 namespace Ambiesoft {
@@ -369,6 +375,46 @@ bool stdSuspendProcess(STDOSD_PID pid)
 bool stdResumeProcess(STDOSD_PID pid)
 {
     return 0==kill(pid, SIGCONT);
+}
+
+// https://stackoverflow.com/a/54765359
+// return -1 on error, or 0 if everything went well
+static int wait_for_pid(int pid)
+{
+    char path[32];
+    int in_fd = inotify_init();
+    sprintf(path, "/proc/%i/exe", pid);
+    if (inotify_add_watch(in_fd, path, IN_CLOSE_NOWRITE) < 0) {
+        close(in_fd);
+        return -1;
+    }
+    sprintf(path, "/proc/%i", pid);
+    int dir_fd = open(path, 0);
+    if (dir_fd < 0) {
+        close(in_fd);
+        return -1;
+    }
+
+    int res = 0;
+    while (1) {
+        struct inotify_event event;
+        if (read(in_fd, &event, sizeof(event)) < 0) {
+            res = -1;
+            break;
+        }
+        int f = openat(dir_fd, "fd", 0);
+        if (f < 0) break;
+        close(f);
+    }
+
+    close(dir_fd);
+    close(in_fd);
+    return res;
+}
+
+bool stdWaitProcess(STDOSD_PID pid)
+{
+    return -1 != wait_for_pid(pid);
 }
 
 }  // namespace stdosd
