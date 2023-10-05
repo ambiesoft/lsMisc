@@ -1697,3 +1697,12 @@ TEST(stdosd, stdGetAllProcesses)
 	EXPECT_TRUE(!pids.empty());
 	EXPECT_NE(pids.end(), std::find(pids.begin(), pids.end(), stdGetCurrentProcessId()));
 }
+
+TEST(stdosd, stdSuspendProcess)
+{
+	// stdSuspendProcess(stdGetCurrentProcessId());
+	EXPECT_FALSE(stdSuspendProcess(4));
+
+	// stdSuspendProcess(23696);
+	// stdResumeProcess(23696);
+}

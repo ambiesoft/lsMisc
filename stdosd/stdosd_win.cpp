@@ -760,5 +760,89 @@ namespace Ambiesoft {
 			}
 			return ret;
 		}
+
+		namespace {
+			enum class SUSPEND_OR_RESUME {
+				SUSPEND,
+				RESUME,
+			};
+			bool stdSuspendResumeProcess(HANDLE handle, SUSPEND_OR_RESUME sorr)
+			{
+				typedef LONG(NTAPI* NtSuspendProcess)(HANDLE ProcessHandle);
+				typedef LONG(NTAPI* NtResumeProcess)(HANDLE ProcessHandle);
+
+				static NtSuspendProcess pfnNtSuspendProcess;
+				static NtResumeProcess pfnNtResumeProcess;
+				static bool ok = [&]() {
+					assert(pfnNtSuspendProcess == NULL &&
+						pfnNtResumeProcess == NULL);
+
+					pfnNtSuspendProcess = (NtSuspendProcess)GetProcAddress(
+						GetModuleHandle(L"ntdll"), "NtSuspendProcess");
+					pfnNtResumeProcess = (NtResumeProcess)GetProcAddress(
+						GetModuleHandle(L"ntdll"), "NtResumeProcess");
+
+					return pfnNtSuspendProcess != NULL && pfnNtResumeProcess != NULL;
+					}();
+
+					if (!ok)
+						return false;
+
+					SetLastError(0);
+					if (sorr == SUSPEND_OR_RESUME::SUSPEND)
+						pfnNtSuspendProcess(handle);
+					else if (sorr == SUSPEND_OR_RESUME::RESUME)
+						pfnNtResumeProcess(handle);
+					else
+						assert(false);
+
+					return GetLastError() == 0;
+			}
+		}
+		static bool stdSuspendResumeProcess(STDOSD_PID pid, SUSPEND_OR_RESUME sorr)
+		{
+			HANDLE hProcess = OpenProcess(PROCESS_SUSPEND_RESUME, FALSE, pid);
+			if (!hProcess)
+				return false;
+			bool ret = stdSuspendResumeProcess(hProcess, sorr);
+			CloseHandle(hProcess);
+			return ret;
+		}
+
+		bool stdSuspendProcess(STDOSD_PID pid)
+		{
+			return stdSuspendResumeProcess(pid, SUSPEND_OR_RESUME::SUSPEND);
+		}
+		bool stdSuspendProcess(HANDLE handle)
+		{
+			return stdSuspendResumeProcess(handle, SUSPEND_OR_RESUME::SUSPEND);
+		}
+
+		bool stdResumeProcess(STDOSD_PID pid)
+		{
+			return stdSuspendResumeProcess(pid, SUSPEND_OR_RESUME::RESUME);
+		}
+		bool stdResumeProcess(HANDLE handle)
+		{
+			return stdSuspendResumeProcess(handle, SUSPEND_OR_RESUME::RESUME);
+		}
+
+		bool stdWaitProcess(STDOSD_PID pid)
+		{
+            HANDLE hProcess = OpenProcess(SYNCHRONIZE, FALSE, pid);
+			if (!hProcess)
+				return false;
+			bool ret = stdWaitProcess(hProcess);
+			CloseHandle(hProcess);
+			return ret;
+		}
+
+		bool stdWaitProcess(HANDLE handle)
+		{
+			DWORD dwWaited = WaitForSingleObject(handle, INFINITE);
+			if (dwWaited == WAIT_FAILED)
+				return false;
+			return true;
+		}
 	}
 }

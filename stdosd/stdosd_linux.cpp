@@ -362,6 +362,14 @@ std::vector<STDOSD_PID> stdGetAllProcesses(const SYSTEM_CHAR_TYPE* pExecutable)
     }
     return ret;
 }
+bool stdSuspendProcess(STDOSD_PID pid)
+{
+    return 0==kill(pid, SIGSTOP);
+}
+bool stdResumeProcess(STDOSD_PID pid)
+{
+    return 0==kill(pid, SIGCONT);
+}
 
 }  // namespace stdosd
 }  // namespace Ambiesoft

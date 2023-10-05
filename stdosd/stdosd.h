@@ -2658,7 +2658,17 @@ namespace Ambiesoft {
 			return stdGetAllProcesses(nullptr);
 		}
 
-		
+		bool stdSuspendProcess(STDOSD_PID pid);
+		bool stdResumeProcess(STDOSD_PID pid);
+#ifdef _WIN32
+		bool stdSuspendProcess(HANDLE handle);
+		bool stdResumeProcess(HANDLE handle);
+#endif
+
+		bool stdWaitProcess(STDOSD_PID pid);
+#ifdef _WIN32
+		bool stdWaitProcess(HANDLE handle);
+#endif
 	}
 }
 
