@@ -69,14 +69,7 @@
 
 #define STDOSD_UNUSED(x) (void)x;
 
-#if __GNUC__
-    #define STDOSD_CONSTEXPR const constexpr
-    #define CHAR16T_AVAILABLE
-    #define STDOSD_ATTR_UNUSED __attribute__((unused))
-	#define STDOSD_IS_CASESENSITIVE true
-	#define STDOSD_SYSTEM_CHAR_LITERAL(s) s
-	using STDOSD_PID = pid_t;
-#elif _WIN32 // not __GNUC__ but _WIN32
+#if _WIN32
     #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
     #define STDOSD_CONSTEXPR const
     #else
@@ -88,9 +81,17 @@
     #endif
 
     #define STDOSD_ATTR_UNUSED
-	#define STDOSD_IS_CASESENSITIVE false
-	#define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
-	using STDOSD_PID = DWORD;
+    #define STDOSD_IS_CASESENSITIVE false
+    #define STDOSD_SYSTEM_CHAR_LITERAL(s) STDOSD_WCHARLITERAL(s)
+    using STDOSD_PID = DWORD;
+#elif
+    #define STDOSD_CONSTEXPR const constexpr
+    #define CHAR16T_AVAILABLE
+    #define STDOSD_ATTR_UNUSED __attribute__((unused))
+    #define STDOSD_IS_CASESENSITIVE true
+    #define STDOSD_SYSTEM_CHAR_LITERAL(s) s
+using STDOSD_PID = pid_t;
+
 #endif // _WIN32 __GNUC__
 
 
@@ -106,9 +107,11 @@ namespace Ambiesoft {
 	namespace stdosd {
 
 #ifdef _WIN32
-		using SYSTEM_CHAR_TYPE = wchar_t;
+        using SYSTEM_CHAR_TYPE = wchar_t;
+        using SYSTEM_STRING_TYPE = std::wstring;
 #else
 		using SYSTEM_CHAR_TYPE = char;
+        using SYSTEM_STRING_TYPE = std::string;
 #endif
 		using osdstring = std::basic_string<SYSTEM_CHAR_TYPE>;
 
@@ -1743,7 +1746,7 @@ namespace Ambiesoft {
 			return ret;
 		}
 
-#if defined(_MSC_VER)
+#if defined(_WIN32)
 		std::string stdGetenvImpl(const char* varname);
 		std::wstring stdGetenvImpl(const wchar_t* varname);
 
@@ -1752,11 +1755,6 @@ namespace Ambiesoft {
 		{
 			return stdGetenvImpl(varname);
 		}
-#elif defined(__MINGW32__)
-        inline std::string stdGetenv(const char* varname)
-        {
-            return getenv(varname);
-        }
 #else
         inline std::string stdGetenv(const char* varname)
         {

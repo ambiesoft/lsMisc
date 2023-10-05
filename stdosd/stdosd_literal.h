@@ -44,12 +44,8 @@ namespace Ambiesoft {
 #define STDOSD_CHAR16TLITERAL_INNER(x) u ## x
 #define STDOSD_CHAR16TLITERAL(x) STDOSD_CHAR16TLITERAL_INNER(x)
 
-#if __GNUC__
 
-    #define STDOSD_CONSTEXPR const constexpr
-    #define CHAR16T_AVAILABLE
-
-#elif _WIN32 // not __GNUC__ but _WIN32
+#if _WIN32 // not __GNUC__ but _WIN32
 
     #if _MSC_VER <= 1800  // less than or equal to VC2013 ( or VC12 )
     #define STDOSD_CONSTEXPR const
@@ -61,6 +57,9 @@ namespace Ambiesoft {
     #define CHAR16T_AVAILABLE
     #endif
 
+#else
+    #define STDOSD_CONSTEXPR const constexpr
+    #define CHAR16T_AVAILABLE
 #endif // _WIN32 __GNUC__
 
 // undef these at the end of this file

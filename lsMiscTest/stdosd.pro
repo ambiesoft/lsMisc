@@ -5,6 +5,8 @@ CONFIG += qt
 QT += core gui
 QT += widgets
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+
 INCLUDEPATH += \
 		googletest/googletest \
 		googletest/googletest/include \
@@ -21,9 +23,6 @@ SOURCES += \
     gtestOpParser.cpp \
     ../stdosd/stdosd.cpp \
 
-
-
-
 HEADERS += \
     ../stdQt/stdQt.h \
     ../stdosd/DetectVM.h \
@@ -36,6 +35,7 @@ win32 {
     message( "win32 sources and libs" )
 
     DEFINES += NOMINMAX
+    DEFINES += _WIN32_WINNT=0x0601
 
     HEADERS += \
         ../GetLastErrorString.h

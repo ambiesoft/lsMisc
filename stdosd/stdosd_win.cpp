@@ -37,7 +37,8 @@ Generating Code...
 #include <Windows.h>
 #endif
 
-
+#include <processenv.h>
+#include <winbase.h>
 #include <Shlwapi.h>
 // #pragma comment(lib, "Shlwapi.lib")
 
@@ -648,8 +649,8 @@ namespace Ambiesoft {
 			return !!SetWindowTextW(hWindow, text.c_str());
 		}
 
-		template<class C>
-		std::basic_string<C> stdGetenvImplCommon(const C* varname, std::function<DWORD WINAPI(const C*, C*,DWORD)> func)
+        template<class C>
+        std::basic_string<C> stdGetenvImplCommon(const C* varname, DWORD (WINAPI*func)(const C*, C*,DWORD))
 		{
 			DWORD size = func(varname, nullptr, 0);
 			if (size == 0)
@@ -660,12 +661,14 @@ namespace Ambiesoft {
 			return v.data();
 		}
 		std::string stdGetenvImpl(const char* varname)
-		{
-			return stdGetenvImplCommon(varname, std::function<decltype(GetEnvironmentVariableA)>{GetEnvironmentVariableA});
+        {
+            return stdGetenvImplCommon(varname,
+                                       GetEnvironmentVariableA);
 		}
 		std::wstring stdGetenvImpl(const wchar_t* varname)
 		{
-			return stdGetenvImplCommon(varname, std::function<decltype(GetEnvironmentVariableW)>{GetEnvironmentVariableW});
+            return stdGetenvImplCommon(varname,
+                                       GetEnvironmentVariableW);
 		}
 
 		std::basic_string<SYSTEM_CHAR_TYPE> stdGetLocalAppDirectory(
@@ -734,8 +737,8 @@ namespace Ambiesoft {
 							TCHAR szProcessName[MAX_PATH];
 							if (bInputIsFullPath)
 							{
-								DWORD size = sizeof(szProcessName) / sizeof(TCHAR);
-								if (QueryFullProcessImageName(hProcess, 0, szProcessName, &size))
+                                DWORD size = sizeof(szProcessName) / sizeof(TCHAR);
+                                if (::QueryFullProcessImageName(hProcess, 0, szProcessName, &size))
 								{
 									if (lstrcmpi(szProcessName, pExecutable) == 0)
 									{
