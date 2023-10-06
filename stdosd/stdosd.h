@@ -109,10 +109,15 @@ namespace Ambiesoft {
 #ifdef _WIN32
         using SYSTEM_CHAR_TYPE = wchar_t;
         using SYSTEM_STRING_TYPE = std::wstring;
+        #define stdcout std::wcout
+        #define stdcerr std::wcerr
 #else
 		using SYSTEM_CHAR_TYPE = char;
         using SYSTEM_STRING_TYPE = std::string;
+        #define stdcout std::cout
+        #define stdcerr std::cerr
 #endif
+
 		using osdstring = std::basic_string<SYSTEM_CHAR_TYPE>;
 
         template <typename T, std::size_t N>
