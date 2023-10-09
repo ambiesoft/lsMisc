@@ -32,9 +32,6 @@
     <ClCompile Include="..\UTF16toUTF8.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="testStlsoft.cpp">
-      <Filter>Test Files</Filter>
-    </ClCompile>
     <ClCompile Include="testOpenedFiles.cpp">
       <Filter>Test Files</Filter>
     </ClCompile>
@@ -471,6 +468,12 @@
     </ClCompile>
     <ClCompile Include="gtestIsDuplicateInstance.cpp">
       <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gtestGtestMock.cpp">
+      <Filter>GTest Files</Filter>
+    </ClCompile>
+    <ClCompile Include="googletest\googlemock\src\gmock-all.cc">
+      <Filter>gtest</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,7 +4,7 @@
 #include <Shlwapi.h>
 #include <gtest/gtest.h>
 
-#include "../../SessionGlobalMemory/SessionGlobalMemory.h"
+#include "../SessionGlobalMemory/SessionGlobalMemory.h"
 #include "../OpenCommon.h"
 #include "../stdosd/stdosd.h"
 #include "../FindTopWindowFromPID.h"

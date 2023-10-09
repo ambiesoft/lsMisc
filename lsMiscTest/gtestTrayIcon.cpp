@@ -4,10 +4,10 @@
 
 #include <gtest/gtest.h>
 
-#include "../../lsMisc/TrayIcon.h"
-#include "../../CreateSimpleWindow.h"
-#include "../../showballoon.h"
-#include "../../CHandle.h"
+#include "../TrayIcon.h"
+#include "../CreateSimpleWindow.h"
+#include "../showballoon.h"
+#include "../CHandle.h"
 
 using namespace Ambiesoft;
 using namespace std;
