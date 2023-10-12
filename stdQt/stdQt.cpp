@@ -3,6 +3,9 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QProcess>
+// In Qt6, Add the following line to the .pro
+// greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+// To enable core5compat to work, the feature must be installed first
 #include <QTextCodec>
 #include <QStorageInfo>
 #include <QScreen>
