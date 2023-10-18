@@ -9,13 +9,12 @@ public:
 TEST(MyMockTest, TestMyMockMethod) {
     MyMock mock;
 
-    // myMethodが1を引数に呼ばれることを期待
+    // myMethod must be called with 1
     EXPECT_CALL(mock, myMethod(1)).WillOnce(testing::Return(42));
 
-    // myMethodを呼ぶ
+    // call myMethod
     int result = mock.myMethod(1);
 
-    // 戻り値が42であることを確認
     EXPECT_EQ(result, 42);
 }
 
@@ -34,7 +33,7 @@ protected:
     void SetUp() override {}
     void TearDown() override {}
 };
-// テスト対象の関数をモックするためのクラスを作成
+
 class MockFunction2 {
 public:
     MOCK_METHOD(int, Call, (int), (const));
@@ -43,7 +42,7 @@ public:
 TEST_F(MyMockTest2, TestDoSomethingWithFunction) {
     MockFunction2 mock;
 
-    // 期待する呼び出しを設定
+    // Expected call
     //((mock).gmock_Call(42))(
     //    ::testing::internal::GetWithoutMatchers(),
     //    nullptr).
@@ -55,7 +54,7 @@ TEST_F(MyMockTest2, TestDoSomethingWithFunction) {
     //    WillOnce(testing::Return(100));
     EXPECT_CALL(mock, Call(Return42())).WillOnce(testing::Return(100));
 
-    // テスト対象の関数を呼び出す
+    // Call test-target function
     int result = DoSomethingWithFunction(
         [&mock](int value) {
             return mock.Call(value); 

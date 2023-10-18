@@ -1,7 +1,4 @@
-﻿// GetMutex.cpp : アプリケーションのエントリ ポイントを定義します。
-//
-
-#include "framework.h"
+﻿#include "framework.h"
 #include "GetMutex.h"
 
 #include "../../IsDuplicateInstance.h"
