@@ -21,19 +21,14 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
-
 #include <windows.h>
 #include <comdef.h>
 #include <tchar.h>
 #include "DebugNew.h"
 #include "AnyCloser.h"
 #include "Registory.h"
+
+#pragma comment(lib,"Advapi32.lib")
 
 namespace Ambiesoft {
 	BOOL TrxIsRegKeyExists(HKEY hRoot, LPCTSTR pSub)
@@ -49,7 +44,7 @@ namespace Ambiesoft {
 		return bRet;
 	}
 
-	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring& value)
+	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring* value)
 	{
 		HKEY hKey;
 
@@ -80,15 +75,14 @@ namespace Ambiesoft {
 
 		if (dwType == REG_SZ)
 		{
-			value = (LPCTSTR)szT;
+			*value = (LPCTSTR)szT;
 		}
 		else if (dwType == REG_DWORD)
 		{
 			DWORD d = *((DWORD*)szT);
-			if (d == 0)
-				value = _T("0");
-			else if (d == 1)
-				value = _T("1");
+			TCHAR szT[32];
+			if (0 == _itot_s(d, szT, 10))
+				*value = szT;
 		}
 		else
 		{

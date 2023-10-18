@@ -26,7 +26,7 @@
 namespace Ambiesoft
 {
 	BOOL TrxIsRegKeyExists(HKEY hRoot, LPCTSTR pSub);
-	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring& value);
+	BOOL TrxRegGetValue(HKEY hRoot, LPCTSTR pSub, LPCTSTR pName, tstring* value);
 
 
 	class Registory
