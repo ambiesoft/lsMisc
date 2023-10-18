@@ -72,7 +72,7 @@ namespace Ambiesoft {
 			szRegVal);
 
 		std::wstring regValue;
-		*pApplyAll = !!TrxRegGetValue(HKEY_CURRENT_USER, szSubKey, szRegVal, regValue);
+		*pApplyAll = !!TrxRegGetValue(HKEY_CURRENT_USER, szSubKey, szRegVal, &regValue);
 
 		return ret;
 	}
