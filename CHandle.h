@@ -140,6 +140,19 @@ namespace Ambiesoft {
 			return !!DeleteObject(h);
 		}
 	};
+	struct HKeyTraits
+	{
+		using HandleType = HKEY;
+		static constexpr bool IsInvalid(HandleType h) {
+			return h == nullptr;
+		}
+		static void SetInvalid(HandleType* h) {
+			*h = nullptr;
+		}
+		static bool Close(HandleType h) {
+			return ERROR_SUCCESS == RegCloseKey(h);
+		}
+	};
 
 	template<class Trait>
 	class CHandleBase
@@ -215,7 +228,8 @@ namespace Ambiesoft {
 	using CHMenu = CHandleBase<HmenuTraits>;
 	using CHDC = CHandleBase<HDCTraits>;
 	using CHFont = CHandleBase<HFontTraits>;
-	
+	using CRegistryHandle = CHandleBase<HKeyTraits>;
+
 	class CHModule
 	{
 		HMODULE h_ = nullptr;

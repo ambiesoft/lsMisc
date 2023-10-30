@@ -140,7 +140,7 @@ TEST(CHandle, Basic)
 	}
 
 	{
-		CGetProcAddress<BOOL (WINAPI *)(LPSECURITY_ATTRIBUTES,BOOL,LPCSTR)> proc(L"kernel32.dll", "CreateMutexA");
+		CGetProcAddress<BOOL(WINAPI*)(LPSECURITY_ATTRIBUTES, BOOL, LPCSTR)> proc(L"kernel32.dll", "CreateMutexA");
 		if (proc)
 			proc.GetProc()(NULL, TRUE, "aaa");
 	}
@@ -154,9 +154,18 @@ TEST(CHandle, Basic)
 		for (int i = 0; i < count; ++i)
 		{
 			unsigned dwThreadId = 0;
-			CKernelHandle t(CreateEvent(NULL,TRUE,FALSE,NULL));
+			CKernelHandle t(CreateEvent(NULL, TRUE, FALSE, NULL));
 
 			threads.emplace_back(move(t));
 		}
 	}
+}
+TEST(CHandle, Registry)
+{
+	CRegistryHandle keyAdobe;
+	LSTATUS regRet = RegOpenKey(HKEY_LOCAL_MACHINE,
+		L"SOFTWARE",
+		&keyAdobe);
+	EXPECT_EQ(regRet, ERROR_SUCCESS);
+	EXPECT_TRUE(keyAdobe);
 }
