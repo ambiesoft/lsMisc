@@ -918,8 +918,16 @@ namespace Ambiesoft {
 			return strRet;
 		}
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4505)
+#endif
 		// check argument of stdFormat is not std::string or std::wstring
         static void STDOSD_ATTR_UNUSED stdFormatTestForNotString() {}
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotString(T, ARGS... args)
 		{
@@ -928,7 +936,14 @@ namespace Ambiesoft {
 			stdFormatTestForNotString(args...);
 		}
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4505)
+#endif
         static void STDOSD_ATTR_UNUSED stdFormatTestForNotWChar() {}
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 		template<typename T, typename... ARGS>
         static void stdFormatTestForNotWChar(T, ARGS... args)
 		{
@@ -942,7 +957,14 @@ namespace Ambiesoft {
             stdFormatTestForNotWChar(args...);
 		}
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable: 4505)
+#endif
         static void STDOSD_ATTR_UNUSED stdFormatTestForNotChar() {}
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 		template<typename T, typename... ARGS>
 		static void stdFormatTestForNotChar(T, ARGS... args)
 		{
