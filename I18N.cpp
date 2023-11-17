@@ -117,36 +117,6 @@ struct stringcomparer
 typedef std::map<LPCWSTR,wstring,stringcomparer> I18NSTRINGMAP;
 static I18NSTRINGMAP i18map;
 
-
-static BYTE* UTF16toUTF8(LPCWSTR pIN)
-{
-	int nReqSize = WideCharToMultiByte(CP_UTF8,
-		0,
-		pIN,
-		-1,
-		NULL,
-		0,
-		NULL,
-		NULL);
-
-	if ( nReqSize == 0 )
-		return NULL;
-
-	BYTE* pOut = (BYTE*)malloc(nReqSize);
-	int nRet = WideCharToMultiByte(CP_UTF8,
-		0,
-		pIN,
-		-1,
-		(char*)pOut,
-		nReqSize,
-		NULL,
-		NULL);
-
-	if ( nRet==0 || nRet != nReqSize )
-		return NULL;
-
-	return pOut;;
-}
 static LPWSTR UTF8_2_UTF16(const LPBYTE pIN)
 {
 	
@@ -172,7 +142,7 @@ static LPWSTR UTF8_2_UTF16(const LPBYTE pIN)
 	if ( nRet==0 || nRet != nReqSize )
 		return NULL;
 
-	return pOut;;
+	return pOut;
 }
 
 #ifdef _DEBUG
