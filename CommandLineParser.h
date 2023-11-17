@@ -435,7 +435,7 @@ namespace Ambiesoft {
 				}
 				*pLL_ = tmp;
 			}
-			static void setValue(MyS_* pMys_, const MyS_& mys, const bool bSrict)
+			static void setValue(MyS_* pMys_, const MyS_& mys, const bool /*bSrict*/)
 			{
 				*pMys_ = mys;
 			}
@@ -445,7 +445,7 @@ namespace Ambiesoft {
 			}
 		
 			template<class T>
-			void setHadOption(T* pT) {}
+			void setHadOption(T*) {}
 			template<>
 			void setHadOption<bool>(bool* pT) {
 				*pT = true;
