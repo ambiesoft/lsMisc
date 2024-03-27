@@ -21,17 +21,13 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-// In MFC project, define AFX_INCLUDE_FILE="stdafx.h" which will be included here
-#if defined(AFX_INCLUDE_FILE)
-#include AFX_INCLUDE_FILE
-#endif
-
-
 #include <windows.h>
+#include <set>
 
 #include "CHandle.h"
 #include "IsDuplicateInstance.h"
+#include "SessionGlobalMemory/SessionGlobalMemory.h"
+
 #include "DebugNew.h"
 
 namespace Ambiesoft {
@@ -47,4 +43,26 @@ namespace Ambiesoft {
 		return GetLastError() == ERROR_ALREADY_EXISTS;
 	}
 
+	
+	static std::set<CSessionGlobalMemory<void*, wchar_t>> theMap;
+	static void* getSessionData(LPCWSTR pName)
+	{
+		CSessionGlobalMemory<void*, wchar_t> sgData(pName);
+		return sgData;
+	}
+	static void setSessionData(LPCWSTR pName, void* data)
+	{
+		CSessionGlobalMemory<void*, wchar_t> sgData(pName);
+		sgData = data;
+		theMap.insert(std::move(sgData));
+	}
+	void* GetDuplicateInstanceData(LPCWSTR pMutexName)
+	{
+		return getSessionData(pMutexName);
+	}
+	void SetDuplicateInstanceData(LPCWSTR pMutexName, void* data)
+	{
+		setSessionData(pMutexName, data);
+		assert(GetDuplicateInstanceData(pMutexName) == data);
+	}
 } // namespace

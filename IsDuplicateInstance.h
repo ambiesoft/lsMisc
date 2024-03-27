@@ -27,5 +27,7 @@
 namespace Ambiesoft {
 
 	bool IsDuplicateInstance(LPCWSTR pMutexName);
+	void* GetDuplicateInstanceData(LPCWSTR pMutexName);
+	void SetDuplicateInstanceData(LPCWSTR pMutexName, void* data);
 
 } // namespace

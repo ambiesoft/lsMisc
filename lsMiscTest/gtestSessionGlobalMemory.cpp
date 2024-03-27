@@ -24,6 +24,13 @@ TEST(SessionGlobalMemory, Basic)
 	sgInt2 = 555;
 	EXPECT_EQ(555, sgInt);
 	EXPECT_STREQ("MyInt", sgInt2.getName().c_str());
+
+	CSessionGlobalMemory<int,wchar_t> sgInt2w(L"MyInt");
+	EXPECT_EQ(555, sgInt2w);
+	sgInt2w = 777;
+	EXPECT_EQ(777, sgInt);
+	EXPECT_EQ(777, sgInt2w);
+	EXPECT_STREQ(L"MyInt", sgInt2w.getName().c_str());
 }
 
 TEST(SessionGlobalMemory, RemoteProcess)
