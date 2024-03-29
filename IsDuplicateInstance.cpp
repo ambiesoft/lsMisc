@@ -44,7 +44,7 @@ namespace Ambiesoft {
 	}
 
 	
-	static std::set<CSessionGlobalMemory<void*, wchar_t>> theMap;
+	static std::set<CSessionGlobalMemory<void*, wchar_t>> theInstanceKeeper;
 	static void* getSessionData(LPCWSTR pName)
 	{
 		CSessionGlobalMemory<void*, wchar_t> sgData(pName);
@@ -54,7 +54,7 @@ namespace Ambiesoft {
 	{
 		CSessionGlobalMemory<void*, wchar_t> sgData(pName);
 		sgData = data;
-		theMap.insert(std::move(sgData));
+		theInstanceKeeper.insert(std::move(sgData));
 	}
 	void* GetDuplicateInstanceData(LPCWSTR pMutexName)
 	{
