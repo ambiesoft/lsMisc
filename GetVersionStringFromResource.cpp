@@ -3,7 +3,7 @@
 #include <memory>
 #include "DebugNew.h"
 #include "tchar.h"
-#include "GetVersionString.h"
+#include "GetVersionStringFromResource.h"
 
 #pragma comment(lib, "Version.lib")
 #pragma comment(lib, "User32.lib")
@@ -55,7 +55,7 @@ namespace Ambiesoft {
 
 
 	// https://stackoverflow.com/a/940743
-	std::wstring GetVersionString(LPCTSTR szFileName, int keta)
+	std::wstring GetVersionStringFromResource(LPCTSTR szFileName, int keta)
 	{
 		DWORD  verHandle = 0;
 		UINT   size = 0;
