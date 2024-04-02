@@ -32,6 +32,25 @@
 
 namespace Ambiesoft {
 
+	namespace {
+		std::set<CSessionGlobalMemory<void*, wchar_t>>& GetInstanceKeeper()
+		{
+			static std::set<CSessionGlobalMemory<void*, wchar_t>> theInstanceKeeper;
+			return theInstanceKeeper;
+		}
+		void* getSessionData(LPCWSTR pName)
+		{
+			CSessionGlobalMemory<void*, wchar_t> sgData(pName);
+			return sgData;
+		}
+		void setSessionData(LPCWSTR pName, void* data)
+		{
+			CSessionGlobalMemory<void*, wchar_t> sgData(pName);
+			sgData = data;
+			GetInstanceKeeper().insert(std::move(sgData));
+		}
+	}
+
 	bool IsDuplicateInstance(LPCWSTR pMutexName)
 	{
 		static CKernelHandle hDupCheck;
@@ -43,19 +62,6 @@ namespace Ambiesoft {
 		return GetLastError() == ERROR_ALREADY_EXISTS;
 	}
 
-	
-	static std::set<CSessionGlobalMemory<void*, wchar_t>> theInstanceKeeper;
-	static void* getSessionData(LPCWSTR pName)
-	{
-		CSessionGlobalMemory<void*, wchar_t> sgData(pName);
-		return sgData;
-	}
-	static void setSessionData(LPCWSTR pName, void* data)
-	{
-		CSessionGlobalMemory<void*, wchar_t> sgData(pName);
-		sgData = data;
-		theInstanceKeeper.insert(std::move(sgData));
-	}
 	void* GetDuplicateInstanceData(LPCWSTR pMutexName)
 	{
 		return getSessionData(pMutexName);
@@ -64,5 +70,12 @@ namespace Ambiesoft {
 	{
 		setSessionData(pMutexName, data);
 		assert(GetDuplicateInstanceData(pMutexName) == data);
+	}
+
+	bool RestoreOrForegroundWindow(HWND hWnd)
+	{
+		if (IsIconic(hWnd))
+			return !!ShowWindow(hWnd, SW_RESTORE);
+		return !!SetForegroundWindow(hWnd);
 	}
 } // namespace
