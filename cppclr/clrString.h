@@ -31,7 +31,7 @@ namespace Ambiesoft {
 
 	System::String^ toCLR(const std::wstring& s);
 	std::wstring toWstring(System::String^ s);
-
+	std::string toString(System::String^ s);
 
 #define toLPCW(s) (toWstring(s).c_str())
 

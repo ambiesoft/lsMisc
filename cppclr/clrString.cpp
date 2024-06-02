@@ -43,7 +43,14 @@ namespace Ambiesoft {
 		return pS;
 	}
 
-
+	string toString(String^ s)
+	{
+		std::string ret;
+		System::IntPtr pp = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(s);
+		ret = (const char*)pp.ToPointer();
+		System::Runtime::InteropServices::Marshal::FreeHGlobal(pp);
+		return ret;
+	}
 
 	String^ doubleQuote(String^ s)
 	{
