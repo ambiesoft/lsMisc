@@ -11,9 +11,6 @@
     <ClCompile Include="..\FormatSizeof.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetVersionString.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\IsFileExists.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -390,9 +387,6 @@
     <ClCompile Include="..\FindTopWindowFromPID.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\GetAppVersion.cpp">
-      <Filter>lsMisc\2 Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\TrayIcon.cpp">
       <Filter>lsMisc\2 Source</Filter>
     </ClCompile>
@@ -475,6 +469,12 @@
     <ClCompile Include="googletest\googlemock\src\gmock-all.cc">
       <Filter>gtest</Filter>
     </ClCompile>
+    <ClCompile Include="..\GetVersionStringFromResource.cpp">
+      <Filter>lsMisc\2 Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\GetVersionFromCommand.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -484,9 +484,6 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\FormatSizeof.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\GetVersionString.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\IsFileExists.h">
@@ -816,9 +813,6 @@
     <ClInclude Include="..\TrayIcon.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
-    <ClInclude Include="..\GetAppVersion.h">
-      <Filter>lsMisc\1 Header</Filter>
-    </ClInclude>
     <ClInclude Include="..\FindTopWindowFromPID.h">
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
@@ -868,6 +862,12 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\IsDuplicateInstance.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetVersionStringFromResource.h">
+      <Filter>lsMisc\1 Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetVersionFromCommand.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>

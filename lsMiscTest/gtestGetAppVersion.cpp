@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "../RunCommandGetResult.h"
-#include "../GetAppVersion.h"
+#include "../GetVersionFromCommand.h"
 #include "../stdosd/stdosd.h"
 
 using namespace Ambiesoft;
@@ -19,12 +19,12 @@ TEST(GetAppVersionTest, Gtest)
 	
 
 	{
-		string ver = GetAppVersion(printverexe.c_str(), L"--httpd", 3);
+		string ver = GetVersionFromCommand(printverexe.c_str(), L"--httpd", 3);
 		EXPECT_EQ(ver, "2.4.23");
 	}
 
 	{
-		string ver = GetAppVersion(printverexe.c_str(), L"--mysqld", 3);
+		string ver = GetVersionFromCommand(printverexe.c_str(), L"--mysqld", 3);
 		EXPECT_EQ(ver, "5.7.26");
 	}
 }

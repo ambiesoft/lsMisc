@@ -734,13 +734,13 @@ namespace Ambiesoft {
 						HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pidList[i]);
 						if (hProcess != NULL)
 						{
-							TCHAR szProcessName[MAX_PATH];
+							SYSTEM_CHAR_TYPE szProcessName[MAX_PATH];
 							if (bInputIsFullPath)
 							{
                                 DWORD size = sizeof(szProcessName) / sizeof(TCHAR);
-                                if (::QueryFullProcessImageName(hProcess, 0, szProcessName, &size))
+                                if (QueryFullProcessImageNameW(hProcess, 0, szProcessName, &size))
 								{
-									if (lstrcmpi(szProcessName, pExecutable) == 0)
+									if (lstrcmpiW(szProcessName, pExecutable) == 0)
 									{
 										ret.push_back(pidList[i]);
 									}
@@ -748,9 +748,9 @@ namespace Ambiesoft {
 							}
 							else
 							{
-								if (GetModuleBaseName(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(TCHAR)))
+								if (GetModuleBaseNameW(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(TCHAR)))
 								{
-									if (lstrcmpi(szProcessName, pExecutable) == 0)
+									if (lstrcmpiW(szProcessName, pExecutable) == 0)
 									{
 										ret.push_back(pidList[i]);
 									}
@@ -781,9 +781,9 @@ namespace Ambiesoft {
 						pfnNtResumeProcess == NULL);
 
 					pfnNtSuspendProcess = (NtSuspendProcess)GetProcAddress(
-						GetModuleHandle(L"ntdll"), "NtSuspendProcess");
+						GetModuleHandleW(L"ntdll"), "NtSuspendProcess");
 					pfnNtResumeProcess = (NtResumeProcess)GetProcAddress(
-						GetModuleHandle(L"ntdll"), "NtResumeProcess");
+						GetModuleHandleW(L"ntdll"), "NtResumeProcess");
 
 					return pfnNtSuspendProcess != NULL && pfnNtResumeProcess != NULL;
 					}();

@@ -26,11 +26,11 @@
 #include <memory>
 #include "DebugNew.h"
 #include "RunCommandGetResult.h"
-#include "GetAppVersion.h"
+#include "GetVersionFromCommand.h"
 
 using namespace std;
 namespace Ambiesoft {
-	string GetAppVersion(LPCWSTR pExe, LPCWSTR pArg, int keta)
+	string GetVersionFromCommand(LPCWSTR pExe, LPCWSTR pArg, int keta)
 	{
 		DWORD nRetCommand = 0;
 		DWORD dwLE = 0;

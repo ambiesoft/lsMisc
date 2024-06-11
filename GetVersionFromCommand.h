@@ -25,5 +25,5 @@
 #include <Windows.h>
 
 namespace Ambiesoft {
-	std::string GetAppVersion(LPCWSTR pExe, LPCWSTR pArg, int keta);
+	std::string GetVersionFromCommand(LPCWSTR pExe, LPCWSTR pArg, int keta);
 }
