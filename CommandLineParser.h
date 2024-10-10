@@ -568,152 +568,45 @@ namespace Ambiesoft {
 			// pTarget_ = NULL;
 			encoding_ = ArgEncodingFlags_Default;
 		}
-		//void copy(const MyT_& that)
-		//{
-		//	options_ = that.options_;
-		//	argcountflag_ = that.argcountflag_;
-		//	values_ = that.values_;
-		//	hadOption_ = that.hadOption_;
-		//	parsed_ = that.parsed_;
-		//	case_ = that.case_;
-		//	encoding_ = that.encoding_;
-		//	userTarget_.reset(
-		//		new UserTarget<decltype(*((UserTarget*)(that.userTarget_.get()))->pUserRawTarget_)>());
-
-		//	helpString_ = that.helpString_;
-		//}
 	public:
-		//BasicOption(const MyT_& that)
-		//{
-		//	if (this == &that)
-		//		return;
-
-		//	copy(that);
-		//}
-		//MyT_& operator=(const MyT_& that)
-		//{
-		//	if (this == &that)
-		//		return *this;
-
-		//	copy(that);
-		//	return *this;
-		//}
 		BasicOption()
 		{
 			init();
 			options_.push_back(MyS_());
 			argcountflag_ = ArgCount::ArgCount_ZeroToInfinite;
 		}
-		//BasicOption(MyS_ option, ArgCount acf) 
-		//{
-		//	init();
-		//	options_.push_back(option);
-		//	argcountflag_ = acf;
-		//}
 		BasicOption(
-			const MyS_& option,
+			const std::vector<MyS_>& optionStrings,
 			ExactCount exactcount,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
 			init();
-			options_.push_back(option);
+			for (auto&& s : optionStrings)
+				options_.emplace_back(s);
 			encoding_ = arf;
 			helpString_ = helpstring;
 			setArgFlag((int)exactcount);
 		}
 		BasicOption(
-			const MyS_& option,
+			const std::vector<MyS_>& optionStrings,
 			ArgCount acf,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
 		{
 			init();
-			options_.push_back(option);
+			for (auto&& s : optionStrings)
+				options_.emplace_back(s);
 			encoding_ = arf;
 			helpString_ = helpstring;
 			argcountflag_ = acf;
 		}
 
-		//template<class InputIterator>
-		//BasicOption(InputIterator first, InputIterator last, const int exactcount)
-		//{
-		//	init();
-		//	while (first != last)
-		//	{
-		//		options_.push_back(*first);
-		//		++first;
-		//	}
-
-		//	setArgFlag(exactcount);
-		//}
-		
-		//BasicOption(MyS_ option1, MyS_ option2, ArgCount acf)
-		//{
-		//	init();
-		//	options_.push_back(option1);
-		//	options_.push_back(option2);
-		//	argcountflag_ = acf;
-		//}
-                
-
-		BasicOption(MyS_ option1, MyS_ option2, const int exactcount)
+		BasicOption(const std::vector<MyS_>& optionStrings)
 		{
 			init();
-			options_.push_back(option1);
-			options_.push_back(option2);
-
-			setArgFlag(exactcount);
-		}
-		BasicOption(const std::vector<MyS_>& optionStrings, const int exactcount) 
-		{
-			init();
-			for(auto&& s : optionStrings)
-			{
+			for (auto&& s : optionStrings)
 				options_.emplace_back(s);
-			}
-
-			setArgFlag(exactcount);
-		}
-		
-
-		//BasicOption(const Elem* p1, const Elem* p2, const int exactcount)
-		//{
-		//	init();
-		//	options_.push_back(p1);
-		//	options_.push_back(p2);
-
-		//	setArgFlag(exactcount);
-		//}
-		//BasicOption(std::initializer_list<const Elem*> optionStrings, const int exactcount) :
-		//	BasicOption(optionStrings.begin(), optionStrings.end(),
-		//		exactcount) {}
-
-		BasicOption(MyS_ option)
-		{
-			init();
-			options_.push_back(option);
-			argcountflag_ = ArgCount::ArgCount_Zero;
-		}
-		//BasicOption(const MyS_& option1, const MyS_& option2)
-		//{
-		//	init();
-		//	options_.push_back(option1);
-		//	options_.push_back(option2);
-		//	argcountflag_ = ArgCount_Zero;
-		//}
-		//BasicOption(const MyS_& option1, const MyS_& option2, const MyS_& option3)
-		//{
-		//	init();
-		//	options_.push_back(option1);
-		//	options_.push_back(option2);
-		//	options_.push_back(option3);
-		//	argcountflag_ = ArgCount_Zero;
-		//}
-		BasicOption(const std::vector<MyS_>& options)
-		{
-			init();
-			options_ = options;
 			argcountflag_ = ArgCount::ArgCount_Zero;
 		}
 		~BasicOption()
@@ -1247,9 +1140,9 @@ typedef BasicOption<std::string> COptionA;
 		
 		// Iterator option strings
 		template<class TARGET>
-		void AddOptionRange(
+		void AddOption(
 			const std::vector<MyS_>& optionStrings,
-			int exactCount,
+			ExactCount exactCount,
 			TARGET* pTarget,
 			ArgEncodingFlags arf = ArgEncodingFlags_Default,
 			const MyS_& helpstring = MyS_())
@@ -1263,7 +1156,7 @@ typedef BasicOption<std::string> COptionA;
 			inneroptions_.push_back(option);
 		}
 		template<class TARGET>
-		void AddOptionRange(
+		void AddOption(
 			const std::vector<MyS_>& optionStrings,
 			ArgCount argCount,
 			TARGET* pTarget,
@@ -1279,63 +1172,6 @@ typedef BasicOption<std::string> COptionA;
 			option->helpString_ = helpstring;
 			inneroptions_.push_back(option);
 		}
-
-		// single option string
-		template<class TARGET>
-		void AddOption(
-			MyS_ optionString1,
-			int exactCount,
-			TARGET* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags_Default,
-			const MyS_& helpstring = MyS_())
-		{
-			AddOptionRange({ optionString1 }, exactCount, pTarget, arf, helpstring);
-		}
-		template<class TARGET>
-		void AddOption(
-			MyS_ optionString1,
-			ArgCount argCount,
-			TARGET* pTarget,
-			ArgEncodingFlags arf = ArgEncodingFlags_Default,
-			const MyS_& helpstring = MyS_())
-		{
-			AddOptionRange({ optionString1 }, argCount, pTarget, arf, helpstring);
-		}
-
-		// two option strings
-		//template<class TARGET>
-		//void AddOption(
-		//	MyS_ optionString1,
-		//	MyS_ optionString2,
-		//	int exactCount,
-		//	TARGET* pTarget,
-		//	ArgEncodingFlags arf = ArgEncodingFlags_Default,
-		//	const MyS_& helpstring = MyS_())
-		//{
-		//	const MyS_ ops[] = { optionString1, optionString2 };
-		//	AddOptionRange(ops, ops + _countof(ops), exactCount, pTarget, arf, helpstring);
-		//}
-		//template<class TARGET>
-		//void AddOption(
-		//	std::initializer_list<MyS_> optionStrings,
-		//	int exactCount,
-		//	TARGET* pTarget,
-		//	ArgEncodingFlags arf = ArgEncodingFlags_Default,
-		//	const MyS_& helpstring = MyS_())
-		//{
-		//	AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
-		//}
-		//template<class TARGET>
-		//void AddOption(
-		//	std::initializer_list<const Elem*> optionStrings,
-		//	int exactCount,
-		//	TARGET* pTarget,
-		//	ArgEncodingFlags arf = ArgEncodingFlags_Default,
-		//	const MyS_& helpstring = MyS_())
-		//{
-		//	AddOptionRange(optionStrings.begin(), optionStrings.end(), exactCount, pTarget, arf, helpstring);
-		//}
-
 
 #ifdef _WIN32
 // #ifdef UNICODE
@@ -1417,7 +1253,7 @@ typedef BasicOption<std::string> COptionA;
 					MyO_* pA = FindOption(pArgv);
 					if (!pA)
 					{
-						unknowns_.push_back(new MyO_(pArgv));
+						unknowns_.push_back(new MyO_({ pArgv }));
 						continue;
 					}
 
@@ -1430,7 +1266,7 @@ typedef BasicOption<std::string> COptionA;
 					myOptionType* pA = FindOption(stdosd::stdLiterals<Elem>::nulString());
 					if (!pA)
 					{
-						unknowns_.push_back(new MyO_((pArgv)));
+						unknowns_.push_back(new MyO_({ pArgv }));
 						continue;
 					}
 					else

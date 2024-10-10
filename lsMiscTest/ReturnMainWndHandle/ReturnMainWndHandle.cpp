@@ -39,8 +39,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     CCommandLineParserA parser;
-    parser.AddOption("-s", 1, &gsg);
-    parser.AddOption("-c", 1, &gmutex);
+    parser.AddOption({ "-s" }, ArgCount::ArgCount_One, &gsg);
+    parser.AddOption({ "-c" }, ArgCount::ArgCount_One, &gmutex);
 
     parser.Parse(GetCommandLineA());
 

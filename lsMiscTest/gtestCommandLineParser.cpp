@@ -49,12 +49,12 @@ TEST(CommandLineParser, BasicWchar)
 	bool isABC = false;
 	bool isXYZ = false;
 	wstring path;
-	COption opMain(L"", ArgCount::ArgCount_OneToInfinite);
+	COption opMain({ L"" }, ArgCount::ArgCount_OneToInfinite);
 	CCommandLineParser clp;
-	clp.AddOptionRange({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
-	clp.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &isABC);
-	clp.AddOptionRange({ L"-xyz", L"-bbb" }, 0, &isXYZ);
-	clp.AddOption(L"-path", 1, &path);
+	clp.AddOption({ wstring(L"-h"), wstring(L"/?") }, ArgCount::ArgCount_Zero, &isHelp);
+	clp.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &isABC);
+	clp.AddOption({ L"-xyz", L"-bbb" }, ArgCount::ArgCount_Zero, &isXYZ);
+	clp.AddOption({ L"-path" }, ArgCount::ArgCount_One, &path);
 	clp.AddOption(&opMain);
 	wchar_t* argv[] = {
 		L"exe.exe",
@@ -90,12 +90,12 @@ TEST(CommandLineParser, BasicChar)
 	bool isABC = false;
 	bool isXYZ = false;
 	string path;
-	COptionA opMain("", ArgCount::ArgCount_TwoToInfinite);
+	COptionA opMain({ "" }, ArgCount::ArgCount_TwoToInfinite);
 	CCommandLineParserA clp;
-	clp.AddOptionRange({ string("-h"), string("/?") }, 0, &isHelp);
-	clp.AddOptionRange({ "-a","-b","-c" }, 0, &isABC);
-	clp.AddOptionRange({ "-xyz", "-bbb" }, 0, &isXYZ);
-	clp.AddOption("-path", 1, &path);
+	clp.AddOption({ string("-h"), string("/?") }, ArgCount::ArgCount_Zero, &isHelp);
+	clp.AddOption({ "-a","-b","-c" }, ArgCount::ArgCount_Zero, &isABC);
+	clp.AddOption({ "-xyz", "-bbb" }, ArgCount::ArgCount_Zero, &isXYZ);
+	clp.AddOption({ "-path" }, ArgCount::ArgCount_One, &path);
 	clp.AddOption(&opMain);
 	char* argv[] = {
 		"exe.exe",
@@ -157,7 +157,7 @@ TEST(CommandLineParser, OptionConstructorAll)
 
 	{
 		CCommandLineParser parser;
-		COption op1({ L"-h", L"-b" }, 0);
+		COption op1({ L"-h", L"-b" }, ArgCount::ArgCount_Zero);
 		parser.AddOption(&op1);
 
 		size_t argc = _countof(argv) - 1;
@@ -166,7 +166,7 @@ TEST(CommandLineParser, OptionConstructorAll)
 	}
 	{
 		CCommandLineParser parser;
-		COption op1({ L"-xxx", L"-yyy" }, 0);
+		COption op1({ L"-xxx", L"-yyy" }, ArgCount::ArgCount_Zero);
 		parser.AddOption(&op1);
 
 		size_t argc = _countof(argv) - 1;
@@ -181,7 +181,7 @@ TEST(CommandLineParser, Bool)
 	{
 		CCommandLineParser parser;
 		bool b = false;
-		parser.AddOption(L"-b", 0, &b);
+		parser.AddOption({ L"-b" }, ArgCount::ArgCount_Zero, &b);
 
 		wchar_t* argv[] = {
 			L"exe.exe",
@@ -204,7 +204,7 @@ TEST(CommandLineParser, Bool)
 	{
 		CCommandLineParser parser;
 		bool b = false;
-		parser.AddOption(L"-b", 0, &b);
+		parser.AddOption({ L"-b" }, ArgCount::ArgCount_Zero, &b);
 
 		wchar_t* argv[] = {
 			L"exe.exe",
@@ -231,7 +231,7 @@ TEST(CommandLineParser, Int)
 	{
 		CCommandLineParser parser;
 		int intval = 0;
-		parser.AddOption(L"-i", 1, &intval);
+		parser.AddOption({ L"-i" }, ArgCount::ArgCount_One, &intval);
 
 		wchar_t* argv[] = {
 			L"exe.exe",
@@ -255,7 +255,7 @@ TEST(CommandLineParser, Int)
 	{
 		CCommandLineParser parser;
 		int intval = -1;
-		parser.AddOption(L"-i", 1, &intval);
+		parser.AddOption({ L"-i" }, ArgCount::ArgCount_One, &intval);
 
 		wchar_t* argv[] = {
 			L"exe.exe",
@@ -300,28 +300,25 @@ TEST(CommandLineParser, Dicregate)
 	size_t argc = _countof(argv) - 1;
 
 	CCommandLineParser parser;
-	COption page(L"-page", ExactCount::Exact_1);
+	COption page({ L"-page" }, ExactCount::Exact_1);
 	parser.AddOption(&page);
 
-	COption url(L"-url", ExactCount::Exact_1);
+	COption url({ L"-url" }, ExactCount::Exact_1);
 	parser.AddOption(&url);
 
-	//COption target(L"-target",1);
-	//parser.AddOption(&target);
-
-	COption hosthwnd(L"-hostwnd", ExactCount::Exact_1);
+	COption hosthwnd({L"-hostwnd" }, ExactCount::Exact_1);
 	parser.AddOption(&hosthwnd);
 
-	COption hostpid(L"-hostpid", ExactCount::Exact_1);
+	COption hostpid({ L"-hostpid" }, ExactCount::Exact_1);
 	parser.AddOption(&hostpid);
 
-	COption did(L"-did", ExactCount::Exact_1);
+	COption did({ L"-did" }, ExactCount::Exact_1);
 	parser.AddOption(&did);
 
-	COption size(L"-size", ExactCount::Exact_1);
+	COption size({ L"-size" }, ExactCount::Exact_1);
 	parser.AddOption(&size);
 
-	COption lang(L"-lang", ExactCount::Exact_1);
+	COption lang({ L"-lang" }, ExactCount::Exact_1);
 	parser.AddOption(&lang);
 
 	parser.Parse(argc, argv);
@@ -395,7 +392,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a=false;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_FALSE(a);
 	}
@@ -409,7 +406,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -421,7 +418,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -433,7 +430,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -445,7 +442,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -460,7 +457,7 @@ TEST(CommandLineParser, SameOption)
 		};
 		CCommandLineParser parser;
 		bool a;
-		parser.AddOptionRange({ wstring(L"-a"),wstring(L"-b"),wstring(L"-c") }, 0, &a);
+		parser.AddOption({ wstring(L"-a"),wstring(L"-b"),wstring(L"-c") }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -476,7 +473,7 @@ TEST(CommandLineParser, EndWithDQComma)
 		};
 		CCommandLineParser parser;
 		
-		COption opMain(L"", ArgCount::ArgCount_ZeroToInfinite);
+		COption opMain({ L"" }, ArgCount::ArgCount_ZeroToInfinite);
 		parser.AddOption(&opMain);
 
 		parser.Parse(_countof(argv) - 1, argv);
@@ -497,29 +494,29 @@ TEST(CommandLineParser, Help)
 		};
 		CCommandLineParserA parser(CaseFlags_Default, "Rename or remove a folder", "lsMiscTest");
 
-		COptionA optionDefault("",
+		COptionA optionDefault({ "" },
 			ArgCount::ArgCount_ZeroToInfinite,
 			ArgEncodingFlags_Default,
 			("specify directory"));
 		parser.AddOption(&optionDefault);
 
 		bool bHelp = false;
-		parser.AddOptionRange({ "-h", "/h", "/?","--help","-H", "-hh"},
-			0,
+		parser.AddOption({ "-h", "/h", "/?","--help","-H", "-hh"},
+			ArgCount::ArgCount_Zero,
 			&bHelp,
 			ArgEncodingFlags_Default,
 			("show help"));
 
 		bool bVersion = false;
-		parser.AddOptionRange({ "-v", "/v", "--version" },
-			0,
+		parser.AddOption({ "-v", "/v", "--version" },
+			ArgCount::ArgCount_Zero,
 			&bVersion,
 			ArgEncodingFlags_Default,
 			("show version"));
 
 		string operation;
-		parser.AddOption("-op",
-			1,
+		parser.AddOption({ "-op" },
+			ArgCount::ArgCount_One,
 			&operation,
 			ArgEncodingFlags_Default,
 			("Operation: One of 'rename', 'trash', 'delete'"));
@@ -536,52 +533,52 @@ TEST(CommandLineParser, Help)
 		};
 		CCommandLineParser parser(CaseFlags_Default, L"Rename or remove a folder", L"lsMiscTestWchar");
 
-		COption optionDefault(L"",
+		COption optionDefault({ L"" },
 			ArgCount::ArgCount_OneToInfinite,
 			ArgEncodingFlags_Default,
 			(L"specify directory"));
 		parser.AddOption(&optionDefault);
 
 		bool bHelp = false;
-		parser.AddOptionRange({ L"-h", L"/h" },
-			0,
+		parser.AddOption({ L"-h", L"/h" },
+			ArgCount::ArgCount_Zero,
 			&bHelp,
 			ArgEncodingFlags_Default,
 			(L"show help"));
 
 		bool bVersion = false;
-		parser.AddOptionRange({ L"-v", L"/v" },
-			0,
+		parser.AddOption({ L"-v", L"/v" },
+			ArgCount::ArgCount_Zero,
 			&bVersion,
 			ArgEncodingFlags_Default,
 			(L"show version"));
 
 		wstring operation;
-		parser.AddOption(L"-op",
-			1,
+		parser.AddOption({ L"-op" },
+			ArgCount::ArgCount_One,
 			&operation,
 			ArgEncodingFlags_Default,
 			(L"Operation: One of 'rename', 'trash', 'delete'"));
 
 		wstring renameto;
-		parser.AddOption(L"-to",
-			1,
+		parser.AddOption({ L"-to" },
+			ArgCount::ArgCount_One,
 			&renameto,
 			ArgEncodingFlags_Default,
 			(L"Specify new name"));
 
 		int priority = -1;
-		parser.AddOption(L"-pri",
-			1,
+		parser.AddOption({ L"-pri" },
+			ArgCount::ArgCount_One,
 			&priority,
 			ArgEncodingFlags_Default,
 			(L"Specify priority, 0=High 1=Normal 2=Low 3=Idle"));
 
 		int dummy;
-		parser.AddOption(L"-except1", 0, &dummy,
+		parser.AddOption({ L"-except1" }, ArgCount::ArgCount_Zero, &dummy,
 			ArgEncodingFlags::ArgEncodingFlags_Default,
 			L"This must be removed");
-		parser.AddOption(L"--is-except2", 0, &dummy,
+		parser.AddOption({ L"--is-except2" }, ArgCount::ArgCount_Zero, &dummy,
 			ArgEncodingFlags::ArgEncodingFlags_Default,
 			L"This must be removed 2");
 
@@ -614,7 +611,7 @@ TEST(CommandLineParser, KeepDefaultValue)
 		};
 		CCommandLineParser parser;
 		bool a = false;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_FALSE(a);
 	}
@@ -625,7 +622,7 @@ TEST(CommandLineParser, KeepDefaultValue)
 		};
 		CCommandLineParser parser;
 		bool a = true;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	} 
@@ -637,7 +634,7 @@ TEST(CommandLineParser, KeepDefaultValue)
 		};
 		CCommandLineParser parser;
 		bool a = false;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_TRUE(a);
 	}
@@ -649,7 +646,7 @@ TEST(CommandLineParser, KeepDefaultValue)
 		};
 		CCommandLineParser parser;
 		bool a = false;
-		parser.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &a);
+		parser.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &a);
 		parser.Parse(_countof(argv) - 1, argv);
 		EXPECT_FALSE(a);
 	}
@@ -660,13 +657,13 @@ TEST(CommandLineParser, KeepDefaultValue)
 		bool isXYZ = true;
 		wstring path = L"aaa";
 		int intval = 123;
-		COption opMain(L"", ArgCount::ArgCount_OneToInfinite);
+		COption opMain({ L"" }, ArgCount::ArgCount_OneToInfinite);
 		CCommandLineParser clp;
-		clp.AddOptionRange({ wstring(L"-h"), wstring(L"/?") }, 0, &isHelp);
-		clp.AddOptionRange({ L"-a",L"-b",L"-c" }, 0, &isABC);
-		clp.AddOptionRange({ L"-xyz", L"-bbb" }, 0, &isXYZ);
-		clp.AddOption(L"-path", 1, &path);
-		clp.AddOption(L"-intval", 1, &intval);
+		clp.AddOption({ wstring(L"-h"), wstring(L"/?") }, ArgCount::ArgCount_Zero, &isHelp);
+		clp.AddOption({ L"-a",L"-b",L"-c" }, ArgCount::ArgCount_Zero, &isABC);
+		clp.AddOption({ L"-xyz", L"-bbb" }, ArgCount::ArgCount_Zero, &isXYZ);
+		clp.AddOption({ L"-path" }, ArgCount::ArgCount_One, &path);
+		clp.AddOption({ L"-intval" }, ArgCount::ArgCount_One, &intval);
 		clp.AddOption(&opMain);
 		wchar_t* argv[] = {
 			L"exe.exe",
@@ -692,22 +689,22 @@ TEST(CommandLineParser, MultipleArgWithSameOption)
 		char* arg = "myapp.exe -s aaa -s bbb -s ccc -s \"x x x\" -d ddd";
 		CCommandLineParserA parser(CaseFlags_Default, "CommandLineParser, MultipleArgWithSameOption", "lsMiscTest");
 
-		COptionA optionDefault("",
+		COptionA optionDefault({ "" },
 			ArgCount::ArgCount_One,
 			ArgEncodingFlags_Default,
 			("specify directory"));
 		parser.AddOption(&optionDefault);
 
 		bool bHelp = false;
-		parser.AddOptionRange({ "-h", "/h", "/?","--help","-H", "-hh" },
-			0,
+		parser.AddOption({ "-h", "/h", "/?","--help","-H", "-hh" },
+			ArgCount::ArgCount_Zero,
 			&bHelp,
 			ArgEncodingFlags_Default,
 			("show help"));
 
 		vector<string> vs;
-		parser.AddOption("-s",
-			1,
+		parser.AddOption({ "-s" },
+			ArgCount::ArgCount_One,
 			&vs,
 			ArgEncodingFlags_Default,
 			("s"));
@@ -730,8 +727,8 @@ TEST(CommandLineParser, WrongInt)
 		parser.setStrict();
 
 		int n = -1;
-		parser.AddOption("-n",
-			1,
+		parser.AddOption({ "-n" },
+			ArgCount::ArgCount_One,
 			&n);
 
 		try
@@ -755,8 +752,8 @@ TEST(CommandLineParser, WrongInt)
 			parser.setStrict();
 
 			long long n = -1;
-			parser.AddOption("-n",
-				1,
+			parser.AddOption({ "-n" },
+				ArgCount::ArgCount_One,
 				&n);
 
 			try
@@ -777,8 +774,8 @@ TEST(CommandLineParser, WrongInt)
 			parser.setStrict();
 
 			long long n = -1;
-			parser.AddOption(L"-n",
-				1,
+			parser.AddOption({ L"-n" },
+				ArgCount::ArgCount_One,
 				&n);
 
 			try
@@ -802,16 +799,16 @@ TEST(CommandLineParser, BoolAsValue)
 		CCommandLineParserW parser;
 
 		bool b = false;
-		parser.AddOption(L"-b",
-			1,
+		parser.AddOption({ L"-b" },
+			ArgCount::ArgCount_One,
 			&b);
 		bool c = false;
-		parser.AddOption(L"-c",
-			1,
+		parser.AddOption({ L"-c" },
+			ArgCount::ArgCount_One,
 			&c);
 		bool d = false;
-		parser.AddOption(L"-d",
-			1,
+		parser.AddOption({ L"-d" },
+			ArgCount::ArgCount_One,
 			&d);
 
 		parser.Parse(arg);
@@ -826,16 +823,16 @@ TEST(CommandLineParser, BoolAsValue)
 		CCommandLineParserW parser;
 
 		bool b = false;
-		parser.AddOption(L"-b",
-			1,
+		parser.AddOption({ L"-b" },
+			ArgCount::ArgCount_One,
 			&b);
 		bool c = false;
-		parser.AddOption(L"-c",
-			1,
+		parser.AddOption({ L"-c" },
+			ArgCount::ArgCount_One,
 			&c);
 		bool d = false;
-		parser.AddOption(L"-d",
-			1,
+		parser.AddOption({ L"-d" },
+			ArgCount::ArgCount_One,
 			&d);
 
 		parser.Parse(arg);
@@ -849,20 +846,20 @@ TEST(CommandLineParser, BoolAsValue)
 		CCommandLineParserW parser;
 
 		bool b = false;
-		parser.AddOption(L"-b",
-			0,
+		parser.AddOption({ L"-b" },
+			ArgCount::ArgCount_Zero,
 			&b);
 		bool c = false;
-		parser.AddOption(L"-c",
-			0,
+		parser.AddOption({ L"-c" },
+			ArgCount::ArgCount_Zero,
 			&c);
 		bool d = false;
-		parser.AddOption(L"-d",
-			0,
+		parser.AddOption({ L"-d" },
+			ArgCount::ArgCount_Zero,
 			&d);
 		bool e = false;
-		parser.AddOption(L"-e",
-			0,
+		parser.AddOption({ L"-e" },
+			ArgCount::ArgCount_Zero,
 			&e);
 
 		parser.Parse(arg);
@@ -879,16 +876,16 @@ TEST(CommandLineParser, BoolAsValue)
 		parser.setStrict();
 
 		bool b = false;
-		parser.AddOption(L"-b",
-			1,
+		parser.AddOption({ L"-b" },
+			ArgCount::ArgCount_One,
 			&b);
 		bool c = false;
-		parser.AddOption(L"-c",
-			1,
+		parser.AddOption({ L"-c" },
+			ArgCount::ArgCount_One,
 			&c);
 		bool d = false;
-		parser.AddOption(L"-d",
-			1,
+		parser.AddOption({ L"-d" },
+			ArgCount::ArgCount_One,
 			&d);
 
 		parser.Parse(arg);
@@ -904,16 +901,16 @@ TEST(CommandLineParser, BoolAsValue)
 		parser.setStrict();
 
 		bool b = false;
-		parser.AddOption(L"-b",
-			1,
+		parser.AddOption({ L"-b" },
+			ArgCount::ArgCount_One,
 			&b);
 		bool c = false;
-		parser.AddOption(L"-c",
-			1,
+		parser.AddOption({ L"-c" },
+			ArgCount::ArgCount_One,
 			&c);
 		bool d = false;
-		parser.AddOption(L"-d",
-			1,
+		parser.AddOption({ L"-d" },
+			ArgCount::ArgCount_One,
 			&d);
 
 		try
@@ -938,12 +935,12 @@ TEST(CommandLineParser, EndWithArgOne)
 	parser.setStrict();
 
 	bool isDesktop = false;
-	parser.AddOption(L"-desktop", 0, &isDesktop,
+	parser.AddOption({ L"-desktop" }, ArgCount::ArgCount_Zero, &isDesktop,
 		ArgEncodingFlags::ArgEncodingFlags_Default,
 		L"Monitor Desktop directory");
 
 	bool isSound = false;
-	parser.AddOptionRange({ L"-s",L"--sound" },
+	parser.AddOption({ L"-s",L"--sound" },
 		ArgCount::ArgCount_One,
 		&isSound,
 		ArgEncodingFlags::ArgEncodingFlags_Default,
@@ -973,7 +970,7 @@ TEST(CommandLineParser, UnknowOptions)
 		CCommandLineParser parser;
 
 		bool bV = false;
-		parser.AddOption(L"-v", ArgCount::ArgCount_Zero, &bV);
+		parser.AddOption({ L"-v" }, ArgCount::ArgCount_Zero, &bV);
 
 		size_t argc = _countof(argv) - 1;
 
@@ -993,10 +990,10 @@ TEST(CommandLineParser, UnknowOptions)
 		CCommandLineParser parser;
 
 		bool bV = false;
-		parser.AddOption(L"-v", ArgCount::ArgCount_Zero, &bV);
+		parser.AddOption({ L"-v" }, ArgCount::ArgCount_Zero, &bV);
 
 		int nWait = 0;
-		parser.AddOption(L"--wait", ArgCount::ArgCount_One, &nWait);
+		parser.AddOption({ L"--wait" }, ArgCount::ArgCount_One, &nWait);
 
 		size_t argc = _countof(argv) - 1;
 

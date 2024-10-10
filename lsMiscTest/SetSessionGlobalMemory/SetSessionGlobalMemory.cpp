@@ -23,13 +23,13 @@ int main(int argc, const char* argv[])
 {
     CCommandLineParserA parser;
     string name;
-    parser.AddOption("-name", 1, &name);
+    parser.AddOption({ "-name" }, ArgCount::ArgCount_One, &name);
 
     int value;
-    parser.AddOption("-value", 1, &value);
+    parser.AddOption({ "-value" }, ArgCount::ArgCount_One, &value);
 
     string eventname;
-    parser.AddOption("-event", 1, &eventname);
+    parser.AddOption({ "-event" }, ArgCount::ArgCount_One, &eventname);
 
     parser.Parse(argc, argv);
 
