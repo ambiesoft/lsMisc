@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "playground", "playground\pl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GetMutex", "GetMutex\GetMutex.vcxproj", "{53B0E186-77AC-4FB8-854D-21D70F19C96F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "guisamples", "guisamples\guisamples.vcxproj", "{59908A6A-0B68-479C-B4FD-645B965BA557}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -111,6 +113,14 @@ Global
 		{53B0E186-77AC-4FB8-854D-21D70F19C96F}.Release|Win32.Build.0 = Release|Win32
 		{53B0E186-77AC-4FB8-854D-21D70F19C96F}.Release|x64.ActiveCfg = Release|x64
 		{53B0E186-77AC-4FB8-854D-21D70F19C96F}.Release|x64.Build.0 = Release|x64
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Debug|Win32.ActiveCfg = Debug|Win32
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Debug|Win32.Build.0 = Debug|Win32
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Debug|x64.ActiveCfg = Debug|x64
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Debug|x64.Build.0 = Debug|x64
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Release|Win32.ActiveCfg = Release|Win32
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Release|Win32.Build.0 = Release|Win32
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Release|x64.ActiveCfg = Release|x64
+		{59908A6A-0B68-479C-B4FD-645B965BA557}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
