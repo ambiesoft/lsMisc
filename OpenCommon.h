@@ -63,7 +63,7 @@ namespace Ambiesoft {
 	}
 
 	BOOL OpenFolderW(HWND h, LPCWSTR pFileOrFolder);
-	BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder);
+	// BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder);
 	inline BOOL OpenFolder(HWND h, LPCTSTR pFileOrFolder)
 	{
 #ifdef UNICODE

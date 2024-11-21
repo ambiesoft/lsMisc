@@ -164,12 +164,12 @@ HCURSOR CguisamplesDlg::OnQueryDragIcon()
 void CguisamplesDlg::OnBnClickedButtonSelectFile()
 {
 	OpenFolder(m_hWnd, L"C:\\T\\testfile.txt");
-	OpenFolderA(m_hWnd, "C:\\T\\testfile.txt");
+	// OpenFolderA(m_hWnd, "C:\\T\\testfile.txt");
 }
 
 
 void CguisamplesDlg::OnBnClickedButtonSelectFolder()
 {
 	OpenFolder(m_hWnd, L"C:\\T\\down");
-	OpenFolderA(m_hWnd, "C:\\T\\down");
+	// OpenFolderA(m_hWnd, "C:\\T\\down");
 }

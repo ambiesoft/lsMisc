@@ -15,6 +15,7 @@
 #include <QProcessEnvironment>
 
 #include "../GetLastErrorString.h"
+#include "../OpenCommon.h"
 #include "../../profile/cpp/Profile/include/ambiesoft.profile.h"
 
 #include "stdQt.h"
@@ -380,8 +381,14 @@ QString GetIllegalFilenameCharacters()
     return "<>:\"|?*";
 }
 
-// https://stackoverflow.com/a/3546503
 bool showInGraphicalShell(QWidget *parent, const QString &pathIn)
+{
+    Q_UNUSED(parent);
+    return !!OpenFolderW(nullptr, pathIn.toStdWString().c_str());
+}
+
+// https://stackoverflow.com/a/3546503
+bool showInGraphicalShell_obsolete(QWidget *parent, const QString &pathIn)
 {
     Q_UNUSED(parent);
 

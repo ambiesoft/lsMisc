@@ -130,10 +130,10 @@ namespace Ambiesoft {
 		return ret;
 	}
 
-	BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder)
-	{
-		return OpenFolderW(h, toStdWstringFromACP(pFileOrFolder).c_str());
-	}
+	//BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder)
+	//{
+	//	return OpenFolderW(h, toStdWstringFromACP(pFileOrFolder).c_str());
+	//}
 
 	static bool OpenExplorerAndSelectFile(const std::wstring& filePath) {
 		size_t pos = filePath.find_last_of(L"\\/");
