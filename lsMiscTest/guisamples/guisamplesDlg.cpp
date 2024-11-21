@@ -70,6 +70,7 @@ BEGIN_MESSAGE_MAP(CguisamplesDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_SELECT_FILE, &CguisamplesDlg::OnBnClickedButtonSelectFile)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT_FOLDER, &CguisamplesDlg::OnBnClickedButtonSelectFolder)
 END_MESSAGE_MAP()
 
 
@@ -163,4 +164,12 @@ HCURSOR CguisamplesDlg::OnQueryDragIcon()
 void CguisamplesDlg::OnBnClickedButtonSelectFile()
 {
 	OpenFolder(m_hWnd, L"C:\\T\\testfile.txt");
+	OpenFolderA(m_hWnd, "C:\\T\\testfile.txt");
+}
+
+
+void CguisamplesDlg::OnBnClickedButtonSelectFolder()
+{
+	OpenFolder(m_hWnd, L"C:\\T\\down");
+	OpenFolderA(m_hWnd, "C:\\T\\down");
 }

@@ -36,6 +36,9 @@
     <ClInclude Include="..\..\OpenCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\UTF16toUTF8.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="guisamples.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\OpenCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\UTF16toUTF8.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,4 +1,4 @@
-//Copyright (C) 2017 Ambiesoft All rights reserved.
+﻿//Copyright (C) 2017 Ambiesoft All rights reserved.
 //
 //Redistribution and use in source and binary forms, with or without
 //modification, are permitted provided that the following conditions
@@ -29,6 +29,7 @@
 
 
 #include <windows.h>
+#include "UTF16toUTF8.h"
 
 #ifndef _INC_SHELLAPI
 #include <Shellapi.h>
@@ -40,6 +41,14 @@
 #pragma comment(lib,"shlwapi.lib")
 #endif
 #endif
+
+#include <windows.h>
+#include <shldisp.h> // IShellDispatch
+//#include <comutil.h> // _bstr_t (COM string utility)
+#include <shlobj.h>
+
+//#pragma comment(lib, "oleaut32.lib")
+//#pragma comment(lib, "comsuppw.lib")
 
 #ifndef _STRING_
 #include <string>
@@ -123,37 +132,69 @@ namespace Ambiesoft {
 
 	BOOL OpenFolderA(HWND h, LPCSTR pFileOrFolder)
 	{
-		if (!PathFileExistsA(pFileOrFolder) && !PathIsDirectoryA(pFileOrFolder))
-			return FALSE;
+		return OpenFolderW(h, toStdWstringFromACP(pFileOrFolder).c_str());
+	}
 
-		std::string arg = "/select,\"";
-		arg += pFileOrFolder;
-		arg += "\",/n";
-		ShellExecuteA(h,
-			NULL,
-			"explorer.exe",
-			arg.c_str(),
-			NULL,
-			SW_SHOW);
+	static bool OpenExplorerAndSelectFile(const std::wstring& filePath) {
+		size_t pos = filePath.find_last_of(L"\\/");
+		if (pos == std::wstring::npos) {
+			return false;
+		}
 
-		return TRUE;
+		std::wstring folderPath = filePath.substr(0, pos);
+		std::wstring fileName = filePath.substr(pos + 1);
+
+		PIDLIST_ABSOLUTE pidlFolder = nullptr;
+		HRESULT hr = SHParseDisplayName(folderPath.c_str(), nullptr, &pidlFolder, 0, nullptr);
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		PIDLIST_ABSOLUTE pidlItem = nullptr;
+		hr = SHParseDisplayName(filePath.c_str(), nullptr, &pidlItem, 0, nullptr);
+		if (FAILED(hr)) {
+			CoTaskMemFree(pidlFolder);
+			return false;
+		}
+
+		std::vector<PCUITEMID_CHILD> pidlItems = { reinterpret_cast<PCUITEMID_CHILD>(pidlItem) };
+
+		hr = SHOpenFolderAndSelectItems(pidlFolder, static_cast<UINT>(pidlItems.size()), pidlItems.data(), 0);
+
+		CoTaskMemFree(pidlFolder);
+		CoTaskMemFree(pidlItem);
+
+		if (FAILED(hr)) {
+			return false;
+		}
+
+		return true;
 	}
 	BOOL OpenFolderW(HWND h, LPCWSTR pFileOrFolder)
 	{
+		wchar_t fileOrFolder[MAX_PATH];
+		lstrcpyW(fileOrFolder, pFileOrFolder);
 		if (!PathFileExistsW(pFileOrFolder) && !PathIsDirectoryW(pFileOrFolder))
 			return FALSE;
+		if (PathIsDirectoryW(pFileOrFolder))
+		{
+			PathAddBackslashW(fileOrFolder);
+		}
+		return !!OpenExplorerAndSelectFile(fileOrFolder);
 
-		std::wstring arg = L"/select,\"";
-		arg += pFileOrFolder;
-		arg += L"\",/n";
-		ShellExecuteW(h,
-			NULL,
-			L"explorer.exe",
-			arg.c_str(),
-			NULL,
-			SW_SHOW);
+		// following code create explorer.exe process which does not close forever
+		//std::wstring arg = L"/select,\"";
+		//arg += pFileOrFolder;
+		//arg += L"\",/n";
 
-		return TRUE;
+		//ShellExecuteW(h,
+		//	NULL,
+		//	L"explorer.exe",
+		//	arg.c_str(),
+		//	NULL,
+		//	SW_SHOW);
+
+		//return TRUE;
 	}
 
 	BOOL ReopenCommon(HWND h)
