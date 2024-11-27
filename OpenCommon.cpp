@@ -170,7 +170,7 @@ namespace Ambiesoft {
 
 		return true;
 	}
-	BOOL OpenFolderW(HWND h, LPCWSTR pFileOrFolder)
+	BOOL OpenFolderW(HWND , LPCWSTR pFileOrFolder)
 	{
 		wchar_t fileOrFolder[MAX_PATH];
 		lstrcpyW(fileOrFolder, pFileOrFolder);
