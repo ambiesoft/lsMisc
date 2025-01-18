@@ -19,12 +19,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Sleep(5 * 1000);
 
     bool prevOperation = IsScreenSaverActive();
-    RecoverFromScreenSavor(SCREEN_RECOVER::ALL);
+    bool result = RecoverFromScreenSavor(SCREEN_RECOVER::ALL);
     bool afterOperation = IsScreenSaverActive();
 
+    Sleep(5 * 1000);
+
     MessageBox(nullptr,
-        stdFormat(L"Previous Screen Saver State:%d\r\nAfter Screen Saver State:%d",
+        stdFormat(L"Previous Screen Saver State:%d\r\nResult:%d\r\nAfter Screen Saver State:%d",
             prevOperation,
+            result,
             afterOperation).c_str(),
         APP_NAME,
         MB_ICONINFORMATION);

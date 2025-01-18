@@ -39,9 +39,19 @@ namespace Ambiesoft {
 			return false;
 		return !!isScreenSaverActive;
 	}
+	static BOOL CALLBACK desktopProc(HWND hWnd, LPARAM lParam)
+	{
+		if (IsWindowVisible(hWnd))
+		{
+			BOOL* pbClosed = (BOOL*)lParam;
+			PostMessage(hWnd, WM_CLOSE, 0,0);
+			*pbClosed = TRUE;
+		}
+		return TRUE;
+	}
 	bool RecoverFromScreenSavor(SCREEN_RECOVER screenRecover)
 	{
-		SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, -1);
+		//SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, -1);
 
 		// Generate quasi input
 		INPUT input = { 0 };
@@ -51,7 +61,17 @@ namespace Ambiesoft {
 		input.mi.dwFlags = MOUSEEVENTF_MOVE;
 		SendInput(1, &input, sizeof(INPUT));
 
-		return !IsScreenSaverActive();
+		BOOL bClosed = FALSE;
+		HDESK hDesktop = OpenDesktop(L"Screen-saver",
+			0,
+			FALSE,
+			DESKTOP_READOBJECTS | DESKTOP_WRITEOBJECTS);
+		if (hDesktop) 
+		{
+			EnumDesktopWindows(hDesktop, desktopProc, (LPARAM)& bClosed);
+			CloseDesktop(hDesktop);
+		}
+		return !!bClosed;
 	}
 
 } // namespace
