@@ -32,48 +32,47 @@ using namespace System;
 using namespace std;
 
 namespace Ambiesoft {
-	String^ toCLR(const wstring& s)
-	{
-		return gcnew String(s.c_str());
-	}
-
-	wstring toWstring(String^ s)
-	{
-		pin_ptr<const wchar_t> pS = PtrToStringChars(s);
-		return pS;
-	}
-
-	string toString(String^ s)
-	{
-		std::string ret;
-		System::IntPtr pp = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(s);
-		ret = (const char*)pp.ToPointer();
-		System::Runtime::InteropServices::Marshal::FreeHGlobal(pp);
-		return ret;
-	}
-
-	String^ doubleQuote(String^ s)
-	{
-		if (String::IsNullOrEmpty(s))
-			return s;
-		if (s[0] == L'"')
-			return s;
-
-		bool needquote = false;
-		for each(Char c in s)
+	namespace CLRHelper {
+		String^ toCLR(const wstring& s)
 		{
-			if (Char::IsWhiteSpace(c))
-			{
-				needquote = true;
-				break;
-			}
+			return gcnew String(s.c_str());
 		}
 
-		return needquote ? L"\"" + s + L"\"" : s;
-	}
+		wstring toWstring(String^ s)
+		{
+			pin_ptr<const wchar_t> pS = PtrToStringChars(s);
+			return pS;
+		}
 
+		string toString(String^ s)
+		{
+			std::string ret;
+			System::IntPtr pp = System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(s);
+			ret = (const char*)pp.ToPointer();
+			System::Runtime::InteropServices::Marshal::FreeHGlobal(pp);
+			return ret;
+		}
 
+		String^ doubleQuote(String^ s)
+		{
+			if (String::IsNullOrEmpty(s))
+				return s;
+			if (s[0] == L'"')
+				return s;
 
+			bool needquote = false;
+			for each (Char c in s)
+			{
+				if (Char::IsWhiteSpace(c))
+				{
+					needquote = true;
+					break;
+				}
+			}
+
+			return needquote ? L"\"" + s + L"\"" : s;
+		}
+	} // namespace
 } // namespace
 
 

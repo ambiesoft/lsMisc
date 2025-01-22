@@ -27,18 +27,23 @@
 
 namespace Ambiesoft {
 	namespace CLRHelper {
+		ref struct TemporalCurrentDir
+		{
+			System::String^ save_;
+			TemporalCurrentDir(System::String^ dir)
+			{
+				save_ = System::Environment::CurrentDirectory;
+				System::Environment::CurrentDirectory = dir;
+			}
+			~TemporalCurrentDir()
+			{
+				System::Environment::CurrentDirectory = save_;
+			}
+		};
 
-		typedef pin_ptr<const wchar_t> PinString;
+		float GetControlDPIScale(System::Windows::Forms::Control^ control);
+	} // namespace
+} // namespace
 
-		System::String^ toCLR(const std::wstring& s);
-		std::wstring toWstring(System::String^ s);
-		std::string toString(System::String^ s);
-
-#define toLPCW(s) (toWstring(s).c_str())
-
-
-		System::String^ doubleQuote(System::String^ s);
-	}
-}
 
 #endif

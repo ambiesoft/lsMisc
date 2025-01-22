@@ -23,42 +23,19 @@
 
 #ifdef __cplusplus_cli
 #include <Windows.h>
-#include <vcclr.h>
+// #include <vcclr.h>
 #include "clrHelper.h"
 
-#pragma comment(lib,"Shell32.lib")
-
-using namespace System;
-using namespace System::Windows::Forms;
-using namespace std;
-
 namespace Ambiesoft {
+	namespace CLRHelper {
+		float GetControlDPIScale(System::Windows::Forms::Control^ control)
+		{
+			constexpr unsigned int BASE_DPI = 96;
 
-
-	DialogResult Alert(String^ text)
-	{
-		return MessageBox::Show(
-			text,
-			Application::ProductName,
-			MessageBoxButtons::OK,
-			MessageBoxIcon::Warning);
-	}
-	DialogResult Alert(Exception^ ex)
-	{
-		return Alert(ex->Message);
-	}
-
-
-	String^ getShortPah(String^ file)
-	{
-		TCHAR szShort[MAX_PATH]; szShort[0] = 0;
-
-		pin_ptr<const wchar_t> ps = PtrToStringChars(file);
-		DWORD dwRet = GetShortPathName(ps, szShort, _countof(szShort));
-		if (dwRet == 0 || dwRet > _countof(szShort))
-			return file;
-
-		return gcnew String(szShort);
+			if (!(control && control->IsHandleCreated && !control->IsDisposed))
+				return (float)GetDpiForSystem() / BASE_DPI;
+			return (float)GetDpiForWindow((HWND)control->Handle.ToPointer()) / BASE_DPI;
+		}
 	}
 }
 

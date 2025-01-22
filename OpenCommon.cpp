@@ -21,13 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
-
 #include <windows.h>
 #include "UTF16toUTF8.h"
 
@@ -39,6 +32,7 @@
 #include <shlwapi.h>
 #ifdef _MSC_VER
 #pragma comment(lib,"shlwapi.lib")
+#pragma comment(lib,"Ole32.lib")
 #endif
 #endif
 
@@ -46,9 +40,6 @@
 #include <shldisp.h> // IShellDispatch
 //#include <comutil.h> // _bstr_t (COM string utility)
 #include <shlobj.h>
-
-//#pragma comment(lib, "oleaut32.lib")
-//#pragma comment(lib, "comsuppw.lib")
 
 #ifndef _STRING_
 #include <string>
