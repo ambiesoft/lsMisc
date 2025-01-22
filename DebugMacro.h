@@ -26,6 +26,26 @@
 #include <Windows.h>
 #include <string>
 #include <cassert>
+
+#ifdef __cplusplus_cli
+inline bool isDerived(System::Object^ o, System::Type^ t)
+{
+	if (!o || !t)
+		return false;
+
+	System::Type^ ot = o->GetType();
+	do
+	{
+		if (ot == t)
+			return true;
+
+		ot = ot->BaseType;
+	} while (ot != System::Object::typeid);
+
+	return false;
+}
+#endif
+
 #if defined(_DEBUG)
 #ifdef __cplusplus_cli
 	#define DASSERT(s) System::Diagnostics::Debug::Assert(!!(s))
@@ -47,7 +67,7 @@
 		DTRACE(message.c_str());
 	}
 #endif
-	
+
 	void DTRACE_LASTERROR(DWORD dwLE);
 	#define DTRACE_NUMBER(start) do { static int num = start; DTRACE(num.ToString()); ++num; } while(0);
 	#define DTRACE_NUMBERTEXT(start,text) do { static int num = start; DTRACE(num.ToString() + ":" + text); ++num; } while(0);
@@ -60,22 +80,6 @@
 	#define DASSERT_IS_CLASS(instance, clazz) DASSERT( ((instance)->GetType())==clazz::typeid ) 
 	#define DASSERT_IS_CLASS_OR_NULL(instance, clazz) DASSERT( instance==nullptr || ((instance)->GetType())==clazz::typeid ) 
 #ifdef __cplusplus_cli
-	inline bool isDerived(System::Object^ o, System::Type^ t)
-		{
-			if ( !o || !t )
-				return false;
-
-			System::Type^ ot = o->GetType(); 
-			do
-			{
-				if ( ot == t )
-					return true;
-
-				ot = ot->BaseType;
-			} while ( ot != System::Object::typeid );
-
-			return false;
-		}
 	#define DASSERT_IS_DERIVED(instance, clazz) DASSERT(isDerived(instance, clazz::typeid))
 #endif
 #else // not _DEBUG
