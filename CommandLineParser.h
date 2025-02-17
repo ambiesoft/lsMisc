@@ -96,7 +96,8 @@ namespace Ambiesoft {
 			_GLIBCXX_USE_NOEXCEPT
 #endif
 		{
-			buff_ = toStdAcpString(getErrorString());
+			// buff_ = toStdAcpString(getErrorString());
+			buff_ = "TODO: Use wwhat() for workaround";
 			return buff_.c_str();
 		}
 		virtual std::wstring wwhat() const {
@@ -189,6 +190,14 @@ namespace Ambiesoft {
 	{
 		return _wtoi(s.c_str());
 	}
+	inline static unsigned int AtoU(const std::string& s)
+	{
+		return strtoul(s.c_str(),nullptr,10);
+	}
+	inline static unsigned int AtoU(const std::wstring& s)
+	{
+		return wcstoul(s.c_str(),nullptr,10);
+	}
 	template<class I>
 	inline static std::string ItoA(const I& i, const std::string& s)
 	{
@@ -200,15 +209,23 @@ namespace Ambiesoft {
 		return std::to_wstring(i);
 	}
 
-	inline static unsigned long long AtoI64(const std::string& s)
+	inline static long long AtoI64(const std::string& s)
 	{
 		return _atoi64(s.c_str());
 	}
-	inline static unsigned long long AtoI64(const std::wstring& s)
+	inline static long long AtoI64(const std::wstring& s)
 	{
 		return _wtoi64(s.c_str());
 	}
-
+	inline static unsigned long long AtoU64(const std::string& s)
+	{
+		return _strtoui64(s.c_str(),nullptr,10);
+	}
+	inline static unsigned long long AtoU64(const std::wstring& s)
+	{
+		return _wcstoui64(s.c_str(), nullptr, 10);
+	}
+	
 
 	inline static bool StringCompare(
 		const std::string& left,
@@ -425,6 +442,36 @@ namespace Ambiesoft {
 				}
 				*pI = tmp;
 			}
+			static void setValue(unsigned int* pI, const MyS_& mys, const bool bStrict)
+			{
+				int tmp = AtoU(mys);
+				if (bStrict) {
+					if (ItoA(tmp, mys) != mys) {
+						throw illegal_value_type_error<MyS_, int>(mys);
+					}
+				}
+				*pI = tmp;
+			}
+			static void setValue(long* pL, const MyS_& mys, const bool bStrict)
+			{
+				long tmp = AtoI(mys);
+				if (bStrict) {
+					if (ItoA(tmp, mys) != mys) {
+						throw illegal_value_type_error<MyS_, int>(mys);
+					}
+				}
+				*pL = tmp;
+			}
+			static void setValue(unsigned long* pUL, const MyS_& mys, const bool bStrict)
+			{
+				unsigned long tmp = AtoU(mys);
+				if (bStrict) {
+					if (ItoA(tmp, mys) != mys) {
+						throw illegal_value_type_error<MyS_, int>(mys);
+					}
+				}
+				*pUL = tmp;
+			}
 			static void setValue(long long* pLL_, const MyS_& mys, const bool bStrict)
 			{
 				long long tmp = AtoI64(mys);
@@ -434,6 +481,16 @@ namespace Ambiesoft {
 					}
 				}
 				*pLL_ = tmp;
+			}
+			static void setValue(unsigned long long* pULL_, const MyS_& mys, const bool bStrict)
+			{
+				unsigned long long tmp = AtoU64(mys);
+				if (bStrict) {
+					if (ItoA(tmp, mys) != mys) {
+						throw illegal_value_type_error<MyS_, long long>(mys);
+					}
+				}
+				*pULL_ = tmp;
 			}
 			static void setValue(MyS_* pMys_, const MyS_& mys, const bool /*bSrict*/)
 			{
