@@ -25,6 +25,7 @@
 #include <cassert>
 //#include <xstddef>  // for 'addressof'
 #include <Windows.h>
+#include <objbase.h>
 
 #ifndef NDEBUG
 #define HANDLEVERIFY(f) assert(f)
