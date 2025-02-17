@@ -21,13 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
-
 #include <Windows.h>
 
 #include "DebugNew.h"
@@ -35,7 +28,6 @@ using namespace std;
 
 #include "../profile/cpp/Profile/include/ambiesoft.profile.h"
 #include "SaveWindowLocation.h"
-
 
 namespace Ambiesoft {
 	namespace {
@@ -45,12 +37,11 @@ namespace Ambiesoft {
 		constexpr const char* LOCATION_WIDTH = "Width";
 		constexpr const char* LOCATION_HEIGHT = "Height";
 	}
-	bool LoadWindowLocation(HWND hWnd, LPCTSTR pIni)
+	bool LoadWindowLocation(HWND hWnd, HashIniHandle ini)
 	{
 		if (!IsWindow(hWnd))
 			return false;
 
-		Profile::CHashIni ini(Profile::ReadAll(wstring(pIni), false));
 		if (!ini)
 			return false;
 
@@ -64,7 +55,19 @@ namespace Ambiesoft {
 			return false;
 		return !!SetWindowPos(hWnd, nullptr, x, y, width, height, SWP_NOZORDER);
 	}
-	bool SaveWindowLocation(HWND hWnd, LPCTSTR pIni)
+	bool LoadWindowLocation(HWND hWnd, LPCTSTR pIni)
+	{
+		if (!IsWindow(hWnd))
+			return false;
+
+		Profile::CHashIni ini(Profile::ReadAll(wstring(pIni), false));
+		if (!ini)
+			return false;
+
+		return LoadWindowLocation(hWnd, ini);
+	}
+
+	bool SaveWindowLocation(HWND hWnd, HashIniHandle ini)
 	{
 		if (!IsWindow(hWnd))
 			return false;
@@ -74,13 +77,22 @@ namespace Ambiesoft {
 		if (!GetWindowRect(hWnd, &rect))
 			return false;
 
+		bool ok = true;
+		ok &= Profile::WriteInt(APP_LOCATION, LOCATION_X, rect.left, ini);
+		ok &= Profile::WriteInt(APP_LOCATION, LOCATION_Y, rect.top, ini);
+		ok &= Profile::WriteInt(APP_LOCATION, LOCATION_WIDTH, rect.right - rect.left, ini);
+		ok &= Profile::WriteInt(APP_LOCATION, LOCATION_HEIGHT, rect.bottom - rect.top, ini);
+
+		return ok;
+	}
+	bool SaveWindowLocation(HWND hWnd, LPCTSTR pIni)
+	{
 		Profile::CHashIni ini(Profile::ReadAll(wstring(pIni), false));
 		if (!ini)
 			return false;
-		Profile::WriteInt(APP_LOCATION, LOCATION_X, rect.left, ini);
-		Profile::WriteInt(APP_LOCATION, LOCATION_Y, rect.top, ini);
-		Profile::WriteInt(APP_LOCATION, LOCATION_WIDTH, rect.right - rect.left, ini);
-		Profile::WriteInt(APP_LOCATION, LOCATION_HEIGHT, rect.bottom - rect.top, ini);
+
+		if (!SaveWindowLocation(hWnd, ini))
+			return false;
 
 		return Profile::WriteAll(ini, wstring(pIni));
 	}

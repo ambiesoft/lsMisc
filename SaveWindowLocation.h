@@ -23,9 +23,11 @@
 
 #pragma once
 
-namespace Ambiesoft {
+#include "../profile/cpp/Profile/include/ambiesoft.profile.h"
 
+namespace Ambiesoft {
 	bool LoadWindowLocation(HWND hWnd, LPCTSTR pIni);
 	bool SaveWindowLocation(HWND hWnd, LPCTSTR pIni);
-
+	bool LoadWindowLocation(HWND hWnd, HashIniHandle ini);
+	bool SaveWindowLocation(HWND hWnd, HashIniHandle ini);
 }
