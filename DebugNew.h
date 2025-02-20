@@ -8,7 +8,7 @@
 // DebugNew.cpp must be also included
 #ifdef AMBIESOFT_USE_DEBUGNEW
 
-#ifndef DEBUG_NEW_DEFINED
+#ifndef DEBUG_NEW
 #include <stdlib.h>
 #include <Windows.h>
 #include <crtdbg.h>
@@ -32,7 +32,7 @@ void operator delete[](void* pData, LPCSTR, int);
 #define DEBUG_NEW_DEFINED
 #endif
 
-#endif  // DEBUG_NEW_DEFINED
+#endif  // DEBUG_NEW
 #endif  // AMBIESOFT_USE_DEBUGNEW
 
 #endif  // _DEBUG
