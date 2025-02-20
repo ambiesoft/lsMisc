@@ -21,12 +21,6 @@
 //OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 //SUCH DAMAGE.
 
-
-
-
-
-
-
 #pragma warning(disable :4786)
 #pragma warning(disable: 4503)
 
@@ -44,10 +38,6 @@ using namespace std;
 #include "DebugNew.h"
 #include "stdosd/blockedbool.h"
 #include "I18N.h"
-
-
-
-
 
 #ifndef countof
 #define countof(a) (sizeof(a)/sizeof(a[0]))

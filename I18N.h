@@ -23,7 +23,7 @@
 
 // HOW TO USE
 // 1. Include I18N.h and I18N.cpp to your project.
-// 2. Call i18nInitLangmap() at startup, or i18nInitLangmap(L"jpn") for specifying language.
+// 2. Call i18nInitLangmap() at startup, or i18nInitLangmap(nullptr, L"myapp", L"jpn") for specifying language.
 // 3. Create a Folder named "lang" in the same folder your executable resides, and place a lang file in it 
 //    and name it like "myapp.jpn.txt" where myapp is name of the application.
 // 4. "myapp.jpn.txt" format is like follows:
@@ -36,7 +36,7 @@
 #pragma once
 #include <Windows.h>
 namespace Ambiesoft {
-	bool i18nInitLangmap(HINSTANCE hInst=NULL, LPCWSTR pLang = NULL, LPCWSTR pAppName=NULL);
+	bool i18nInitLangmap(HINSTANCE hInst = NULL, LPCWSTR pLang = NULL, LPCWSTR pAppName = NULL);
 	LPCWSTR i18nGetCurrentLang();
 
 	LPCWSTR I18NW(LPCWSTR pIN);
