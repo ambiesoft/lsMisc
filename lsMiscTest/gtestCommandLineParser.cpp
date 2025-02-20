@@ -783,9 +783,21 @@ TEST(CommandLineParser, WrongInt)
 				parser.Parse(arg);
 				EXPECT_TRUE(false);
 			}
-			catch (exception& ex)
+			catch(illegal_value_type_error<decltype(parser.GetStringType()), long long>& exIVTE)
+			{ 
+				std::function<std::wstring(const std::type_info&)> type_name_w =
+					[](const std::type_info& type) {
+					std::string name = type.name();
+					return std::wstring(name.begin(), name.end());
+					};
+				EXPECT_STREQ(
+					exIVTE.wwhat().c_str(), 
+					(L"234234a is not " + type_name_w(typeid(long long))).c_str()
+				);
+			}
+			catch (exception&)
 			{
-				EXPECT_STREQ(ex.what(), (string("234234a is not ") + typeid(long long).name()).c_str());
+				EXPECT_TRUE(false);
 			}
 			EXPECT_EQ(n, -1);
 		}
@@ -915,8 +927,17 @@ TEST(CommandLineParser, BoolAsValue)
 
 		try
 		{
-			parser.Parse(arg);
-			EXPECT_TRUE(false);
+			try
+			{
+				parser.Parse(arg);
+				EXPECT_TRUE(false);
+			}
+			catch (illegal_value_type_error<decltype(parser.GetStringType()), bool>& ex)
+			{
+				EXPECT_STREQ(ex.what(), "100 is not bool");
+				EXPECT_STREQ(ex.wwhat().c_str(), L"100 is not bool");
+				throw ex;
+			}
 		}
 		catch (std::exception& ex)
 		{

@@ -96,8 +96,8 @@ namespace Ambiesoft {
 			_GLIBCXX_USE_NOEXCEPT
 #endif
 		{
-			// buff_ = toStdAcpString(getErrorString());
-			buff_ = "TODO: Use wwhat() for workaround";
+			// Include UTF16toUTF8
+			buff_ = toStdAcpString(getErrorString());
 			return buff_.c_str();
 		}
 		virtual std::wstring wwhat() const {
@@ -156,6 +156,7 @@ namespace Ambiesoft {
 			_GLIBCXX_USE_NOEXCEPT
 #endif
 		{
+			// Include UTF16toUTF8
 			buff_ = toStdAcpString(getErrorString());
 			return buff_.c_str();
 		}
@@ -1351,6 +1352,10 @@ typedef BasicOption<std::string> COptionA;
 			{
 				(*it)->setParsed();
 			}
+		}
+
+		MyS_ GetStringType() const {
+			return MyS_();
 		}
 	};
 
