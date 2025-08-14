@@ -475,6 +475,9 @@
     <ClCompile Include="..\GetVersionFromCommand.cpp">
       <Filter>lsMisc</Filter>
     </ClCompile>
+    <ClCompile Include="..\GetDriveNumberFromDriveLetter.cpp">
+      <Filter>lsMisc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\CenterWindow.h">
@@ -868,6 +871,9 @@
       <Filter>lsMisc\1 Header</Filter>
     </ClInclude>
     <ClInclude Include="..\GetVersionFromCommand.h">
+      <Filter>lsMisc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\GetDriveNumberFromDriveLetter.h">
       <Filter>lsMisc</Filter>
     </ClInclude>
   </ItemGroup>

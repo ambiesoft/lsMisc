@@ -103,7 +103,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -137,7 +137,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;NDEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -167,7 +167,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
@@ -198,7 +198,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NOMINMAX;PCH_INCLUDE_FILE="StdAfx.h";AMBIESOFT_USE_DEBUGNEW;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions);_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING;_CRT_NON_CONFORMING_WCSTOK</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
@@ -254,6 +254,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\GetDriveNumberFromDriveLetter.cpp" />
     <ClCompile Include="..\GetVersionFromCommand.cpp" />
     <ClCompile Include="..\GetVersionStringFromResource.cpp" />
     <ClCompile Include="..\IsDuplicateInstance.cpp" />
@@ -948,6 +949,7 @@
     <ClInclude Include="..\BrowseFolder.h" />
     <ClInclude Include="..\CenterWindow.h" />
     <ClInclude Include="..\ChangeDirPos.h" />
+    <ClInclude Include="..\GetDriveNumberFromDriveLetter.h" />
     <ClInclude Include="..\GetVersionFromCommand.h" />
     <ClInclude Include="..\GetVersionStringFromResource.h" />
     <ClInclude Include="..\IsDuplicateInstance.h" />
