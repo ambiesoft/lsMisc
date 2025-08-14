@@ -135,6 +135,8 @@ namespace Ambiesoft {
 		std::wstring folderPath = filePath.substr(0, pos);
 		std::wstring fileName = filePath.substr(pos + 1);
 
+		CoInitialize(nullptr);
+
 		PIDLIST_ABSOLUTE pidlFolder = nullptr;
 		HRESULT hr = SHParseDisplayName(folderPath.c_str(), nullptr, &pidlFolder, 0, nullptr);
 		if (FAILED(hr)) {
@@ -149,6 +151,8 @@ namespace Ambiesoft {
 		}
 
 		std::vector<PCUITEMID_CHILD> pidlItems = { reinterpret_cast<PCUITEMID_CHILD>(pidlItem) };
+		//PCUITEMID_CHILD child = ILFindLastID(pidlItem);
+		//std::vector<PCUITEMID_CHILD> pidlItems = { child };
 
 		hr = SHOpenFolderAndSelectItems(pidlFolder, static_cast<UINT>(pidlItems.size()), pidlItems.data(), 0);
 
