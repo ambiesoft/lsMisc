@@ -398,7 +398,7 @@ namespace Ambiesoft {
 			virtual void setTarget(void*) = 0;
 			virtual ~UserTargetBase() {}
 		};
-		template<class T>
+		template<class TU>
 		class UserTarget : public UserTargetBase
 		{
 		public:
@@ -502,19 +502,19 @@ namespace Ambiesoft {
 				pVmys_->push_back(mys);
 			}
 		
-			template<class T>
-			void setHadOption(T*) {}
+			template<class TUS>
+			void setHadOption(TUS*) {}
 			template<>
 			void setHadOption<bool>(bool* pT) {
 				*pT = true;
 			}
 		private:
-			T* pUserRawTarget_ = nullptr;
+			TU* pUserRawTarget_ = nullptr;
 		public:
 			void setTarget(void* p) override
 			{
 				assert(!pUserRawTarget_);
-				pUserRawTarget_ = static_cast<T*>(p);
+				pUserRawTarget_ = static_cast<TU*>(p);
 			}
 			void setTrue() override
 			{
