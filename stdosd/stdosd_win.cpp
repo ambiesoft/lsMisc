@@ -737,7 +737,7 @@ namespace Ambiesoft {
 							SYSTEM_CHAR_TYPE szProcessName[MAX_PATH];
 							if (bInputIsFullPath)
 							{
-                                DWORD size = sizeof(szProcessName) / sizeof(TCHAR);
+                                DWORD size = sizeof(szProcessName) / sizeof(SYSTEM_CHAR_TYPE);
                                 if (QueryFullProcessImageNameW(hProcess, 0, szProcessName, &size))
 								{
 									if (lstrcmpiW(szProcessName, pExecutable) == 0)
@@ -748,7 +748,7 @@ namespace Ambiesoft {
 							}
 							else
 							{
-								if (GetModuleBaseNameW(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(TCHAR)))
+								if (GetModuleBaseNameW(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(SYSTEM_CHAR_TYPE)))
 								{
 									if (lstrcmpiW(szProcessName, pExecutable) == 0)
 									{
