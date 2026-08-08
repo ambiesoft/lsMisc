@@ -26,7 +26,9 @@
 // general
 template<typename CATEGORY, typename T> struct AnyCloser
 {
-	AnyCloser(T t) : error(t) { This class should not be instanciated.};
+	AnyCloser(T t) {
+		static_assert(false, "This class should not be instanciated."); 
+	};
 	~AnyCloser();
 };
 
